@@ -1,4 +1,4 @@
-rootProject.name = 'gradle-empty-modular-project'
+rootProject.name = 'image-comparison-project'
 
 def subDirs = rootDir.listFiles(new FileFilter() {
     public boolean accept(File file) {
