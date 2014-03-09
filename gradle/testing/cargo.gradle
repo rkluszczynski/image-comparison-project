@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath group: 'org.gradle.api.plugins', name: 'gradle-cargo-plugin', version: '0.6.1'
+    }
+}
+
+apply plugin: 'cargo'
+
+dependencies {
+    def cargoVersion = '1.4.7'
+    cargo "org.codehaus.cargo:cargo-core-uberjar:$cargoVersion",
+            "org.codehaus.cargo:cargo-ant:$cargoVersion"
+}
+
+cargo {
+    containerId = 'jetty9x'
+    port = 8080
+
+    deployable {
+        context = 'ui'
+    }
+
+    remote {
+        protocol = 'http'
+        hostname = 'progstudio.pl'
+//        username = 'klusi'
+//        password = 'd3pl0y3r'
+    }
+}
+
+//buildscript {
+//    repositories {
+//        mavenCentral()
+//    }
+//
+//    dependencies {
+//        classpath group: 'org.gradle.api.plugins', name: 'gradle-cargo-plugin', version: '0.6.1'
+//    }
+//}

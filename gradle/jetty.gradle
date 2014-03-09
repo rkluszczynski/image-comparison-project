@@ -1,0 +1,7 @@
+apply plugin: 'jetty'
+
+jettyRun {
+    httpPort = 8080
+    stopPort = null
+    stopKey = null
+}

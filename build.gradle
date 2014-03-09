@@ -3,7 +3,7 @@ import org.gradle.api.artifacts.*
 apply plugin: 'base'
 
 subprojects {
-    apply from: rootProject.file('common.gradle')
+    apply from: rootProject.file('gradle/common.gradle')
 }
 
 task mergedJavadoc(type: Javadoc, description: 'Creates Javadoc from all the projects.') {

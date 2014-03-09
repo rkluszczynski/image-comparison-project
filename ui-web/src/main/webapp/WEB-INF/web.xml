@@ -10,7 +10,7 @@
 
     <servlet>
         <servlet-name>statusServlet</servlet-name>
-        <servlet-class>pl.info.rkluszczynski.imageStatusServlet</servlet-class>
+        <servlet-class>pl.info.rkluszczynski.image.StatusServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
