@@ -1,6 +1,9 @@
 /.idea/
 /.gradle/
 
+# Ignore file with container's deployer credentials:
+/ui-web/gradle.properties
+
 *.class
 *.iml
 
