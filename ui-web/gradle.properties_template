@@ -1,6 +1,7 @@
 
-
-cargoRemoteUsername: 'klusi'
+# Container deployer credential:
+cargoRemoteUsername=SET-ME
+cargoRemotePassword=SET-ME
 
 
 #    cargo.container.id: Overrides the convention property containerId.

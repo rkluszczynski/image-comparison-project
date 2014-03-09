@@ -23,8 +23,8 @@ cargo {
     remote {
         protocol = 'http'
         hostname = 'progstudio.pl'
-        username = 'klusi'
-        password = ''
+        username = cargoRemoteUsername
+        password = cargoRemotePassword
     }
 }
 
