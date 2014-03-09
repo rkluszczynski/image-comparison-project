@@ -6,17 +6,17 @@
         metadata-complete="false"
         version="3.0">
 
-    <display-name>Status Application</display-name>
+    <display-name>Compare Image Application</display-name>
 
     <servlet>
         <servlet-name>statusServlet</servlet-name>
-        <servlet-class>pl.info.rkluszczynski.image.StatusServlet</servlet-class>
+        <servlet-class>pl.info.rkluszczynski.status.StatusServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>statusServlet</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/status</url-pattern>
     </servlet-mapping>
 
 </web-app>
