@@ -36,8 +36,15 @@ cargo {
     remote {
         protocol = 'http'
         hostname = 'progstudio.pl'
-        username = cargoRemoteUsername
-        password = cargoRemotePassword
+    }
+}
+
+if (hasProperty('cargoRemoteUsername') && hasProperty('cargoRemotePassword')) {
+    cargo {
+        remote {
+            username = cargoRemoteUsername
+            password = cargoRemotePassword
+        }
     }
 }
 
