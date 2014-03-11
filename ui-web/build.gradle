@@ -4,8 +4,13 @@ apply plugin: 'war'
 apply from: rootProject.file('gradle/jetty.gradle')
 
 dependencies {
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '4.0.1.RELEASE'
+    compile group: 'org.thymeleaf', name: 'thymeleaf-spring3', version: '2.1.1.RELEASE'
+
     compile group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
-    providedCompile group: 'javax', name: 'javaee-api', version: '7.0'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.2.1'
+
     testCompile group: 'junit', name: 'junit', version: '4.11'
 
     def cargoVersion = '1.4.7'
@@ -32,7 +37,6 @@ cargo {
     deployable {
         context = 'ui'
     }
-
     remote {
         protocol = 'http'
         hostname = 'progstudio.pl'
