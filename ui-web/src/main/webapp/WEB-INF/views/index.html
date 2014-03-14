@@ -14,6 +14,14 @@
     <h1>Message: ${message}</h1>
     <h1 th:text="${message}">Message</h1>
 
+
+    <form method="post" action="uploadFile" enctype="multipart/form-data">
+        File to upload: <input type="file" name="upFile" />
+        <br />
+        <br />
+        <input type="submit" value="Press" /> to upload the file!
+    </form>
+
     <script src="/assets/js/jquery.js"></script>
     <script src="/js/bootstrap.min.js"></script>
 </body>

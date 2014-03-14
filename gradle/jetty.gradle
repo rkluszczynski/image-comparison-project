@@ -7,6 +7,8 @@ jettyEclipse {
     stopPort = 8090
 }
 
+jettyEclipseRun.dependsOn war
+
 jettyRun {
     httpPort = 8080
     stopPort = 8090
