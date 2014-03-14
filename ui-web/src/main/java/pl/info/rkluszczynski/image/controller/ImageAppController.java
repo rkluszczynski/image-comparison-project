@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "/image")
 public class ImageAppController {
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = { "/", "" }, method = RequestMethod.GET)
     public String showIndexPage(Model model) {
         model.addAttribute("message", "Hello!");
         return "index";

@@ -17,7 +17,7 @@ dependencies {
 }
 
 cargo {
-    containerId = 'jetty9x'
+    containerId = 'jetty'
     port = 8080
 
     deployable {

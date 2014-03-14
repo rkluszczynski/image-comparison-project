@@ -1,7 +1,14 @@
 apply plugin: 'jetty'
+apply plugin: 'jettyEclipse'
+
+jettyEclipse {
+    contextPath = '/ui'
+    httpPort = 8080
+    stopPort = 8090
+}
 
 jettyRun {
     httpPort = 8080
-    stopPort = 8081
+    stopPort = 8090
     stopKey = null
 }

@@ -3,9 +3,10 @@ package pl.info.rkluszczynski.image.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.thymeleaf.spring3.SpringTemplateEngine;
-import org.thymeleaf.spring3.view.ThymeleafViewResolver;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+import pl.info.rkluszczynski.image.logger.LoggerPostProcessor;
 
 @Configuration
 @ComponentScan(basePackages = "pl.info.rkluszczynski.image")
@@ -27,5 +28,10 @@ public class ImageAppConfig {
         thymeleafViewResolver.setCharacterEncoding("UTF-8");
         thymeleafViewResolver.setOrder(1);
         return thymeleafViewResolver;
+    }
+
+    @Bean
+    public LoggerPostProcessor loggerPostProcessor() {
+        return new LoggerPostProcessor();
     }
 }
