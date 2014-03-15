@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @Controller
@@ -16,21 +18,20 @@ public class FileUploadController {
     private static Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public String handleFormUpload(@RequestParam("upFile") MultipartFile file) {
+    public String handleFormUpload(@RequestParam("imageFile") MultipartFile file) {
         if (! file.isEmpty()) {
+            logger.info(file.getContentType());
+            logger.info(file.getName());
+            logger.info(file.getOriginalFilename());
+            logger.info(String.valueOf(file.getSize()));
             try {
-                logger.info(file.getContentType());
-                logger.info(file.getName());
-                logger.info(file.getOriginalFilename());
-                logger.info(String.valueOf(file.getSize()));
-
-                byte[] bytes = file.getBytes();
+                BufferedImage imgBuff = ImageIO.read(file.getInputStream());
 
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.warn("Could not read image from inputStream!", e);
+                return "redirect:/error";
             }
 
-            // store the bytes somewhere
             return "redirect:";
         }
         return "redirect:/status";

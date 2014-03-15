@@ -8,6 +8,20 @@
     <script src="/js/html5shiv.js"></script>
     <script src="/js/respond.min.js"></script>
     <![endif]-->
+
+    <style>
+        .error {
+        color: #ff0000;
+        }
+
+        .errorblock {
+        color: #000;
+        background-color: #ffEEEE;
+        border: 3px solid #ff0000;
+        padding: 8px;
+        margin: 16px;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,10 +30,16 @@
 
 
     <form method="post" action="uploadFile" enctype="multipart/form-data">
-        File to upload: <input type="file" name="upFile" />
-        <br />
+
+        <errors path="*" cssClass="errorblock" element="div" />
+
+        File to upload: <input type="file" name="imageFile" />
         <br />
         <input type="submit" value="Press" /> to upload the file!
+
+        <span>
+            <errors path="file" cssClass="error" />
+		</span>
     </form>
 
     <script src="/assets/js/jquery.js"></script>

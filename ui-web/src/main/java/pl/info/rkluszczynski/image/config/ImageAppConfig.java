@@ -3,6 +3,7 @@ package pl.info.rkluszczynski.image.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
@@ -28,6 +29,13 @@ public class ImageAppConfig {
         thymeleafViewResolver.setCharacterEncoding("UTF-8");
         thymeleafViewResolver.setOrder(1);
         return thymeleafViewResolver;
+    }
+
+    @Bean
+    public ReloadableResourceBundleMessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("/resources/messages");
+        return messageSource;
     }
 
     @Bean
