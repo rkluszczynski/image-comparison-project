@@ -41,13 +41,26 @@
     </form>
 
 
-    <p th:if="${isUserImageUploaded}">
+    <p th:if="${isInputImageUploaded}">
         <h3>User uploaded image:</h3>
         <center>
-            <img src="userSessionImage" alt="user image" />
+            <img src="userSessionInputImage" alt="user image" />
         </center>
     </p>
 
+    <p th:if="${isTemplateImageChosen}">
+    <h3>User uploaded image:</h3>
+    <center>
+        <img src="userSessionTemplateImage" alt="template image" />
+    </center>
+    </p>
+
+    <p th:if="${isResultImageProcessed}">
+    <h3>User uploaded image:</h3>
+    <center>
+        <img src="userSessionResultImage" alt="result image" />
+    </center>
+    </p>
 
     <script src="/assets/js/jquery.js"></script>
     <script src="/js/bootstrap.min.js"></script>
