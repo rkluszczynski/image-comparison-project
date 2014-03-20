@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.controller;
+package pl.info.rkluszczynski.image.web.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import pl.info.rkluszczynski.image.validator.ImageFileValidator;
+import pl.info.rkluszczynski.image.tmp.validator.ImageFileValidator;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import static pl.info.rkluszczynski.image.config.ConfigConstants.*;
+import static pl.info.rkluszczynski.image.web.config.ConfigConstants.*;
 
 @Controller
 @RequestMapping(value = COMPARE_CONTEXT_PATH__ROOT)

@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.controller;
+package pl.info.rkluszczynski.image.web.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import static pl.info.rkluszczynski.image.config.ConfigConstants.*;
+import static pl.info.rkluszczynski.image.web.config.ConfigConstants.*;
 
 
 @Controller

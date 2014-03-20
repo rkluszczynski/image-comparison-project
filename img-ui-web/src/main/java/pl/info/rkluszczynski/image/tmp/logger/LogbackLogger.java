@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.logger;
+package pl.info.rkluszczynski.image.tmp.logger;
 
 import java.lang.annotation.*;
 

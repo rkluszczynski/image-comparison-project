@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.model;
+package pl.info.rkluszczynski.image.tmp.model;
 
 import org.springframework.web.multipart.MultipartFile;
 

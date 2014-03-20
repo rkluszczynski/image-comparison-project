@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.controller;
+package pl.info.rkluszczynski.image.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpSession;
 
-import static pl.info.rkluszczynski.image.config.ConfigConstants.*;
+import static pl.info.rkluszczynski.image.web.config.ConfigConstants.*;
 
 @Controller
 @RequestMapping(value = COMPARE_CONTEXT_PATH__ROOT)

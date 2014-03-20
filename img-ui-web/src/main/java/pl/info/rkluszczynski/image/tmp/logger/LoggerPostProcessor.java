@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.logger;
+package pl.info.rkluszczynski.image.tmp.logger;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;

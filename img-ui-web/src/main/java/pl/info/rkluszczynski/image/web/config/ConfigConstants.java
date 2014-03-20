@@ -1,8 +1,8 @@
-package pl.info.rkluszczynski.image.config;
+package pl.info.rkluszczynski.image.web.config;
 
 public interface ConfigConstants {
 
-    String APPLICATION_BASE_PACKAGE = "pl.info.rkluszczynski.image";
+    String WEB_APPLICATION_BASE_PACKAGE = "pl.info.rkluszczynski.image.web";
 
 
     String USER_SESSION_ATTRIBUTE_NAME__INPUT_IMAGE    = "userSessionInputImage";

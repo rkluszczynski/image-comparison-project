@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.config;
+package pl.info.rkluszczynski.image.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import pl.info.rkluszczynski.image.validator.ImageFileValidator;
+import pl.info.rkluszczynski.image.tmp.validator.ImageFileValidator;
 
 import java.io.IOException;
 

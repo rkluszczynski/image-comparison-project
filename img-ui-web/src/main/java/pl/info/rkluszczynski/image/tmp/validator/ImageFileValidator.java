@@ -1,8 +1,8 @@
-package pl.info.rkluszczynski.image.validator;
+package pl.info.rkluszczynski.image.tmp.validator;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import pl.info.rkluszczynski.image.model.UploadedImageFile;
+import pl.info.rkluszczynski.image.tmp.model.UploadedImageFile;
 
 public class ImageFileValidator implements Validator {
 

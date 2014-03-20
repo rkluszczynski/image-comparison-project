@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.controller;
+package pl.info.rkluszczynski.image.web.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;

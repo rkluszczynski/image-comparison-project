@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.initializer;
+package pl.info.rkluszczynski.image.web.initializer;
 
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
@@ -10,11 +10,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
-import static pl.info.rkluszczynski.image.config.ConfigConstants.APPLICATION_BASE_PACKAGE;
+import static pl.info.rkluszczynski.image.web.config.ConfigConstants.WEB_APPLICATION_BASE_PACKAGE;
 
 public class ImageAppInitializer implements WebApplicationInitializer {
 
-    private static final String CONFIG_LOCATION = APPLICATION_BASE_PACKAGE + ".config";
+    private static final String CONFIG_LOCATION = WEB_APPLICATION_BASE_PACKAGE + ".config";
     private static final String MAPPING_URL = "/*";
 
     @Override

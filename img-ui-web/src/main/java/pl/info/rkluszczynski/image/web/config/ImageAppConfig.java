@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.config;
+package pl.info.rkluszczynski.image.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -7,12 +7,12 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-import pl.info.rkluszczynski.image.logger.LoggerPostProcessor;
+import pl.info.rkluszczynski.image.tmp.logger.LoggerPostProcessor;
 
-import static pl.info.rkluszczynski.image.config.ConfigConstants.APPLICATION_BASE_PACKAGE;
+import static pl.info.rkluszczynski.image.web.config.ConfigConstants.WEB_APPLICATION_BASE_PACKAGE;
 
 @Configuration
-@ComponentScan(basePackages = APPLICATION_BASE_PACKAGE)
+@ComponentScan(basePackages = WEB_APPLICATION_BASE_PACKAGE)
 public class ImageAppConfig {
 
     @Bean
