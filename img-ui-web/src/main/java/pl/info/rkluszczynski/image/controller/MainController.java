@@ -27,8 +27,8 @@ public class MainController {
 
         model.addAttribute("headerText", HEADER_TEXT);
         model.addAttribute("isInputImageUploaded", isInputImageUploaded);
-        model.addAttribute("isTemplateImageChosen", isInputImageUploaded);
-        model.addAttribute("isResultImageProcessed", isInputImageUploaded);
+        model.addAttribute("isTemplateImageChosen", isTemplateImageChosen);
+        model.addAttribute("isResultImageProcessed", isResultImageProcessed);
         return "index";
     }
 
