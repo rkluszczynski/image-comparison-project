@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import pl.info.rkluszczynski.image.validator.ImageFileValidator;
 
 import java.io.IOException;
 
@@ -39,6 +40,11 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
             e.printStackTrace();
         }
         return commonsMultipartResolver;
+    }
+
+    @Bean(name = "imageFileValidator")
+    public ImageFileValidator imageFileValidator() {
+        return new ImageFileValidator();
     }
 
     @Bean

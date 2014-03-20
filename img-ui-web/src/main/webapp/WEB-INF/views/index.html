@@ -25,22 +25,29 @@
 </head>
 
 <body>
-    <h1>Message: ${message}</h1>
-    <h1 th:text="${message}">Message</h1>
+    <h1 th:text="${headerText}">Image Comparison</h1>
 
 
-    <form method="post" action="uploadFile" enctype="multipart/form-data">
-
+    <form method="post" action="userSessionImage" enctype="multipart/form-data">
         <errors path="*" cssClass="errorblock" element="div" />
 
         File to upload: <input type="file" name="imageFile" />
         <br />
-        <input type="submit" value="Press" /> to upload the file!
+        <input type="submit" value="Press" /> to upload the imageFile!
 
         <span>
-            <errors path="file" cssClass="error" />
+            <errors path="imageFile" cssClass="error" />
 		</span>
     </form>
+
+
+    <p th:if="${isUserImageUploaded}">
+        <h3>User uploaded image:</h3>
+        <center>
+            <img src="userSessionImage" alt="user image" />
+        </center>
+    </p>
+
 
     <script src="/assets/js/jquery.js"></script>
     <script src="/js/bootstrap.min.js"></script>

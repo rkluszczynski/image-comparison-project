@@ -3,6 +3,9 @@ apply plugin: 'war'
 
 apply from: rootProject.file('gradle-commons/jetty.gradle')
 
+def webApplicationContextPath =
+        hasProperty('webAppContextPath') ? webAppContextPath : '/webapp'
+
 dependencies {
     compile project(':img-engine')
 
@@ -13,8 +16,6 @@ dependencies {
 
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.1'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.3.2'
-
-    testCompile group: 'junit', name: 'junit', version: '4.11'
 
     def cargoVersion = '1.4.7'
     cargo "org.codehaus.cargo:cargo-core-uberjar:$cargoVersion",
@@ -34,7 +35,7 @@ cargo {
     port = 8080
 
     deployable {
-        context = 'ui'
+        context = webApplicationContextPath
     }
     remote {
         protocol = 'http'

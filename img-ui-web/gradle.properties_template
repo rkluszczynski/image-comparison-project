@@ -1,5 +1,8 @@
 
-# Container deployer credential:
+# Web application context path:
+webAppContextPath=/image
+
+# Container's deployer credential:
 cargoRemoteUsername=SET-ME
 cargoRemotePassword=SET-ME
 

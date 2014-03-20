@@ -9,8 +9,10 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import pl.info.rkluszczynski.image.logger.LoggerPostProcessor;
 
+import static pl.info.rkluszczynski.image.config.ConfigConstants.APPLICATION_BASE_PACKAGE;
+
 @Configuration
-@ComponentScan(basePackages = "pl.info.rkluszczynski.image")
+@ComponentScan(basePackages = APPLICATION_BASE_PACKAGE)
 public class ImageAppConfig {
 
     @Bean

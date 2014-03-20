@@ -1,16 +1,20 @@
-apply plugin: 'jetty'
+//apply plugin: 'jetty'
 apply plugin: 'jettyEclipse'
 
+def webApplicationContextPath =
+        hasProperty('webAppContextPath') ? webAppContextPath : '/webapp'
+
 jettyEclipse {
-    contextPath = '/ui'
+    contextPath = webApplicationContextPath
+
     httpPort = 8080
     stopPort = 8090
 }
 
 jettyEclipseRun.dependsOn war
 
-jettyRun {
-    httpPort = 8080
-    stopPort = 8090
-    stopKey = null
-}
+//jettyRun {
+//    httpPort = 8080
+//    stopPort = 8090
+//    stopKey = null
+//}

@@ -10,9 +10,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import static pl.info.rkluszczynski.image.config.ConfigConstants.APPLICATION_BASE_PACKAGE;
+
 public class ImageAppInitializer implements WebApplicationInitializer {
 
-    private static final String CONFIG_LOCATION = "pl.info.rkluszczynski.image.config";
+    private static final String CONFIG_LOCATION = APPLICATION_BASE_PACKAGE + ".config";
     private static final String MAPPING_URL = "/*";
 
     @Override
