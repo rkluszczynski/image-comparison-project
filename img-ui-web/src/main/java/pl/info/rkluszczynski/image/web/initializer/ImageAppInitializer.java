@@ -16,10 +16,11 @@ import static pl.info.rkluszczynski.image.web.config.WebConstants.WEB_APPLICATIO
 public class ImageAppInitializer implements WebApplicationInitializer {
 
     private static final String[] CONFIG_LOCATIONS = {
-            WEB_APPLICATION_BASE_PACKAGE + ".config",
-            ENGINE_LIBRARY_BASE_PACKAGE + ".config"
+        /* order is important here -> javax.servlet dispatcher issue */
+            ENGINE_LIBRARY_BASE_PACKAGE + ".config",
+            WEB_APPLICATION_BASE_PACKAGE + ".config"
     };
-    private static final String MAPPING_URL = "/*";
+    private static final String MAPPING_URL = "/";
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
