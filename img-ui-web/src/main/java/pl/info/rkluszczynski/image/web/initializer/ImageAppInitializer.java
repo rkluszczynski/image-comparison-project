@@ -10,11 +10,15 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
-import static pl.info.rkluszczynski.image.web.config.ConfigConstants.WEB_APPLICATION_BASE_PACKAGE;
+import static pl.info.rkluszczynski.image.engine.config.EngineConstants.ENGINE_LIBRARY_BASE_PACKAGE;
+import static pl.info.rkluszczynski.image.web.config.WebConstants.WEB_APPLICATION_BASE_PACKAGE;
 
 public class ImageAppInitializer implements WebApplicationInitializer {
 
-    private static final String CONFIG_LOCATION = WEB_APPLICATION_BASE_PACKAGE + ".config";
+    private static final String[] CONFIG_LOCATIONS = {
+            WEB_APPLICATION_BASE_PACKAGE + ".config",
+            ENGINE_LIBRARY_BASE_PACKAGE + ".config"
+    };
     private static final String MAPPING_URL = "/*";
 
     @Override
@@ -29,7 +33,9 @@ public class ImageAppInitializer implements WebApplicationInitializer {
 
     private AnnotationConfigWebApplicationContext getContext() {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.setConfigLocation(CONFIG_LOCATION);
+        for (String configLocation : CONFIG_LOCATIONS) {
+            context.setConfigLocation(configLocation);
+        }
         return context;
     }
 }

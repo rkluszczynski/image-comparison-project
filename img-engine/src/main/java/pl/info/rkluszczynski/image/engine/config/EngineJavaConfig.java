@@ -1,0 +1,21 @@
+package pl.info.rkluszczynski.image.engine.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import static pl.info.rkluszczynski.image.engine.config.EngineConstants.ENGINE_LIBRARY_BASE_PACKAGE;
+
+@Configuration
+@ComponentScan(basePackages = ENGINE_LIBRARY_BASE_PACKAGE)
+@EnableScheduling
+@PropertySource(value = "classpath:properties/image-engine.properties")
+public class EngineJavaConfig {
+
+    @Autowired
+    private Environment env;
+
+}

@@ -1,6 +1,6 @@
 package pl.info.rkluszczynski.image.web.config;
 
-public interface ConfigConstants {
+public interface WebConstants {
 
     String WEB_APPLICATION_BASE_PACKAGE = "pl.info.rkluszczynski.image.web";
 

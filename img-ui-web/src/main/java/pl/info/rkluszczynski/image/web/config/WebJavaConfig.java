@@ -1,19 +1,26 @@
 package pl.info.rkluszczynski.image.web.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import pl.info.rkluszczynski.image.tmp.logger.LoggerPostProcessor;
 
-import static pl.info.rkluszczynski.image.web.config.ConfigConstants.WEB_APPLICATION_BASE_PACKAGE;
+import static pl.info.rkluszczynski.image.web.config.WebConstants.WEB_APPLICATION_BASE_PACKAGE;
 
 @Configuration
 @ComponentScan(basePackages = WEB_APPLICATION_BASE_PACKAGE)
-public class ImageAppConfig {
+@PropertySource(value = "classpath:properties/image-web.properties")
+public class WebJavaConfig {
+
+    @Autowired
+    private Environment env;
 
     @Bean
     public ThymeleafViewResolver thymeleafViewResolver() {

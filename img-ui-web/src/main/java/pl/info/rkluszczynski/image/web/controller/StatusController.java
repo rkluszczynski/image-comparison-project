@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import static pl.info.rkluszczynski.image.web.config.ConfigConstants.STATUS_CONTEXT_PATH__ROOT;
+import static pl.info.rkluszczynski.image.web.config.WebConstants.STATUS_CONTEXT_PATH__ROOT;
 
 @Controller
 public class StatusController {

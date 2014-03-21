@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import static pl.info.rkluszczynski.image.web.config.ConfigConstants.*;
+import static pl.info.rkluszczynski.image.web.config.WebConstants.*;
 
 
 @Controller

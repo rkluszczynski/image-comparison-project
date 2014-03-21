@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpSession;
 
-import static pl.info.rkluszczynski.image.web.config.ConfigConstants.*;
+import static pl.info.rkluszczynski.image.web.config.WebConstants.*;
 
 @Controller
 @RequestMapping(value = COMPARE_CONTEXT_PATH__ROOT)
