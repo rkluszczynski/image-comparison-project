@@ -23,9 +23,9 @@ public class LoggerPostProcessor implements BeanPostProcessor {
                     IllegalAccessException {
                 ReflectionUtils.makeAccessible(field);
 
-                //Check if the field is annoted with @LogbackLogger
-                if (field.getAnnotation(LogbackLogger.class) != null) {
-                    LogbackLogger logbackLoggerAnnotation = field.getAnnotation(LogbackLogger.class);
+                //Check if the field is annoted with @LogBackLogger
+                if (field.getAnnotation(LogBackLogger.class) != null) {
+                    LogBackLogger logbackLoggerAnnotation = field.getAnnotation(LogBackLogger.class);
                     org.slf4j.Logger logger = LoggerFactory.getLogger(bean.getClass());
                     field.set(bean, logger);
                 }
