@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import pl.info.rkluszczynski.image.engine.model.SessionData;
 
 import javax.servlet.http.HttpSession;
 import java.util.Calendar;

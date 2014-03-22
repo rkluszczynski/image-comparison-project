@@ -13,4 +13,12 @@ class EngineJavaConfigTest extends Specification {
         then:
             testPropertyValue.equals("testValue")
     }
+
+    def "taskExecutor not null"() {
+        given:
+            def ctx = new AnnotationConfigApplicationContext(EngineJavaConfig.class);
+            def taskExecutor = ctx.getBean("taskExecutor")
+        expect:
+            taskExecutor != null
+    }
 }

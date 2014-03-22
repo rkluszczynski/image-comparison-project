@@ -1,31 +1,9 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen"/>
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="/js/html5shiv.js"></script>
-    <script src="/js/respond.min.js"></script>
-    <![endif]-->
-
-    <style>
-        .error {
-        color: #ff0000;
-        }
-
-        .errorblock {
-        color: #000;
-        background-color: #ffEEEE;
-        border: 3px solid #ff0000;
-        padding: 8px;
-        margin: 16px;
-        }
-    </style>
-</head>
+<head th:replace="common/header :: head" />
 
 <body>
-    <h1 th:text="${headerText}">Image Comparison</h1>
+    <div id="body-header" th:include="common/header :: header" />
 
 
     <form method="post" action="userSessionInputImage" enctype="multipart/form-data">
@@ -49,20 +27,26 @@
     </p>
 
     <p th:if="${isTemplateImageChosen}">
-    <h3>User uploaded image:</h3>
+    <h3>Template image:</h3>
     <center>
         <img src="userSessionTemplateImage" alt="template image" />
     </center>
     </p>
 
     <p th:if="${isResultImageProcessed}">
-    <h3>User uploaded image:</h3>
-    <center>
-        <img src="userSessionResultImage" alt="result image" />
-    </center>
+        <h3>Result image:</h3>
+        <center>
+            <img src="userSessionResultImage" alt="result image" />
+        </center>
+    </p>
+    <p th:if="${isInputImageUploaded} and not ${isResultImageProcessed}">
+        <h3>Result image:</h3>
+        <center>
+            <i>still processing... (please refresh page for a moment)</i>
+        </center>
     </p>
 
-    <script src="/assets/js/jquery.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+    <div id="body-footer" th:include="common/footer :: footer" />
+
 </body>
 </html>

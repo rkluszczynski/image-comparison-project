@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:fragment="head">
+    <meta th:if="${isInputImageUploaded} and not ${isResultImageProcessed}"
+          http-equiv="refresh" content="60"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen"/>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        .error {
+        color: #ff0000;
+        }
+
+        .errorblock {
+        color: #000;
+        background-color: #ffEEEE;
+        border: 3px solid #ff0000;
+        padding: 8px;
+        margin: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div th:fragment="header">
+        <h1 th:text="${headerText}">Image Comparison</h1>
+    </div>
+
+</body>
+</html>

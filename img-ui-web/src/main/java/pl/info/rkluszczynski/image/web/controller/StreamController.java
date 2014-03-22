@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import pl.info.rkluszczynski.image.engine.model.SessionData;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +33,10 @@ public class StreamController {
     )
     public void streamUserSessionTemplateImage(HttpServletResponse response, HttpSession session)
     {
-        streamUserSessionImage(response, session, USER_SESSION_ATTRIBUTE_NAME__TEMPLATE_IMAGE, COMPARE_CONTEXT_PATH__USER_SESSION_TEMPLATE_IMAGE);
+        SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_TEMPLATE_IMAGE);
+        if (imageData != null) {
+            streamUserSessionImage(response, imageData.getTemplateImage());
+        }
     }
 
 
@@ -43,7 +47,10 @@ public class StreamController {
     )
     public void streamUserSessionInputImage(HttpServletResponse response, HttpSession session)
     {
-        streamUserSessionImage(response, session, USER_SESSION_ATTRIBUTE_NAME__INPUT_IMAGE, COMPARE_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE);
+        SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE);
+        if (imageData != null) {
+            streamUserSessionImage(response, imageData.getInputImage());
+        }
     }
 
 
@@ -54,29 +61,32 @@ public class StreamController {
     )
     public void streamUserSessionResultImage(HttpServletResponse response, HttpSession session)
     {
-        streamUserSessionImage(response, session, USER_SESSION_ATTRIBUTE_NAME__RESULT_IMAGE, COMPARE_CONTEXT_PATH__USER_SESSION_RESULT_IMAGE);
+        SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_RESULT_IMAGE);
+        if (imageData != null) {
+            streamUserSessionImage(response, imageData.getResultImage());
+        }
     }
 
 
-    private void streamUserSessionImage(
-            HttpServletResponse response,
-            HttpSession session,
-            String userSessionAttributeImageName,
-            String contextPath
-        )
+    private SessionData getSessionImageDataObject(HttpSession session, String contextPath)
     {
-        Object sessionAttributeObject = session.getAttribute(userSessionAttributeImageName);
+        Object sessionAttributeObject = session.getAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA);
         if (sessionAttributeObject != null) {
-            logger.info("Attribute {} exists in session during GET {}", userSessionAttributeImageName, contextPath);
-            BufferedImage imgBuff = (BufferedImage) sessionAttributeObject;
-            try {
-                ImageIO.write(imgBuff, DEFAULT_BUFFERED_IMAGE_OUTPUT_FORMAT, response.getOutputStream());
-            } catch (IOException e) {
-                logger.warn("Problem with streaming image!", e);
-            }
+            logger.info("Attribute {} exists in session during GET {}", USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, contextPath);
+            return (SessionData)sessionAttributeObject;
         }
         else {
-            logger.info("No attribute {} in session during GET {}", userSessionAttributeImageName, contextPath);
+            logger.info("No attribute {} in session during GET {}", USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, contextPath);
+            return null;
+        }
+    }
+
+    private void streamUserSessionImage(HttpServletResponse response, BufferedImage bufferedImage)
+    {
+        try {
+            ImageIO.write(bufferedImage, DEFAULT_BUFFERED_IMAGE_OUTPUT_FORMAT, response.getOutputStream());
+        } catch (IOException e) {
+            logger.warn("Problem with streaming image!", e);
         }
     }
 }

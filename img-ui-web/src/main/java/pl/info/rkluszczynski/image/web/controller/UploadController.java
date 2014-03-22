@@ -3,11 +3,15 @@ package pl.info.rkluszczynski.image.web.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.tasks.CopyInputImageTask;
 import pl.info.rkluszczynski.image.tmp.validator.ImageFileValidator;
 
 import javax.imageio.ImageIO;
@@ -25,6 +29,10 @@ public class UploadController {
 
     @Autowired
     ImageFileValidator imageFileValidator;
+
+    @Autowired
+    @Qualifier("taskExecutor")
+    private ThreadPoolTaskExecutor taskExecutor;
 
 
     @RequestMapping(
@@ -46,7 +54,14 @@ public class UploadController {
             try {
                 BufferedImage imgBuff = ImageIO.read(file.getInputStream());
                 logger.info("Successfully read image: " + file.getOriginalFilename());
-                session.setAttribute(USER_SESSION_ATTRIBUTE_NAME__INPUT_IMAGE, imgBuff);
+
+                SessionData sessionData = new SessionData(session);
+                sessionData.setInputImage(imgBuff);
+                sessionData.setTemplateImage(imgBuff);
+                session.setAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, sessionData);
+
+                taskExecutor.execute( new CopyInputImageTask(sessionData) );
+
             } catch (IOException e) {
                 logger.warn("Could not read image from inputStream!", e);
                 return "redirect:/error";

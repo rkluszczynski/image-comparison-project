@@ -10,14 +10,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
-import static pl.info.rkluszczynski.image.engine.config.EngineConstants.ENGINE_LIBRARY_BASE_PACKAGE;
 import static pl.info.rkluszczynski.image.web.config.WebConstants.WEB_APPLICATION_BASE_PACKAGE;
 
 public class ImageAppInitializer implements WebApplicationInitializer {
 
     private static final String[] CONFIG_LOCATIONS = {
         /* order is important here -> javax.servlet dispatcher issue */
-            ENGINE_LIBRARY_BASE_PACKAGE + ".config",
+//            ENGINE_LIBRARY_BASE_PACKAGE + ".config",
             WEB_APPLICATION_BASE_PACKAGE + ".config"
     };
     private static final String MAPPING_URL = "/";
