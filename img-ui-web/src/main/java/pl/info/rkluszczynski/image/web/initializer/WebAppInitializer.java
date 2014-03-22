@@ -12,7 +12,7 @@ import javax.servlet.ServletRegistration;
 
 import static pl.info.rkluszczynski.image.web.config.WebConstants.WEB_APPLICATION_BASE_PACKAGE;
 
-public class ImageAppInitializer implements WebApplicationInitializer {
+public class WebAppInitializer implements WebApplicationInitializer {
 
     private static final String[] CONFIG_LOCATIONS = {
         /* order is important here -> javax.servlet dispatcher issue */

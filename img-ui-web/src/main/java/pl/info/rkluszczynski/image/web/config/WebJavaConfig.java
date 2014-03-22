@@ -1,5 +1,7 @@
 package pl.info.rkluszczynski.image.web.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -18,6 +20,7 @@ import static pl.info.rkluszczynski.image.web.config.WebConstants.WEB_APPLICATIO
 @Import(value = { EngineJavaConfig.class })
 @PropertySource(value = "classpath:properties/image-web.properties")
 public class WebJavaConfig {
+    private static Logger logger = LoggerFactory.getLogger(WebJavaConfig.class);
 
     @Autowired
     private Environment env;
@@ -39,6 +42,39 @@ public class WebJavaConfig {
         thymeleafViewResolver.setOrder(1);
         return thymeleafViewResolver;
     }
+
+//    @Bean(name = "imagePatternsResources")
+//    public ArrayList<Resource> imagePatternsResources() {
+//        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+//        try {
+//            Resource[] resources = resolver.getResources("classpath:image-data/patterns/**/*.png");
+//            ArrayList<Resource> arrayList = Lists.newArrayList();
+//            for (Resource resource : resources) {
+//                arrayList.add(resource);
+//                logger.info("Resource: {}", resource.getFilename());
+//            }
+//            return arrayList;
+//        } catch (IOException e) {
+//            logger.warn("Problem with reading image resources!", e);
+//        }
+//        return Lists.newArrayList();
+//    }
+//
+//    @Bean(name = "imagePatterns")
+//    public List<BufferedImage> bufferedImageResourcePatterns() {
+//        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+//        List<BufferedImage> bufferedImages = Lists.newArrayList();
+//        try {
+//            Resource[] resources = resolver.getResources("classpath:image-data/patterns/**/*.png");
+//            for (Resource resource : resources) {
+//                BufferedImage bufferedImage = ImageIO.read(resource.getInputStream());
+//                bufferedImages.add(bufferedImage);
+//            }
+//        } catch (IOException e) {
+//            logger.warn("Problem with reading image patterns!", e);
+//        }
+//        return  bufferedImages;
+//    }
 
     @Bean
     public ReloadableResourceBundleMessageSource messageSource() {

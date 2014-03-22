@@ -5,6 +5,10 @@
 <body>
     <div id="body-header" th:include="common/header :: header" />
 
+    <ul th:each="prod : ${prods}">
+        <li th:text="${prod}">Item</li>
+    </ul>
+
 
     <form method="post" action="userSessionInputImage" enctype="multipart/form-data">
         <errors path="*" cssClass="errorblock" element="div" />
