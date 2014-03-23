@@ -2,8 +2,9 @@ package pl.info.rkluszczynski.image.engine.model;
 
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class SessionData {
+public class SessionData implements Serializable {
 
     private final HttpSession session;
 
