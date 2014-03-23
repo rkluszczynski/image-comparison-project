@@ -5,10 +5,12 @@
 <body>
     <div id="body-header" th:include="common/header :: header" />
 
-    <ul th:each="prod : ${prods}">
-        <li th:text="${prod}">Item</li>
-    </ul>
 
+    <select name="templateFile" size="5">
+        <option th:each="imageItem : ${templateImageItems}"
+                th:attr="value=${imageItem.value}"
+                th:text="${imageItem.name}">option</option>
+    </select>
 
     <form method="post" action="userSessionInputImage" enctype="multipart/form-data">
         <errors path="*" cssClass="errorblock" element="div" />
