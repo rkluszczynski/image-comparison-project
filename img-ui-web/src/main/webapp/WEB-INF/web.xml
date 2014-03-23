@@ -5,4 +5,9 @@
          metadata-complete="false"
          version="3.0">
 
+    <session-config>
+        <!-- Set timeout in minutes -->
+        <session-timeout>7</session-timeout>
+    </session-config>
+
 </web-app>
