@@ -6,51 +6,66 @@
     <div id="body-header" th:include="common/header :: header" />
 
 
-    <select name="templateFile" size="5">
-        <option th:each="imageItem : ${templateImageItems}"
-                th:attr="value=${imageItem.value}"
-                th:text="${imageItem.name}">option</option>
-    </select>
-
     <form method="post" action="userSessionInputImage" enctype="multipart/form-data">
-        <errors path="*" cssClass="errorblock" element="div" />
+        <div style="float: left; width 50%">
+            <br />
+            <b>Choose image to upload</b>: <input type="file" name="imageFile" />
+            <br />
 
-        File to upload: <input type="file" name="imageFile" />
-        <br />
-        <input type="submit" value="Press" /> to upload the imageFile!
+            <br />
+            <b>Select processing operation</b>:
+            <select name="processingOperation">
+                <option th:each="operationItem : ${imageOperationItems}"
+                        th:attr="value=${operationItem.value}"
+                        th:text="${operationItem.description}">operation</option>
+            </select>
+            <br />
 
-        <span>
-            <errors path="imageFile" cssClass="error" />
-		</span>
+            <br />
+            <br />
+            <input type="submit" value="Press" /> to upload the file and process!
+        </div>
+
+        <div style="float: right; width: 50%; text-align: left">
+            <b>Choose template image</b>:
+            <br />
+            <select name="templateFile" size="3">
+                <option th:each="imageItem : ${templateImageItems}"
+                        th:attr="value=${imageItem.value}"
+                        th:text="${imageItem.name}">template image</option>
+            </select>
+        </div>
     </form>
 
 
-    <p th:if="${isInputImageUploaded}">
+    <div style="clear:both">
+        <p th:if="${isInputImageUploaded}">
         <h3>User uploaded image:</h3>
         <center>
             <img src="userSessionInputImage" alt="user image" />
         </center>
-    </p>
+        </p>
 
-    <p th:if="${isTemplateImageChosen}">
-    <h3>Template image:</h3>
-    <center>
-        <img src="userSessionTemplateImage" alt="template image" />
-    </center>
-    </p>
+        <p th:if="${isTemplateImageChosen}">
+        <h3>Template image:</h3>
+        <center>
+            <img src="userSessionTemplateImage" alt="template image" />
+        </center>
+        </p>
 
-    <p th:if="${isResultImageProcessed}">
+        <p th:if="${isResultImageProcessed}">
         <h3>Result image:</h3>
         <center>
             <img src="userSessionResultImage" alt="result image" />
         </center>
-    </p>
-    <p th:if="${isInputImageUploaded} and not ${isResultImageProcessed}">
+        </p>
+        <p th:if="${isInputImageUploaded} and not ${isResultImageProcessed}">
         <h3>Result image:</h3>
         <center>
             <i>still processing... (please refresh page for a moment)</i>
         </center>
-    </p>
+        </p>
+    </div>
 
     <div id="body-footer" th:include="common/footer :: footer" />
 

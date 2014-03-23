@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
-import pl.info.rkluszczynski.image.engine.tasks.CopyInputImageTask;
 import pl.info.rkluszczynski.image.tmp.validator.ImageFileValidator;
+import pl.info.rkluszczynski.image.web.model.ImageProcessingOperations;
+import pl.info.rkluszczynski.image.web.model.TemplateImageResources;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpSession;
@@ -33,6 +34,10 @@ public class UploadController {
     @Autowired
     @Qualifier("taskExecutor")
     private ThreadPoolTaskExecutor taskExecutor;
+    @Autowired
+    private TemplateImageResources templateImageResources;
+    @Autowired
+    private ImageProcessingOperations imageProcessingOperations;
 
 
     @RequestMapping(
@@ -41,6 +46,8 @@ public class UploadController {
     )
     public String handleImageFileUploadAndStoreInSession(
             @RequestParam("imageFile") MultipartFile file,
+            @RequestParam("templateFile") String templateFilename,
+            @RequestParam("processingOperation") String operation,
             HttpSession session
         )
     {
@@ -57,10 +64,12 @@ public class UploadController {
 
                 SessionData sessionData = new SessionData(session);
                 sessionData.setInputImage(imgBuff);
-                sessionData.setTemplateImage(imgBuff);
+                sessionData.setTemplateImage(templateImageResources.getTemplateImage(templateFilename));
                 session.setAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, sessionData);
 
-                taskExecutor.execute( new CopyInputImageTask(sessionData) );
+                taskExecutor.execute(
+                        imageProcessingOperations.getProcessingTask(operation, sessionData)
+                );
 
             } catch (IOException e) {
                 logger.warn("Could not read image from inputStream!", e);

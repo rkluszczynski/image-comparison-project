@@ -24,11 +24,8 @@ class AbstractTask extends Thread {
         this.sessionData = sessionData;
     }
 
-    abstract
-    protected void processImageData(BufferedImage inputImage, BufferedImage templateImage);
-
-    protected void saveResultImage(BufferedImage resultImage) {
-        sessionData.setResultImage(resultImage);
+    public void setSessionData(SessionData sessionData) {
+        this.sessionData = sessionData;
     }
 
     @Override
@@ -37,7 +34,10 @@ class AbstractTask extends Thread {
         processImageData(sessionData.getInputImage(), sessionData.getTemplateImage());
     }
 
-//    public void submit() {
-//        taskExecutor.execute(this);
-//    }
+    abstract
+    protected void processImageData(BufferedImage inputImage, BufferedImage templateImage);
+
+    protected void saveResultImage(BufferedImage resultImage) {
+        sessionData.setResultImage(resultImage);
+    }
 }

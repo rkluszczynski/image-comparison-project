@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.web.model.ImageProcessingOperations;
 import pl.info.rkluszczynski.image.web.model.TemplateImageResources;
 
 import javax.servlet.http.HttpSession;
@@ -24,6 +25,8 @@ public class MainController {
 
     @Autowired
     private TemplateImageResources templateImageResources;
+    @Autowired
+    private ImageProcessingOperations imageProcessingOperations;
 
 
     @RequestMapping(value = { "/" }, method = RequestMethod.GET)
@@ -52,6 +55,7 @@ public class MainController {
         }
         model.addAttribute("headerText", HEADER_TEXT);
         model.addAttribute("templateImageItems", templateImageResources.getTemplateItems());
+        model.addAttribute("imageOperationItems", imageProcessingOperations.getOperationDescriptions());
         return "index";
     }
 

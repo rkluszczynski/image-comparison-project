@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +44,13 @@ public class TemplateImageResources {
         }
     }
 
-    public Resource getTemplateResource(String resourceKeyValue) {
-        return imageResourcesMap.get(resourceKeyValue);
+    public BufferedImage getTemplateImage(String resourceKeyValue) {
+        try {
+            return ImageIO.read(imageResourcesMap.get(resourceKeyValue).getInputStream());
+        } catch (IOException e) {
+            logger.warn("Problem reading template image from resource!", e);
+        }
+        return null;
     }
 
     public List<TemplateResourceItem> getTemplateItems() {
