@@ -56,4 +56,8 @@ public class TemplateImageResources {
     public List<TemplateResourceItem> getTemplateItems() {
         return imageResourcesItems;
     }
+
+    public boolean isResourceKeyValueNotValid(String resourceKeyValue) {
+        return !imageResourcesMap.containsKey(resourceKeyValue);
+    }
 }

@@ -1,5 +1,7 @@
 package pl.info.rkluszczynski.image.web.model;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -29,5 +31,14 @@ public class ImageProcessingOperations {
             return new CopyInputImageTask(sessionData);
         }
         return null;
+    }
+
+    public boolean isOperationNameNotValid(final String operation) {
+        return Collections2.filter(operationDescriptions, new Predicate<ImageOperationItem>() {
+            @Override
+            public boolean apply(ImageOperationItem input) {
+                return input.getValue().equalsIgnoreCase(operation);
+            }
+        }).isEmpty();
     }
 }

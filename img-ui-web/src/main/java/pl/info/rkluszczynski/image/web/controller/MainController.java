@@ -21,7 +21,7 @@ import static pl.info.rkluszczynski.image.web.config.WebConstants.USER_SESSION_A
 public class MainController {
     private static Logger logger = LoggerFactory.getLogger(MainController.class);
 
-    private static final String HEADER_TEXT = "Image Comparison Test Page";
+    private static final String PAGE_HEADER_TEXT = "Image Comparison Test Page";
 
     @Autowired
     private TemplateImageResources templateImageResources;
@@ -53,7 +53,7 @@ public class MainController {
             model.addAttribute("isTemplateImageChosen", false);
             model.addAttribute("isResultImageProcessed", false);
         }
-        model.addAttribute("headerText", HEADER_TEXT);
+        model.addAttribute("headerText", PAGE_HEADER_TEXT);
         model.addAttribute("templateImageItems", templateImageResources.getTemplateItems());
         model.addAttribute("imageOperationItems", imageProcessingOperations.getOperationDescriptions());
         return "index";
