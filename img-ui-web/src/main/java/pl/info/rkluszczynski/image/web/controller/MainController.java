@@ -1,17 +1,21 @@
 package pl.info.rkluszczynski.image.web.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import pl.info.rkluszczynski.image.engine.model.ImageStatisticData;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.web.model.ImageProcessingOperations;
+import pl.info.rkluszczynski.image.web.model.ImageStatisticItem;
 import pl.info.rkluszczynski.image.web.model.TemplateImageResources;
 
 import javax.servlet.http.HttpSession;
+import java.util.Collection;
 
 import static pl.info.rkluszczynski.image.web.config.WebConstants.COMPARE_CONTEXT_PATH__ROOT;
 import static pl.info.rkluszczynski.image.web.config.WebConstants.USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA;
@@ -19,7 +23,6 @@ import static pl.info.rkluszczynski.image.web.config.WebConstants.USER_SESSION_A
 @Controller
 @RequestMapping(value = COMPARE_CONTEXT_PATH__ROOT)
 public class MainController {
-    private static Logger logger = LoggerFactory.getLogger(MainController.class);
 
     private static final String PAGE_HEADER_TEXT = "Image Comparison Test Page";
 
@@ -42,6 +45,8 @@ public class MainController {
                 model.addAttribute("isInputImageUploaded", isInputImageUploaded);
                 model.addAttribute("isTemplateImageChosen", isTemplateImageChosen);
                 model.addAttribute("isResultImageProcessed", isResultImageProcessed);
+
+                model.addAttribute("resultStatistics",  transformImageStatistics(sessionData));
             }
             catch (ClassCastException e) {
                 sessionDataObject = null;
@@ -52,6 +57,8 @@ public class MainController {
             model.addAttribute("isInputImageUploaded", false);
             model.addAttribute("isTemplateImageChosen", false);
             model.addAttribute("isResultImageProcessed", false);
+
+            model.addAttribute("resultStatistics", Lists.newArrayList());
         }
         model.addAttribute("headerText", PAGE_HEADER_TEXT);
         model.addAttribute("templateImageItems", templateImageResources.getTemplateItems());
@@ -68,5 +75,18 @@ public class MainController {
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     public String status() {
         return "redirect:/status";
+    }
+
+
+    private Collection<ImageStatisticItem> transformImageStatistics(SessionData sessionData) {
+        return Collections2.transform(sessionData.getImageStatistics(), new Function<ImageStatisticData, ImageStatisticItem>() {
+            @Override
+            public ImageStatisticItem apply(ImageStatisticData input) {
+                return new ImageStatisticItem(
+                        input.getStatisticName().toString(),
+                        input.getStatisticValue().toPlainString()
+                );
+            }
+        });
     }
 }

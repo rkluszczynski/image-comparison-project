@@ -5,9 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import pl.info.rkluszczynski.image.engine.model.ImageStatisticData;
+import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
 
 abstract
 class AbstractTask extends Thread {
@@ -24,10 +27,6 @@ class AbstractTask extends Thread {
         this.sessionData = sessionData;
     }
 
-    public void setSessionData(SessionData sessionData) {
-        this.sessionData = sessionData;
-    }
-
     @Override
     public void run() {
         super.run();
@@ -39,5 +38,9 @@ class AbstractTask extends Thread {
 
     protected void saveResultImage(BufferedImage resultImage) {
         sessionData.setResultImage(resultImage);
+    }
+
+    protected void saveStatisticData(ImageStatisticNames statisticName, BigDecimal statisticValue) {
+        sessionData.getImageStatistics().add(new ImageStatisticData(statisticName, statisticValue));
     }
 }

@@ -1,8 +1,11 @@
 package pl.info.rkluszczynski.image.engine.model;
 
+import com.google.common.collect.Lists;
+
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
+import java.util.List;
 
 public class SessionData implements Serializable {
 
@@ -11,6 +14,8 @@ public class SessionData implements Serializable {
     private BufferedImage inputImage;
     private BufferedImage templateImage;
     private BufferedImage resultImage;
+
+    private List<ImageStatisticData> imageStatistics = Lists.newArrayList();
 
 
     public SessionData(HttpSession session) {
@@ -23,6 +28,10 @@ public class SessionData implements Serializable {
 
     public HttpSession getSession() {
         return session;
+    }
+
+    public List<ImageStatisticData> getImageStatistics() {
+        return imageStatistics;
     }
 
 
