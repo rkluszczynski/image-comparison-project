@@ -2,8 +2,10 @@ package pl.info.rkluszczynski.image.engine.model;
 
 public enum ImageStatisticNames {
 
-    DUMMY_RESULT("Dummy result value");
+    DIFFERENCE_COEFFICIENT("Difference coefficient value"),
 
+    DUMMY_RESULT("Dummy result value"),
+    ERROR_RESULT("Error occurred");
 
 
     private final String name;

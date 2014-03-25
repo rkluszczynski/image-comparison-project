@@ -2,11 +2,13 @@ package pl.info.rkluszczynski.image.web.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.utils.ImageSizeScaleProcessor;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +26,10 @@ public class StreamController {
     private static Logger logger = LoggerFactory.getLogger(StreamController.class);
 
     private static final String DEFAULT_BUFFERED_IMAGE_OUTPUT_FORMAT = "PNG";
+    private static final int DEFAULT_INPUT_AND_TEMPLATE_IMAGE_STREAMING_WIDTH = 800;
+
+    @Autowired
+    private ImageSizeScaleProcessor imageSizeScaleProcessor;
 
 
     @RequestMapping(
@@ -35,7 +41,11 @@ public class StreamController {
     {
         SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_TEMPLATE_IMAGE);
         if (imageData != null) {
-            streamUserSessionImage(response, imageData.getTemplateImage());
+            streamUserSessionImage(response,
+                    imageSizeScaleProcessor.getImageScaledToWidthOnlyIfLarger(
+                            imageData.getTemplateImage(),
+                            DEFAULT_INPUT_AND_TEMPLATE_IMAGE_STREAMING_WIDTH)
+            );
         }
     }
 
@@ -49,7 +59,11 @@ public class StreamController {
     {
         SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE);
         if (imageData != null) {
-            streamUserSessionImage(response, imageData.getInputImage());
+            streamUserSessionImage(response,
+                    imageSizeScaleProcessor.getImageScaledToWidthOnlyIfLarger(
+                            imageData.getInputImage(),
+                            DEFAULT_INPUT_AND_TEMPLATE_IMAGE_STREAMING_WIDTH)
+            );
         }
     }
 
@@ -63,7 +77,11 @@ public class StreamController {
     {
         SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_RESULT_IMAGE);
         if (imageData != null) {
-            streamUserSessionImage(response, imageData.getResultImage());
+            streamUserSessionImage(response,
+                    imageSizeScaleProcessor.getImageScaledToWidthOnlyIfLarger(
+                            imageData.getResultImage(),
+                            DEFAULT_INPUT_AND_TEMPLATE_IMAGE_STREAMING_WIDTH)
+            );
         }
     }
 

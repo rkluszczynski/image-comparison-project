@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticData;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.web.model.ImageProcessingOperations;
-import pl.info.rkluszczynski.image.web.model.ImageStatisticItem;
 import pl.info.rkluszczynski.image.web.model.TemplateImageResources;
+import pl.info.rkluszczynski.image.web.model.view.ImageStatisticItem;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
@@ -84,7 +84,7 @@ public class MainController {
             public ImageStatisticItem apply(ImageStatisticData input) {
                 return new ImageStatisticItem(
                         input.getStatisticName().toString(),
-                        input.getStatisticValue().toPlainString()
+                        input.getStatisticValue().toEngineeringString()
                 );
             }
         });

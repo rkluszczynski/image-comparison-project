@@ -12,6 +12,8 @@ import pl.info.rkluszczynski.image.engine.model.SessionData;
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 
+import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.ERROR_RESULT;
+
 abstract
 class AbstractTask extends Thread {
     protected static Logger logger = LoggerFactory.getLogger(AbstractTask.class);
@@ -30,7 +32,14 @@ class AbstractTask extends Thread {
     @Override
     public void run() {
         super.run();
-        processImageData(sessionData.getInputImage(), sessionData.getTemplateImage());
+        try {
+            processImageData(sessionData.getInputImage(), sessionData.getTemplateImage());
+        }
+        catch (Exception e) {
+            saveResultImage(null);
+            saveStatisticData(ERROR_RESULT, BigDecimal.ZERO);
+            logger.error("Error occurred during execution task: " + getClass().getName(), e);
+        }
     }
 
     abstract

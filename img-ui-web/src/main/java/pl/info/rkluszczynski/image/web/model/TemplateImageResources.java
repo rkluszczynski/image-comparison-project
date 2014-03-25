@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import pl.info.rkluszczynski.image.web.model.view.TemplateResourceItem;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

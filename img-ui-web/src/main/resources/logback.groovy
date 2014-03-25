@@ -5,7 +5,7 @@ import static ch.qos.logback.classic.Level.INFO
 
 appender("CONSOLE", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
-        pattern = "%d %5p | %t | %-55logger{55} | %m %n"
+        pattern = "%d %5p | %t | %-50logger{50} | %m %n"
     }
 }
 

@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.web.model;
+package pl.info.rkluszczynski.image.web.model.view;
 
 class AbstractNameAndValueItem {
     protected String name;
