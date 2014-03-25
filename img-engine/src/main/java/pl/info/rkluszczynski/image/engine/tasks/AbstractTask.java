@@ -2,9 +2,6 @@ package pl.info.rkluszczynski.image.engine.tasks;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticData;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
@@ -18,16 +15,14 @@ abstract
 class AbstractTask extends Thread {
     protected static Logger logger = LoggerFactory.getLogger(AbstractTask.class);
 
-    @Autowired
-    @Qualifier("taskExecutor")
-    private ThreadPoolTaskExecutor taskExecutor;
-
     protected SessionData sessionData;
 
 
     protected AbstractTask(SessionData sessionData) {
         this.sessionData = sessionData;
     }
+
+    SessionData getSessionData() { return sessionData; }
 
     @Override
     public void run() {

@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.tasks.TasksManager;
 import pl.info.rkluszczynski.image.web.model.ImageProcessingOperations;
 import pl.info.rkluszczynski.image.web.model.TemplateImageResources;
 import pl.info.rkluszczynski.image.web.validator.InputImageFileValidator;
@@ -32,8 +32,8 @@ public class UploadController {
     private static Logger logger = LoggerFactory.getLogger(UploadController.class);
 
     @Autowired
-    @Qualifier("taskExecutor")
-    private ThreadPoolTaskExecutor taskExecutor;
+    @Qualifier("imageTasksManager")
+    private TasksManager imageTasksManager;
     @Autowired
     private TemplateImageResources templateImageResources;
     @Autowired
@@ -86,7 +86,7 @@ public class UploadController {
             sessionData.setTemplateImage(templateImageResources.getTemplateImage(templateFilename));
             session.setAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, sessionData);
 
-            taskExecutor.execute(
+            imageTasksManager.submitImageTask(
                     imageProcessingOperations.getProcessingTask(operation, sessionData)
             );
 
