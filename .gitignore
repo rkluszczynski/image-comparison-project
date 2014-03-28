@@ -3,8 +3,8 @@
 /*/build/
 /classes/
 
-# Ignore file with container's deployer credentials:
-/img-ui-web/gradle.properties
+# Ignore files with container's deploy credentials:
+/*-web/gradle.properties
 
 *.class
 *.iml
