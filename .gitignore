@@ -4,7 +4,7 @@
 /classes/
 
 # Ignore files with container's deploy credentials:
-/*-web/gradle.properties
+/compare-web/gradle.properties
 
 *.class
 *.iml
