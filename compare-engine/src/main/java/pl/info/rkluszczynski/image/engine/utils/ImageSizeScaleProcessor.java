@@ -11,16 +11,13 @@ import java.awt.image.BufferedImage;
 public class ImageSizeScaleProcessor {
 
     public BufferedImage getImageScaledToWidthOnlyIfLarger(BufferedImage image, int targetWidth) {
-        double originalWidth = image.getWidth();
-        if (originalWidth > targetWidth) {
-            double originalHeight = image.getHeight();
-            int targetHeight = (int) Math.round(originalHeight * targetWidth / originalWidth);
-            return Scalr.resize(image, Scalr.Method.QUALITY, targetWidth, targetHeight);
+        if (image.getWidth() > targetWidth) {
+            return Scalr.resize(image, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, targetWidth);
         }
         return image;
     }
 
-    public static BufferedImage getScaledImage(BufferedImage image, int targetWidth, int targetHeight) {
-        return Scalr.resize(image, Scalr.Method.QUALITY, targetWidth, targetHeight);
+    public static BufferedImage getExactScaledImage(BufferedImage image, int targetWidth, int targetHeight) {
+        return Scalr.resize(image, Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, targetWidth, targetHeight);
     }
 }

@@ -18,31 +18,32 @@ public class ImageDifferenceTask extends AbstractTask {
 
     @Override
     public void processImageData(BufferedImage inputImage, BufferedImage templateImage) {
-        int maxWidth = Math.max(inputImage.getWidth(), templateImage.getWidth());
-        int maxHeight = Math.max(inputImage.getHeight(), templateImage.getHeight());
+        int compromiseWidth = Math.max(inputImage.getWidth(), templateImage.getWidth());
+        int compromiseHeight = Math.max(inputImage.getHeight(), templateImage.getHeight());
+        logger.debug("Scaling images to width={} and height={}", compromiseWidth, compromiseHeight);
 
-        BufferedImage resultImage = new BufferedImage(maxWidth, maxHeight, TYPE_INT_RGB);
+        BufferedImage resultImage = new BufferedImage(compromiseWidth, compromiseHeight, TYPE_INT_RGB);
         BufferedImage scaledInputImage =
-                ImageSizeScaleProcessor.getScaledImage(inputImage, maxWidth, maxHeight);
+                ImageSizeScaleProcessor.getExactScaledImage(inputImage, compromiseWidth, compromiseHeight);
         BufferedImage scaledTemplateImage =
-                ImageSizeScaleProcessor.getScaledImage(templateImage, maxWidth, maxHeight);
+                ImageSizeScaleProcessor.getExactScaledImage(templateImage, compromiseWidth, compromiseHeight);
+        logger.trace("scaledInputImage: width={}, height={}", scaledInputImage.getWidth(), scaledInputImage.getHeight());
+        logger.trace("scaledTemplateImage: width={}, height={}", scaledTemplateImage.getWidth(), scaledTemplateImage.getHeight());
 
-        int scaledWidth = Math.min(scaledInputImage.getWidth(), scaledTemplateImage.getWidth());
-        int scaledHeight = Math.min(scaledInputImage.getHeight(), scaledTemplateImage.getHeight());
-        for (int iw = 0; iw < scaledWidth; ++iw) {
-            for (int ih = 0; ih < scaledHeight; ++ih) {
+        for (int iw = 0; iw < compromiseWidth; ++iw) {
+            for (int ih = 0; ih < compromiseHeight; ++ih) {
                 Color scaledInputImagePixelValue = new Color(scaledInputImage.getRGB(iw, ih));
                 Color scaledTemplateImagePixelValue = new Color(scaledTemplateImage.getRGB(iw, ih));
 
                 Color resultPixelValue = new Color(
-                    Math.abs(scaledInputImagePixelValue.getRed() - scaledTemplateImagePixelValue.getRed()),
-                    Math.abs(scaledInputImagePixelValue.getGreen() - scaledTemplateImagePixelValue.getGreen()),
-                    Math.abs(scaledInputImagePixelValue.getBlue() - scaledTemplateImagePixelValue.getBlue())
+                        Math.abs(scaledInputImagePixelValue.getRed() - scaledTemplateImagePixelValue.getRed()),
+                        Math.abs(scaledInputImagePixelValue.getGreen() - scaledTemplateImagePixelValue.getGreen()),
+                        Math.abs(scaledInputImagePixelValue.getBlue() - scaledTemplateImagePixelValue.getBlue())
                 );
                 resultImage.setRGB(iw, ih, resultPixelValue.getRGB());
             }
         }
-        resultImage = ImageSizeScaleProcessor.getScaledImage(resultImage,
+        resultImage = ImageSizeScaleProcessor.getExactScaledImage(resultImage,
                 inputImage.getWidth(), inputImage.getHeight());
 
         saveResultImage(resultImage);
