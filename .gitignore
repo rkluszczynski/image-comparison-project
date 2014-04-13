@@ -8,6 +8,7 @@
 
 # Ignoring tmp-result-* files in testing-* modules:
 /testing-*/src/main/resources/tmp-result-*.*
+/testing-*/tmp-result-*.*
 
 *.class
 *.iml

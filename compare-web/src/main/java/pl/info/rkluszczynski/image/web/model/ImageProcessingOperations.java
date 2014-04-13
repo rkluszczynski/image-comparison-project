@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.tasks.CopyInputImageTask;
+import pl.info.rkluszczynski.image.engine.tasks.Im4JavaTask;
 import pl.info.rkluszczynski.image.engine.tasks.ImageDifferenceTask;
 import pl.info.rkluszczynski.image.web.model.view.ImageOperationItem;
 
@@ -21,7 +22,8 @@ public class ImageProcessingOperations {
     public ImageProcessingOperations() {
         operationDescriptions = Lists.newArrayList(
                 new ImageOperationItem("imageDifference", "Calculate image difference"),
-                new ImageOperationItem("copyInputImage", "Copy input image after delay")
+                new ImageOperationItem("copyInputImage", "Copy input image after delay"),
+                new ImageOperationItem("testingIm4Java", "Testing im4java convert")
         );
     }
 
@@ -35,6 +37,8 @@ public class ImageProcessingOperations {
                 return new CopyInputImageTask(sessionData);
             case "imageDifference":
                 return new ImageDifferenceTask(sessionData);
+            case "testingIm4Java":
+                return new Im4JavaTask(sessionData);
             default:
                 return null;
         }
