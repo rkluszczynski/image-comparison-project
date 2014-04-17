@@ -1,10 +1,7 @@
 package pl.info.rkluszczynski.test.im4java;
 
 
-import org.im4java.core.ConvertCmd;
-import org.im4java.core.IM4JavaException;
-import org.im4java.core.IMOperation;
-import org.im4java.core.Stream2BufferedImage;
+import org.im4java.core.*;
 import org.im4java.process.ProcessStarter;
 
 import javax.imageio.ImageIO;
@@ -25,7 +22,8 @@ public class TestIm4JavaApp {
 //        runResizeFromFileToFile();
 //        readConvertedBufferedImageFromFile();
 
-        convertBufferedImageToBufferedImage();
+//        convertBufferedImageToBufferedImage();
+        subImageSearchFromBufferedImagesToBufferedImage();
     }
 
 
@@ -35,7 +33,7 @@ public class TestIm4JavaApp {
 
         // Create the operation, add images and operators/options:
         IMOperation op = new IMOperation();
-        op.addImage(RESOURCE_RELATIVE_PATH + "image.png");
+        op.addImage(RESOURCE_RELATIVE_PATH + "input/image.png");
         op.resize(800, 600);
         op.addImage(RESOURCE_RELATIVE_PATH + "tmp-result-image.jpg");
 
@@ -48,7 +46,7 @@ public class TestIm4JavaApp {
         op.addImage();                        // input
         op.addImage("png:-");                 // output: stdout
         String[] images = new String[] {
-                RESOURCE_RELATIVE_PATH + "image.png"
+                RESOURCE_RELATIVE_PATH + "input/image.png"
         };
 
         // Set up command:
@@ -66,7 +64,7 @@ public class TestIm4JavaApp {
 
     private static void convertBufferedImageToBufferedImage() throws Exception {
         BufferedImage inputImage = ImageIO.read(
-                new File(RESOURCE_RELATIVE_PATH + "image.png")
+                new File(RESOURCE_RELATIVE_PATH + "input/image.png")
         );
 
         IMOperation op = new IMOperation();
@@ -86,6 +84,46 @@ public class TestIm4JavaApp {
         System.out.println(resultImage.toString());
         ImageIO.write(resultImage, "PNG",
                 new File(RESOURCE_RELATIVE_PATH + "tmp-result-blurred.png")
+        );
+    }
+
+    private static void subImageSearchFromBufferedImagesToBufferedImage() throws Exception {
+        BufferedImage inputImage = ImageIO.read(
+                new File(RESOURCE_RELATIVE_PATH + "input/bon-image1.png")
+        );
+        BufferedImage templateImage = ImageIO.read(
+                new File(RESOURCE_RELATIVE_PATH + "input/bon-template1.png")
+        );
+
+        /* Metrics:
+  AE     absolute error count, number of different pixels (-fuzz effected)
+  FUZZ   mean color distance
+  MAE    mean absolute error (normalized), average channel error distance
+  MEPP   mean error per pixel (normalized mean error, normalized peak error)
+  MSE    mean error squared, average of the channel error squared
+  NCC    normalized cross correlation
+  PAE    peak absolute (normalized peak absolute)
+  PHASH  perceptual hash
+  PSNR   peak signal to noise ratio
+  RMSE   root mean squared (normalized root mean squared)
+         */
+
+        IMOperation op = new IMOperation();
+        op.addImage();
+        op.addImage();
+        op.metric("RMSE").subimageSearch();
+        op.addImage("png:-");                 // output: stdout
+
+        CompareCmd compareCmd = new CompareCmd();
+        Stream2BufferedImage stream2BufferedImage = new Stream2BufferedImage();
+        compareCmd.setOutputConsumer(stream2BufferedImage);
+
+        compareCmd.run(op, inputImage, templateImage);
+        BufferedImage resultImage = stream2BufferedImage.getImage();
+
+        System.out.println(resultImage.toString());
+        ImageIO.write(resultImage, "PNG",
+                new File(RESOURCE_RELATIVE_PATH + "tmp-result-subimg.png")
         );
     }
 }
