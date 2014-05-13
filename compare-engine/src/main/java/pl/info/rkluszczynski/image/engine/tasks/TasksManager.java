@@ -33,8 +33,7 @@ public class TasksManager {
         try {
             abstractTasksList.add((AbstractTask) imageProcessingTask);
             taskExecutor.execute(imageProcessingTask);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.info("Problem with task submission", e);
         }
     }
@@ -47,11 +46,22 @@ public class TasksManager {
         for (AbstractTask abstractTask : abstractTasksList) {
             HttpSession session = abstractTask.getSessionData().getSession();
 
-            long lastAccessedTime = session.getLastAccessedTime();
-            int maxInactiveInterval = session.getMaxInactiveInterval();
-            long now = Calendar.getInstance().getTimeInMillis();
-            if (now > lastAccessedTime + maxInactiveInterval) {
-                session.invalidate();
+            boolean taskCleanMarker = false;
+            try {
+                long lastAccessedTime = session.getLastAccessedTime();
+                int maxInactiveInterval = session.getMaxInactiveInterval();
+                long now = Calendar.getInstance().getTimeInMillis();
+                if (now > lastAccessedTime + maxInactiveInterval) {
+                    session.invalidate();
+                    taskCleanMarker = true;
+                }
+            } catch (IllegalStateException ex) {
+                logger.warn("Accessing session {} raises IllegalStateException (is it already invalidated?)",
+                        abstractTask.getSessionData().getDataUniqueKey(), ex);
+                taskCleanMarker = true;
+            }
+
+            if (taskCleanMarker) {
                 abstractTask.interrupt();
 
                 tasksToClean.add(abstractTask);

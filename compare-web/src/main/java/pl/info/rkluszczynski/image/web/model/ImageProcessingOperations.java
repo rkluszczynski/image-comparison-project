@@ -9,6 +9,7 @@ import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.tasks.CopyInputImageTask;
 import pl.info.rkluszczynski.image.engine.tasks.Im4JavaTask;
 import pl.info.rkluszczynski.image.engine.tasks.ImageDifferenceTask;
+import pl.info.rkluszczynski.image.engine.tasks.PyramidCompareTask;
 import pl.info.rkluszczynski.image.web.model.view.ImageOperationItem;
 
 import java.util.List;
@@ -21,9 +22,10 @@ public class ImageProcessingOperations {
 
     public ImageProcessingOperations() {
         operationDescriptions = Lists.newArrayList(
+                new ImageOperationItem("testingPatternMatch", "Testing pattern matching"),
+//                new ImageOperationItem("testingIm4Java", "Testing im4java convert"),
                 new ImageOperationItem("imageDifference", "Calculate image difference"),
-                new ImageOperationItem("copyInputImage", "Copy input image after delay"),
-                new ImageOperationItem("testingIm4Java", "Testing im4java convert")
+                new ImageOperationItem("copyInputImage", "Copy input image after delay")
         );
     }
 
@@ -39,6 +41,8 @@ public class ImageProcessingOperations {
                 return new ImageDifferenceTask(sessionData);
             case "testingIm4Java":
                 return new Im4JavaTask(sessionData);
+            case "testingPatternMatch":
+                return new PyramidCompareTask(sessionData);
             default:
                 return null;
         }
