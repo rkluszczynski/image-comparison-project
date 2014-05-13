@@ -5,8 +5,9 @@ public enum ImageStatisticNames {
     DIFFERENCE_COEFFICIENT("Difference coefficient value"),
 
     DUMMY_RESULT("Dummy result value"),
-    ERROR_RESULT("Error occurred");
+    ERROR_RESULT("Error occurred"),
 
+    CALCULATION_TIME("Calculation time");
 
     private final String name;
 
@@ -14,7 +15,7 @@ public enum ImageStatisticNames {
         name = s;
     }
 
-    public String toString(){
+    public String toString() {
         return name;
     }
 }

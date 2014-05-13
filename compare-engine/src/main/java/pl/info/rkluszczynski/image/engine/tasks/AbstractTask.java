@@ -9,10 +9,10 @@ import pl.info.rkluszczynski.image.engine.model.SessionData;
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 
+import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.CALCULATION_TIME;
 import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.ERROR_RESULT;
 
-abstract
-class AbstractTask extends Thread {
+abstract class AbstractTask extends Thread {
     protected static Logger logger = LoggerFactory.getLogger(AbstractTask.class);
 
     protected SessionData sessionData;
@@ -22,19 +22,23 @@ class AbstractTask extends Thread {
         this.sessionData = sessionData;
     }
 
-    SessionData getSessionData() { return sessionData; }
+    SessionData getSessionData() {
+        return sessionData;
+    }
 
     @Override
     public void run() {
         super.run();
+        long startMillis = System.currentTimeMillis();
         try {
             processImageData(sessionData.getInputImage(), sessionData.getTemplateImage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             saveResultImage(null);
             saveStatisticData(ERROR_RESULT, BigDecimal.ZERO);
             logger.error("Error occurred during execution task: " + getClass().getName(), e);
         }
+        long processMillis = System.currentTimeMillis() - startMillis;
+        saveStatisticData(CALCULATION_TIME, BigDecimal.valueOf(processMillis));
     }
 
     abstract
