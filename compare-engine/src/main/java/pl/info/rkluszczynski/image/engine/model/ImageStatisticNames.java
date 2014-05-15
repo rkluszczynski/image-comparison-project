@@ -7,7 +7,7 @@ public enum ImageStatisticNames {
     DUMMY_RESULT("Dummy result value"),
     ERROR_RESULT("Error occurred"),
 
-    CALCULATION_TIME("Calculation time");
+    CALCULATION_TIME("Calculation time (in sec.)");
 
     private final String name;
 

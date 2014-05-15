@@ -16,6 +16,7 @@ abstract class AbstractTask extends Thread {
     protected static Logger logger = LoggerFactory.getLogger(AbstractTask.class);
 
     protected SessionData sessionData;
+    private double taskProgress;
 
 
     protected AbstractTask(SessionData sessionData) {
@@ -30,6 +31,7 @@ abstract class AbstractTask extends Thread {
     public void run() {
         super.run();
         long startMillis = System.currentTimeMillis();
+        taskProgress = 0.;
         try {
             processImageData(sessionData.getInputImage(), sessionData.getTemplateImage());
         } catch (Exception e) {
@@ -37,6 +39,7 @@ abstract class AbstractTask extends Thread {
             saveStatisticData(ERROR_RESULT, BigDecimal.ZERO);
             logger.error("Error occurred during execution task: " + getClass().getName(), e);
         }
+        taskProgress = 1.;
         long processMillis = System.currentTimeMillis() - startMillis;
         saveStatisticData(CALCULATION_TIME, BigDecimal.valueOf(processMillis));
     }
@@ -50,5 +53,10 @@ abstract class AbstractTask extends Thread {
 
     protected void saveStatisticData(ImageStatisticNames statisticName, BigDecimal statisticValue) {
         sessionData.getImageStatistics().add(new ImageStatisticData(statisticName, statisticValue));
+    }
+
+    protected void addProgress(double progressValue) {
+        taskProgress += progressValue;
+        sessionData.setProgress((long) (Math.min(Math.max(taskProgress, 0.), 1.) * 100.));
     }
 }

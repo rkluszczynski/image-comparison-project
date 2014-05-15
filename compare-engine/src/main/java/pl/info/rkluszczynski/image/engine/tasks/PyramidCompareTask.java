@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 
 
 public class PyramidCompareTask extends AbstractTask {
-
-
-    private static final int SCALE_PYRAMID_DEPTH = 0;
+    private static final int SCALE_PYRAMID_DEPTH = 1;
     private static final double SCALE_PYRAMID_RATIO = .1;
+
+    private final double FULL_SCALE_STEP_PROGRESS = 1. / (2. * SCALE_PYRAMID_DEPTH + 1.);
 
     public PyramidCompareTask(SessionData sessionData) {
         super(sessionData);
@@ -24,7 +24,7 @@ public class PyramidCompareTask extends AbstractTask {
     public void processImageData(BufferedImage inputImage, BufferedImage templateImage) {
         int compromiseWidth = 300;
         int compromiseHeight = 400;
-        BufferedImage resultImage = ImageHelper.deepCopy(inputImage);
+        BufferedImage resultImage = ImageHelper.scaleImagePixelsValue(inputImage, 0.8);
 
         for (int scaleStep = -SCALE_PYRAMID_DEPTH; scaleStep <= SCALE_PYRAMID_DEPTH; ++scaleStep) {
             double scaleFactor = 1. + scaleStep * SCALE_PYRAMID_RATIO;
@@ -38,7 +38,6 @@ public class PyramidCompareTask extends AbstractTask {
 
             processPyramidStepImageData(scaledInputImage, templateImage, resultImage);
         }
-
         saveResultImage(resultImage);
     }
 
@@ -46,6 +45,9 @@ public class PyramidCompareTask extends AbstractTask {
         double bestResult = Double.MAX_VALUE;
         int bestLeftPosition = -1;
         int bestTopPosition = -1;
+
+        double oneRowProgress = FULL_SCALE_STEP_PROGRESS / (scaledInputImage.getWidth() - templateImage.getWidth());
+        double matchDivisor = 256. * templateImage.getHeight() * templateImage.getWidth();
 
         for (int iw = 0; iw < scaledInputImage.getWidth() - templateImage.getWidth(); ++iw) {
             for (int ih = 0; ih < scaledInputImage.getHeight() - templateImage.getHeight(); ++ih) {
@@ -56,19 +58,21 @@ public class PyramidCompareTask extends AbstractTask {
                     bestTopPosition = ih;
                 }
             }
+            addProgress(oneRowProgress);
         }
 
         if (bestResult < Double.MAX_VALUE) {
             logger.info("Best result at level: " + bestResult + " at (" + bestLeftPosition + ", " + bestTopPosition + ")");
-            saveStatisticData(ImageStatisticNames.DUMMY_RESULT, BigDecimal.valueOf(bestResult));
+            saveStatisticData(ImageStatisticNames.DUMMY_RESULT, BigDecimal.valueOf(bestResult / matchDivisor));
             drawRectangleOnImage(resultImage, bestLeftPosition, bestTopPosition, templateImage.getWidth(), templateImage.getHeight());
         }
     }
 
     private void drawRectangleOnImage(BufferedImage image, int leftPosition, int topPosition, int width, int height) {
         Graphics2D graph = image.createGraphics();
-        graph.setColor(Color.BLACK);
-        graph.fill(new Rectangle(leftPosition, topPosition, width, height));
+        graph.setColor(Color.WHITE);
+//        graph.fill(new Rectangle(leftPosition, topPosition, width, height));
+        graph.draw(new Rectangle(leftPosition, topPosition, width, height));
         graph.dispose();
     }
 

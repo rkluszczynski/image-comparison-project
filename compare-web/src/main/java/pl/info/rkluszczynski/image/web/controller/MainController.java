@@ -32,7 +32,7 @@ public class MainController {
     private ImageProcessingOperations imageProcessingOperations;
 
 
-    @RequestMapping(value = { "/" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String showIndexPage(Model model, HttpSession session) {
         Object sessionDataObject = session.getAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA);
         if (sessionDataObject != null) {
@@ -46,9 +46,9 @@ public class MainController {
                 model.addAttribute("isTemplateImageChosen", isTemplateImageChosen);
                 model.addAttribute("isResultImageProcessed", isResultImageProcessed);
 
-                model.addAttribute("resultStatistics",  transformImageStatistics(sessionData));
-            }
-            catch (ClassCastException e) {
+                model.addAttribute("progressValue", sessionData.getProgress());
+                model.addAttribute("resultStatistics", transformImageStatistics(sessionData));
+            } catch (ClassCastException e) {
                 sessionDataObject = null;
             }
         }
@@ -58,6 +58,7 @@ public class MainController {
             model.addAttribute("isTemplateImageChosen", false);
             model.addAttribute("isResultImageProcessed", false);
 
+            model.addAttribute("progressValue", 0);
             model.addAttribute("resultStatistics", Lists.newArrayList());
         }
         model.addAttribute("headerText", PAGE_HEADER_TEXT);
@@ -66,7 +67,7 @@ public class MainController {
         return "index";
     }
 
-    @RequestMapping(value = { "" }, method = RequestMethod.GET)
+    @RequestMapping(value = {""}, method = RequestMethod.GET)
     public String redirectToMain() {
         return "redirect:compare/";
     }

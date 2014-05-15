@@ -16,6 +16,7 @@ public class SessionData implements Serializable {
     private BufferedImage resultImage;
 
     private List<ImageStatisticData> imageStatistics = Lists.newArrayList();
+    private long progress;
 
 
     public SessionData(HttpSession session) {
@@ -57,5 +58,14 @@ public class SessionData implements Serializable {
 
     public void setResultImage(BufferedImage resultImage) {
         this.resultImage = resultImage;
+    }
+
+
+    public void setProgress(long progress) {
+        this.progress = progress;
+    }
+
+    public long getProgress() {
+        return progress;
     }
 }
