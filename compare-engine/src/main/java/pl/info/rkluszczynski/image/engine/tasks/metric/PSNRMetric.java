@@ -6,10 +6,11 @@ public class PSNRMetric implements Metric {
 
     private double mseMetricValue = 0.;
     private double pixelMaxValue = 0.;
+    private double pixelsNumber = 0.;
 
     @Override
     public double calculateValue() {
-        return 20. * Math.log10(pixelMaxValue) - 10. * Math.log10(mseMetricValue);
+        return 20. * Math.log10(pixelMaxValue) - 10. * Math.log10(mseMetricValue / pixelsNumber);
     }
 
     @Override
@@ -17,6 +18,7 @@ public class PSNRMetric implements Metric {
         mseMetricValue += ((inputPixel.getRed() - templatePixel.getRed()) * (inputPixel.getRed() - templatePixel.getRed()));
         mseMetricValue += ((inputPixel.getGreen() - templatePixel.getGreen()) * (inputPixel.getGreen() - templatePixel.getGreen()));
         mseMetricValue += ((inputPixel.getBlue() - templatePixel.getBlue()) * (inputPixel.getBlue() - templatePixel.getBlue()));
+        ++pixelsNumber;
 
         pixelMaxValue = Math.max(pixelMaxValue, inputPixel.getRed());
         pixelMaxValue = Math.max(pixelMaxValue, inputPixel.getGreen());

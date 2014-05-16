@@ -30,7 +30,7 @@
     <div style="float: right; width: 50%; text-align: left">
         <b>Choose template image</b>:
         <br/>
-        <select name="templateFile" size="3">
+        <select name="templateFile" size="5">
             <option th:each="imageItem : ${templateImageItems}"
                     th:attr="value=${imageItem.value}"
                     th:text="${imageItem.name}">template image

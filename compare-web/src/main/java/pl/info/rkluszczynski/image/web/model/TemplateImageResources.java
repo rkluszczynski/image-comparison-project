@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,8 @@ public class TemplateImageResources {
                 logger.info("RESOURCE: {}", resource.getURL().toString());
                 imageResourcesMap.put(templateResourceFilename, templateResource);
                 imageResourcesItems.add(new TemplateResourceItem(templateResourceFilename, templateResourceName));
+
+                Collections.sort(imageResourcesItems);
             }
         } catch (IOException e) {
             logger.warn("Problem with loading image patterns resources!", e);
