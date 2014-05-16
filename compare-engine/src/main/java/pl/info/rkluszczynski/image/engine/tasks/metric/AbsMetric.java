@@ -8,13 +8,13 @@ public class AbsMetric implements Metric {
 
     @Override
     public double calculateValue() {
-        return metricValue;
+        return metricValue / 3;
     }
 
     @Override
     public void addPixelsDifference(Color inputPixel, Color templatePixel) {
-        metricValue += (Math.abs(inputPixel.getRed() - templatePixel.getRed()) / 3.);
-        metricValue += (Math.abs(inputPixel.getGreen() - templatePixel.getGreen()) / 3.);
-        metricValue += (Math.abs(inputPixel.getBlue() - templatePixel.getBlue()) / 3.);
+        metricValue += Math.abs(inputPixel.getRed() - templatePixel.getRed());
+        metricValue += Math.abs(inputPixel.getGreen() - templatePixel.getGreen());
+        metricValue += Math.abs(inputPixel.getBlue() - templatePixel.getBlue());
     }
 }

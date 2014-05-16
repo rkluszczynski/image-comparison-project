@@ -17,6 +17,6 @@ public class RMSEMetric implements Metric {
         metricValue += ((inputPixel.getRed() - templatePixel.getRed()) * (inputPixel.getRed() - templatePixel.getRed()));
         metricValue += ((inputPixel.getGreen() - templatePixel.getGreen()) * (inputPixel.getGreen() - templatePixel.getGreen()));
         metricValue += ((inputPixel.getBlue() - templatePixel.getBlue()) * (inputPixel.getBlue() - templatePixel.getBlue()));
-        ++pixelsNumber;
+        pixelsNumber += 3;
     }
 }
