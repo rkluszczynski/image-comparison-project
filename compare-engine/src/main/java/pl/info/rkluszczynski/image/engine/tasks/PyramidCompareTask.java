@@ -39,12 +39,13 @@ public class PyramidCompareTask extends AbstractTask {
             BufferedImage scaledInputImage =
                     ImageSizeScaleProcessor.getExactScaledImage(inputImage, pyramidStepDesiredWidth, pyramidStepDesiredHeight);
 
-            processPyramidStepImageData(scaledInputImage, templateImage, resultImage);
+            processPyramidStepImageData(scaledInputImage, templateImage, scaleFactor, resultImage);
         }
         saveResultImage(resultImage);
     }
 
-    private void processPyramidStepImageData(BufferedImage scaledInputImage, BufferedImage templateImage, BufferedImage resultImage) {
+    private void processPyramidStepImageData(BufferedImage scaledInputImage, BufferedImage templateImage,
+                                             double scaleFactor, BufferedImage resultImage) {
         double bestResult = Double.MAX_VALUE;
         int bestLeftPosition = -1;
         int bestTopPosition = -1;
@@ -67,15 +68,21 @@ public class PyramidCompareTask extends AbstractTask {
         if (bestResult < Double.MAX_VALUE) {
             logger.info("Best result at level: " + bestResult + " at (" + bestLeftPosition + ", " + bestTopPosition + ")");
             saveStatisticData(ImageStatisticNames.DUMMY_RESULT, BigDecimal.valueOf(bestResult / matchDivisor));
-            drawRectangleOnImage(resultImage, bestLeftPosition, bestTopPosition, templateImage.getWidth(), templateImage.getHeight());
+            drawRectangleOnImage(resultImage, bestLeftPosition, bestTopPosition, templateImage.getWidth(), templateImage.getHeight(), scaleFactor);
         }
     }
 
-    private void drawRectangleOnImage(BufferedImage image, int leftPosition, int topPosition, int width, int height) {
+    private void drawRectangleOnImage(BufferedImage image, int leftPosition, int topPosition, int width, int height, double scaleFactor) {
+        double invertedScaleFactor = 1. / scaleFactor;
+        int scaledLeftPosition = (int) (invertedScaleFactor * leftPosition);
+        int scaledTopPosition = (int) (invertedScaleFactor * topPosition);
+        int scaledWidth = (int) (invertedScaleFactor * width);
+        int scaledHeight = (int) (invertedScaleFactor * height);
+
         Graphics2D graph = image.createGraphics();
         graph.setColor(Color.WHITE);
-//        graph.fill(new Rectangle(leftPosition, topPosition, width, height));
-        graph.draw(new Rectangle(leftPosition, topPosition, width, height));
+//        graph.fill(new Rectangle(scaledLeftPosition, scaledTopPosition, scaledWidth, scaledHeight));
+        graph.draw(new Rectangle(scaledLeftPosition, scaledTopPosition, scaledWidth, scaledHeight));
         graph.dispose();
     }
 
