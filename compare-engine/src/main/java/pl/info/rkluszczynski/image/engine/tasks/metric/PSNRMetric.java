@@ -20,4 +20,9 @@ public class PSNRMetric implements Metric {
         mseMetricValue += ((inputPixel.getBlue() - templatePixel.getBlue()) * (inputPixel.getBlue() - templatePixel.getBlue()));
         ++pixelsNumber;
     }
+
+    @Override
+    public String getName() {
+        return "PSNR";
+    }
 }

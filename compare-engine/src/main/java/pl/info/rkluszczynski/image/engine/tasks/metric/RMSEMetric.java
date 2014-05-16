@@ -19,4 +19,9 @@ public class RMSEMetric implements Metric {
         metricValue += ((inputPixel.getBlue() - templatePixel.getBlue()) * (inputPixel.getBlue() - templatePixel.getBlue()));
         pixelsNumber += 3;
     }
+
+    @Override
+    public String getName() {
+        return "RMSE";
+    }
 }

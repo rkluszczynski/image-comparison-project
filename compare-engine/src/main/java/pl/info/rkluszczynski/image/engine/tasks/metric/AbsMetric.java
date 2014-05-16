@@ -17,4 +17,9 @@ public class AbsMetric implements Metric {
         metricValue += Math.abs(inputPixel.getGreen() - templatePixel.getGreen());
         metricValue += Math.abs(inputPixel.getBlue() - templatePixel.getBlue());
     }
+
+    @Override
+    public String getName() {
+        return "ABS";
+    }
 }

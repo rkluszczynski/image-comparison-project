@@ -8,4 +8,6 @@ public interface Metric {
 
     public void addPixelsDifference(Color inputPixel, Color templatePixel);
 
+    public String getName();
+
 }

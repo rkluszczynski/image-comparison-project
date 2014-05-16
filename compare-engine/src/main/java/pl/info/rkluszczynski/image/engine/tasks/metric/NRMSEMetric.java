@@ -29,4 +29,9 @@ public class NRMSEMetric extends RMSEMetric {
         minValue = Math.min(minValue, inputPixel.getBlue());
         minValue = Math.min(minValue, templatePixel.getBlue());
     }
+
+    @Override
+    public String getName() {
+        return "NRMSE";
+    }
 }

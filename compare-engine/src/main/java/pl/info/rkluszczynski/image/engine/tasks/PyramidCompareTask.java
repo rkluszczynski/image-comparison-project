@@ -67,7 +67,9 @@ public class PyramidCompareTask extends AbstractTask {
 
         if (bestResult < Double.MAX_VALUE) {
             logger.info("Best result at level: " + bestResult + " at (" + bestLeftPosition + ", " + bestTopPosition + ")");
-            saveStatisticData(ImageStatisticNames.DUMMY_RESULT, BigDecimal.valueOf(bestResult / matchDivisor));
+
+            ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s", metric.getName()));
+            saveStatisticData(statisticName, BigDecimal.valueOf(bestResult / matchDivisor));
             drawRectangleOnImage(resultImage, bestLeftPosition, bestTopPosition, templateImage.getWidth(), templateImage.getHeight(), scaleFactor);
         }
     }
