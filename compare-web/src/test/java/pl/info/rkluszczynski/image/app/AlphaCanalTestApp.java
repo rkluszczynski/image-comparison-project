@@ -15,7 +15,7 @@ public class AlphaCanalTestApp {
         System.out.println(System.getProperty("user.dir"));
         BufferedImage image;
 
-        image = ImageIO.read(new File("compare-web/src/main/resources/image-data/patterns/bon-pattern1.png"));
+        image = ImageIO.read(new File("compare-web/src/main/resources/image-data/patterns/bon-pattern1-shelfstoper.png"));
 
         Color pixel00 = new Color(image.getRGB(0, 0));
         System.out.println("   red : " + pixel00.getRed());
