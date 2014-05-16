@@ -2,6 +2,8 @@ package pl.info.rkluszczynski.image.engine.tasks;
 
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.tasks.metric.AbsMetric;
+import pl.info.rkluszczynski.image.engine.tasks.metric.Metric;
 import pl.info.rkluszczynski.image.engine.utils.ImageSizeScaleProcessor;
 import pl.info.rkluszczynski.image.utils.ImageHelper;
 
@@ -77,17 +79,16 @@ public class PyramidCompareTask extends AbstractTask {
     }
 
     private double checkPatternAtImagePosition(int w, int h, BufferedImage scaledInputImage, BufferedImage templateImage) {
-        double compareMetricValue = .0;
+        Metric compareMetric = new AbsMetric();
         for (int piw = 0; piw < templateImage.getWidth(); ++piw) {
             for (int pih = 0; pih < templateImage.getHeight(); ++pih) {
                 Color scaledInputImagePixelValue = new Color(scaledInputImage.getRGB(w + piw, h + pih));
                 Color templateImagePixelValue = new Color(templateImage.getRGB(piw, pih));
 
-                compareMetricValue += (Math.abs(scaledInputImagePixelValue.getRed() - templateImagePixelValue.getRed()) / 3.);
-                compareMetricValue += (Math.abs(scaledInputImagePixelValue.getGreen() - templateImagePixelValue.getGreen()) / 3.);
-                compareMetricValue += (Math.abs(scaledInputImagePixelValue.getBlue() - templateImagePixelValue.getBlue()) / 3.);
+                compareMetric.addPixelsDifference(scaledInputImagePixelValue, templateImagePixelValue);
             }
         }
-        return compareMetricValue;
+        assert compareMetric != null;
+        return compareMetric.calculateValue();
     }
 }
