@@ -13,6 +13,7 @@ public class TestOpenCvApp {
 
     public static void main(String[] args) throws IOException {
         System.out.println(System.getProperty("user.dir"));
+        System.out.println(System.getProperty("os.arch"));
         System.out.println(Core.NATIVE_LIBRARY_NAME);
 
 //        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
