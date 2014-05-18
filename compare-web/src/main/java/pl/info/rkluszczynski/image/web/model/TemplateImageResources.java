@@ -41,12 +41,11 @@ public class TemplateImageResources {
                 logger.info("RESOURCE: {}", resource.getURL().toString());
                 imageResourcesMap.put(templateResourceFilename, templateResource);
                 imageResourcesItems.add(new TemplateResourceItem(templateResourceFilename, templateResourceName));
-
-                Collections.sort(imageResourcesItems);
             }
         } catch (IOException e) {
             logger.warn("Problem with loading image patterns resources!", e);
         }
+        Collections.sort(imageResourcesItems);
     }
 
     public BufferedImage getTemplateImage(String resourceKeyValue) {
