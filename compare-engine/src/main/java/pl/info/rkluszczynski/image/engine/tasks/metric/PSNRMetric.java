@@ -3,10 +3,16 @@ package pl.info.rkluszczynski.image.engine.tasks.metric;
 import java.awt.*;
 
 public class PSNRMetric implements Metric {
+    private double mseMetricValue;
+    private double pixelMaxValue;
+    private double pixelsNumber;
 
-    private double mseMetricValue = 0.;
-    private double pixelMaxValue = 255.;
-    private double pixelsNumber = 0.;
+    @Override
+    public void resetValue() {
+        mseMetricValue = 0.;
+        pixelMaxValue = 255.;
+        pixelsNumber = 0.;
+    }
 
     @Override
     public double calculateValue() {

@@ -3,9 +3,14 @@ package pl.info.rkluszczynski.image.engine.tasks.metric;
 import java.awt.*;
 
 public class RMSEMetric implements Metric {
+    private double metricValue;
+    private double pixelsNumber;
 
-    private double metricValue = 0.;
-    private double pixelsNumber = 0.;
+    @Override
+    public void resetValue() {
+        metricValue = 0.;
+        pixelsNumber = 0.;
+    }
 
     @Override
     public double calculateValue() {

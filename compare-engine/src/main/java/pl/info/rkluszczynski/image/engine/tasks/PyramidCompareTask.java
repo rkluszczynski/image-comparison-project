@@ -35,7 +35,8 @@ public class PyramidCompareTask extends AbstractTask {
             int pyramidStepDesiredWidth = (int) (scaleFactor * compromiseWidth);
             int pyramidStepDesiredHeight = (int) (scaleFactor * compromiseHeight);
 
-            logger.info("Pyramid scale step {} to width={} and height={}", scaleStep, pyramidStepDesiredWidth, pyramidStepDesiredHeight);
+            logger.info("Pyramid scale step {} with factor {} to width={} and height={}",
+                    scaleStep, scaleFactor, pyramidStepDesiredWidth, pyramidStepDesiredHeight);
             BufferedImage scaledInputImage =
                     ImageSizeScaleProcessor.getExactScaledImage(inputImage, pyramidStepDesiredWidth, pyramidStepDesiredHeight);
 
@@ -70,6 +71,7 @@ public class PyramidCompareTask extends AbstractTask {
 
             ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s", metric.getName()));
             saveStatisticData(statisticName, BigDecimal.valueOf(bestResult / matchDivisor));
+
             drawRectangleOnImage(resultImage, bestLeftPosition, bestTopPosition, templateImage.getWidth(), templateImage.getHeight(), scaleFactor);
         }
     }
@@ -90,6 +92,7 @@ public class PyramidCompareTask extends AbstractTask {
 
     private double checkPatternAtImagePosition(int w, int h, BufferedImage scaledInputImage, BufferedImage templateImage) {
         assert metric != null;
+        metric.resetValue();
         for (int piw = 0; piw < templateImage.getWidth(); ++piw) {
             for (int pih = 0; pih < templateImage.getHeight(); ++pih) {
                 Color scaledInputImagePixelValue = new Color(scaledInputImage.getRGB(w + piw, h + pih));

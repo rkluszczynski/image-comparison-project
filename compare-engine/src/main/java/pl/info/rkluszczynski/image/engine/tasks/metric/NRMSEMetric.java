@@ -3,8 +3,15 @@ package pl.info.rkluszczynski.image.engine.tasks.metric;
 import java.awt.*;
 
 public class NRMSEMetric extends RMSEMetric {
-    private double maxValue = Double.MIN_VALUE;
-    private double minValue = Double.MAX_VALUE;
+    private double maxValue;
+    private double minValue;
+
+    @Override
+    public void resetValue() {
+        super.resetValue();
+        maxValue = Double.MIN_VALUE;
+        minValue = Double.MAX_VALUE;
+    }
 
     @Override
     public double calculateValue() {

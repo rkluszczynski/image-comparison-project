@@ -3,12 +3,16 @@ package pl.info.rkluszczynski.image.engine.tasks.metric;
 import java.awt.*;
 
 public class AbsMetric implements Metric {
+    private double metricValue;
 
-    private double metricValue = 0.;
+    @Override
+    public void resetValue() {
+        metricValue = 0.;
+    }
 
     @Override
     public double calculateValue() {
-        return metricValue / 3;
+        return metricValue / 3.;
     }
 
     @Override

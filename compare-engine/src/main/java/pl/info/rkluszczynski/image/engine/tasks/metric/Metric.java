@@ -4,6 +4,8 @@ import java.awt.*;
 
 public interface Metric {
 
+    public void resetValue();
+
     public double calculateValue();
 
     public void addPixelsDifference(Color inputPixel, Color templatePixel);
