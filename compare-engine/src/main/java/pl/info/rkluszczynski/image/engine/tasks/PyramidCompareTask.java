@@ -2,7 +2,7 @@ package pl.info.rkluszczynski.image.engine.tasks;
 
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
-import pl.info.rkluszczynski.image.engine.tasks.metric.Metric;
+import pl.info.rkluszczynski.image.engine.tasks.metrics.Metric;
 import pl.info.rkluszczynski.image.engine.utils.ImageSizeScaleProcessor;
 import pl.info.rkluszczynski.image.utils.ImageHelper;
 

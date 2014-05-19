@@ -2,10 +2,15 @@ package pl.info.rkluszczynski.image.engine.model;
 
 public enum ImageStatisticNames {
 
-    METRIC_VALUE_ABS("Metric ABS value"),
-    METRIC_VALUE_RMSE("Metric RMSE value"),
-    METRIC_VALUE_NRMSE("Metric NRMSE value"),
-    METRIC_VALUE_PSNR("Metric PSNR value"),
+    METRIC_VALUE_ABS("Color metric ABS value"),
+    METRIC_VALUE_RMSE("Color metric RMSE value"),
+    METRIC_VALUE_NRMSE("Color metric NRMSE value"),
+    METRIC_VALUE_PSNR("Color metric PSNR value"),
+
+    METRIC_VALUE_ABS_GS("Grayscale metric ABS value"),
+    METRIC_VALUE_RMSE_GS("Grayscale metric RMSE value"),
+    METRIC_VALUE_NRMSE_GS("Grayscale metric NRMSE value"),
+    METRIC_VALUE_PSNR_GS("Grayscale metric PSNR value"),
 
     DIFFERENCE_COEFFICIENT("Difference coefficient value"),
 

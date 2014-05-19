@@ -1,8 +1,8 @@
-package pl.info.rkluszczynski.image.engine.tasks.metric;
+package pl.info.rkluszczynski.image.engine.tasks.metrics;
 
 import java.awt.*;
 
-public class AbsMetric implements Metric {
+public class AbsColorMetric implements Metric {
     private double metricValue;
 
     @Override

@@ -1,8 +1,8 @@
-package pl.info.rkluszczynski.image.engine.tasks.metric;
+package pl.info.rkluszczynski.image.engine.tasks.metrics;
 
 import java.awt.*;
 
-public class NRMSEMetric extends RMSEMetric {
+public class NRMSEColorMetric extends RMSEColorMetric {
     private double maxValue;
     private double minValue;
 

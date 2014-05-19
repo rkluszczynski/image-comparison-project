@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.engine.tasks.metric;
+package pl.info.rkluszczynski.image.engine.tasks.metrics;
 
 import java.awt.*;
 

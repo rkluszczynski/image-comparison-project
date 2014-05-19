@@ -1,8 +1,8 @@
-package pl.info.rkluszczynski.image.engine.tasks.metric;
+package pl.info.rkluszczynski.image.engine.tasks.metrics;
 
 import java.awt.*;
 
-public class RMSEMetric implements Metric {
+public class RMSEColorMetric implements Metric {
     private double metricValue;
     private double pixelsNumber;
 

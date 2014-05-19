@@ -1,8 +1,8 @@
-package pl.info.rkluszczynski.image.engine.tasks.metric;
+package pl.info.rkluszczynski.image.engine.tasks.metrics;
 
 import java.awt.*;
 
-public class PSNRMetric implements Metric {
+public class PSNRColorMetric implements Metric {
     private double mseMetricValue;
     private double pixelMaxValue;
     private double pixelsNumber;
