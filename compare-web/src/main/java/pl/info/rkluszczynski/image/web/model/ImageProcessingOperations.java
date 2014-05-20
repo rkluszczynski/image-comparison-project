@@ -28,9 +28,9 @@ public class ImageProcessingOperations {
 //                new ImageOperationItem("imagePatternMatchingColorNRMSE", "Image pattern matching (color metric: NRMSE)"),
                 new ImageOperationItem("imagePatternMatchingColorPSNR", "Image pattern matching (color metric: PSNR)"),
 
-                new ImageOperationItem("imagePatternMatchingColorABS", "Image pattern matching (grayscale metric: ABS)"),
-                new ImageOperationItem("imagePatternMatchingColorRMSE", "Image pattern matching (grayscale metric: RMSE)"),
-                new ImageOperationItem("imagePatternMatchingColorPSNR", "Image pattern matching (grayscale metric: PSNR)"),
+                new ImageOperationItem("imagePatternMatchingGrayScaleABS", "Image pattern matching (grayscale metric: ABS)"),
+                new ImageOperationItem("imagePatternMatchingGrayScaleRMSE", "Image pattern matching (grayscale metric: RMSE)"),
+                new ImageOperationItem("imagePatternMatchingGrayScalePSNR", "Image pattern matching (grayscale metric: PSNR)"),
 
 //                new ImageOperationItem("testingIm4Java", "Testing im4java convert"),
                 new ImageOperationItem("imageDifference", "Calculate image difference"),
