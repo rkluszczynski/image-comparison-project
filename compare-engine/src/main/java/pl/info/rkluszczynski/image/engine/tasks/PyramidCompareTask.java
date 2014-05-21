@@ -27,6 +27,10 @@ public class PyramidCompareTask extends AbstractTask {
     public void processImageData(BufferedImage inputImage, BufferedImage templateImage) {
         int compromiseWidth = 300;
         int compromiseHeight = 400;
+        if (inputImage.getHeight() < inputImage.getWidth()) {
+            compromiseWidth = 400;
+            compromiseHeight = 300;
+        }
         BufferedImage resultImage = ImageHelper.scaleImagePixelsValue(inputImage, 0.8);
 
         for (int scaleStep = -SCALE_PYRAMID_DEPTH; scaleStep <= SCALE_PYRAMID_DEPTH; ++scaleStep) {
