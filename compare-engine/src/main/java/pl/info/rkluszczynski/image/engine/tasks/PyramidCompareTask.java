@@ -3,6 +3,7 @@ package pl.info.rkluszczynski.image.engine.tasks;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.tasks.metrics.Metric;
+import pl.info.rkluszczynski.image.engine.tasks.pyramid.SizeSupplier;
 import pl.info.rkluszczynski.image.engine.utils.ImageSizeScaleProcessor;
 import pl.info.rkluszczynski.image.utils.ImageHelper;
 
@@ -25,12 +26,9 @@ public class PyramidCompareTask extends AbstractTask {
 
     @Override
     public void processImageData(BufferedImage inputImage, BufferedImage templateImage) {
-        int compromiseWidth = 300;
-        int compromiseHeight = 400;
-        if (inputImage.getHeight() < inputImage.getWidth()) {
-            compromiseWidth = 400;
-            compromiseHeight = 300;
-        }
+        int compromiseWidth = SizeSupplier.getSuggestedProcessingWidth(inputImage);
+        int compromiseHeight = SizeSupplier.getSuggestedProcessingHeight(inputImage);
+
         BufferedImage resultImage = ImageHelper.scaleImagePixelsValue(inputImage, 0.8);
 
         for (int scaleStep = -SCALE_PYRAMID_DEPTH; scaleStep <= SCALE_PYRAMID_DEPTH; ++scaleStep) {

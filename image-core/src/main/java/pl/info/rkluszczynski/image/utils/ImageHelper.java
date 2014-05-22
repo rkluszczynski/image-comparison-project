@@ -10,6 +10,7 @@ import java.awt.image.WritableRaster;
  *
  * @author Rafal
  */
+final
 public class ImageHelper {
 
     public static BufferedImage deepCopy(BufferedImage bufferedImage) {
@@ -37,4 +38,6 @@ public class ImageHelper {
         return image;
     }
 
+    private ImageHelper() {
+    }
 }
