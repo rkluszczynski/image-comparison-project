@@ -20,30 +20,26 @@ public class SizeSupplier {
 
     static {
         Map<ImageSizesRatio, Integer> suggestedSmallerSizeMap = Maps.newHashMap();
-        suggestedSmallerSizeMap.put(RATIO_2_3, 268);
+        suggestedSmallerSizeMap.put(RATIO_2_3, 300);
         suggestedSmallerSizeMap.put(RATIO_3_4, 300);
 
         suggestedSmallerSize = Collections.unmodifiableMap(suggestedSmallerSizeMap);
 
         Map<ImageSizesRatio, Integer> suggestedLargerSizeMap = Maps.newHashMap();
-        suggestedLargerSizeMap.put(RATIO_2_3, 402);
+        suggestedLargerSizeMap.put(RATIO_2_3, 450);
         suggestedLargerSizeMap.put(RATIO_3_4, 400);
 
-        suggestedLargerSize = Collections.unmodifiableMap(suggestedSmallerSizeMap);
+        suggestedLargerSize = Collections.unmodifiableMap(suggestedLargerSizeMap);
     }
 
-    public static int getSuggestedProcessingWidth(BufferedImage image) {
+    public static int[] getSuggestedProcessingSizes(BufferedImage image) {
         ImageOrientation orientation = ImageInformationResolver.detectImageOrientation(image);
         ImageSizesRatio sizesRatio = ImageInformationResolver.detectClosestSizesRatio(image);
-        return (orientation == HORIZONTAL) ? suggestedLargerSize.get(sizesRatio)
-                : suggestedSmallerSize.get(sizesRatio);
-    }
-
-    public static int getSuggestedProcessingHeight(BufferedImage image) {
-        ImageOrientation orientation = ImageInformationResolver.detectImageOrientation(image);
-        ImageSizesRatio sizesRatio = ImageInformationResolver.detectClosestSizesRatio(image);
-        return (orientation == HORIZONTAL) ? suggestedSmallerSize.get(sizesRatio)
-                : suggestedLargerSize.get(sizesRatio);
+        if (orientation == HORIZONTAL) {
+            return new int[]{suggestedLargerSize.get(sizesRatio), suggestedSmallerSize.get(sizesRatio)};
+        } else {
+            return new int[]{suggestedSmallerSize.get(sizesRatio), suggestedLargerSize.get(sizesRatio)};
+        }
     }
 
     private SizeSupplier() {

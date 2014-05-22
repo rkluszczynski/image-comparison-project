@@ -25,10 +25,13 @@ public class PyramidCompareTask extends AbstractTask {
 
     @Override
     public void processImageData(BufferedImage inputImage, BufferedImage templateImage) {
-        int compromiseWidth = SizeSupplier.getSuggestedProcessingWidth(inputImage);
-        int compromiseHeight = SizeSupplier.getSuggestedProcessingHeight(inputImage);
+        int[] suggestedProcessingSizes = SizeSupplier.getSuggestedProcessingSizes(inputImage);
+        int compromiseWidth = suggestedProcessingSizes[0];
+        int compromiseHeight = suggestedProcessingSizes[1];
+        logger.info("Determined image scaling to width={} and height={}", compromiseWidth, compromiseHeight);
 
-        BufferedImage resultImage = ImageHelper.scaleImagePixelsValue(inputImage, 0.8);
+        BufferedImage resultImage = ImageHelper.scaleImagePixelsValue(
+                ImageSizeScaleProcessor.getExactScaledImage(inputImage, compromiseWidth, compromiseHeight), 0.8);
 
         for (int scaleStep = -SCALE_PYRAMID_DEPTH; scaleStep <= SCALE_PYRAMID_DEPTH; ++scaleStep) {
             double scaleFactor = 1. + scaleStep * SCALE_PYRAMID_RATIO;
