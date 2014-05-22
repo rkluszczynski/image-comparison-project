@@ -12,7 +12,8 @@ import java.math.BigDecimal;
 import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.CALCULATION_TIME;
 import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.ERROR_RESULT;
 
-abstract class AbstractTask extends Thread {
+abstract
+public class AbstractTask extends Thread {
     protected static Logger logger = LoggerFactory.getLogger(AbstractTask.class);
 
     protected SessionData sessionData;
@@ -51,11 +52,11 @@ abstract class AbstractTask extends Thread {
         sessionData.setResultImage(resultImage);
     }
 
-    protected void saveStatisticData(ImageStatisticNames statisticName, BigDecimal statisticValue) {
+    public void saveStatisticData(ImageStatisticNames statisticName, BigDecimal statisticValue) {
         sessionData.getImageStatistics().add(new ImageStatisticData(statisticName, statisticValue));
     }
 
-    protected void addProgress(double progressValue) {
+    public void addProgress(double progressValue) {
         taskProgress += progressValue;
         sessionData.setProgress((long) (Math.min(Math.max(taskProgress, 0.), 1.) * 100.));
     }
