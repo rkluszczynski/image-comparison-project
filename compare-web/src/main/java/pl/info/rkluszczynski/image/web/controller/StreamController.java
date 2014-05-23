@@ -37,8 +37,7 @@ public class StreamController {
             method = RequestMethod.GET,
             produces = MediaType.IMAGE_PNG_VALUE
     )
-    public void streamUserSessionTemplateImage(HttpServletResponse response, HttpSession session)
-    {
+    public void streamUserSessionTemplateImage(HttpServletResponse response, HttpSession session) {
         SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_TEMPLATE_IMAGE);
         if (imageData != null) {
             streamUserSessionImage(response,
@@ -55,8 +54,7 @@ public class StreamController {
             method = RequestMethod.GET,
             produces = MediaType.IMAGE_PNG_VALUE
     )
-    public void streamUserSessionInputImage(HttpServletResponse response, HttpSession session)
-    {
+    public void streamUserSessionInputImage(HttpServletResponse response, HttpSession session) {
         SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE);
         if (imageData != null) {
             streamUserSessionImage(response,
@@ -73,8 +71,7 @@ public class StreamController {
             method = RequestMethod.GET,
             produces = MediaType.IMAGE_PNG_VALUE
     )
-    public void streamUserSessionResultImage(HttpServletResponse response, HttpSession session)
-    {
+    public void streamUserSessionResultImage(HttpServletResponse response, HttpSession session) {
         SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_RESULT_IMAGE);
         if (imageData != null) {
             streamUserSessionImage(response,
@@ -86,21 +83,18 @@ public class StreamController {
     }
 
 
-    private SessionData getSessionImageDataObject(HttpSession session, String contextPath)
-    {
+    private SessionData getSessionImageDataObject(HttpSession session, String contextPath) {
         Object sessionAttributeObject = session.getAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA);
         if (sessionAttributeObject != null) {
-            logger.info("Attribute {} exists in session during GET {}", USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, contextPath);
-            return (SessionData)sessionAttributeObject;
-        }
-        else {
-            logger.info("No attribute {} in session during GET {}", USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, contextPath);
+            logger.debug("Attribute {} exists in session during GET {}", USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, contextPath);
+            return (SessionData) sessionAttributeObject;
+        } else {
+            logger.debug("No attribute {} in session during GET {}", USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, contextPath);
             return null;
         }
     }
 
-    private void streamUserSessionImage(HttpServletResponse response, BufferedImage bufferedImage)
-    {
+    private void streamUserSessionImage(HttpServletResponse response, BufferedImage bufferedImage) {
         try {
             ImageIO.write(bufferedImage, DEFAULT_BUFFERED_IMAGE_OUTPUT_FORMAT, response.getOutputStream());
         } catch (IOException e) {

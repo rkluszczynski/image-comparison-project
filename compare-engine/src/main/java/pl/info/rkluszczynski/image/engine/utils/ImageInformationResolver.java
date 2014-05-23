@@ -8,8 +8,7 @@ import pl.info.rkluszczynski.image.engine.model.enums.ImageSizesRatio;
 import java.awt.image.BufferedImage;
 
 import static pl.info.rkluszczynski.image.engine.model.enums.ImageOrientation.*;
-import static pl.info.rkluszczynski.image.engine.model.enums.ImageSizesRatio.RATIO_2_3;
-import static pl.info.rkluszczynski.image.engine.model.enums.ImageSizesRatio.RATIO_3_4;
+import static pl.info.rkluszczynski.image.engine.model.enums.ImageSizesRatio.*;
 
 final
 public class ImageInformationResolver {
@@ -17,6 +16,7 @@ public class ImageInformationResolver {
 
     private static double ratioValueOf2x3 = 2. / 3.;
     private static double ratioValueOf3x4 = 3. / 4.;
+    private static double ratioValueOf1x1 = 1.;
 
     public static ImageSizesRatio detectClosestSizesRatio(BufferedImage image) {
         double smallerImageSize = (double) Math.min(image.getWidth(), image.getHeight());
@@ -25,8 +25,21 @@ public class ImageInformationResolver {
 
         double diffWithRatio2x3 = Math.abs(ratioValueOf2x3 - sizesRatio);
         double diffWithRatio3x4 = Math.abs(ratioValueOf3x4 - sizesRatio);
+        double diffWithRatio1x1 = Math.abs(ratioValueOf1x1 - sizesRatio);
 
-        ImageSizesRatio result = (diffWithRatio2x3 < diffWithRatio3x4) ? RATIO_2_3 : RATIO_3_4;
+        double minimalDiff = Math.min(
+                Math.min(diffWithRatio2x3, diffWithRatio3x4), diffWithRatio1x1
+        );
+
+        ImageSizesRatio result = null;
+        if (minimalDiff == diffWithRatio3x4) {
+            result = RATIO_3_4;
+        } else if (minimalDiff == diffWithRatio2x3) {
+            result = RATIO_2_3;
+        } else if (minimalDiff == diffWithRatio1x1) {
+            result = RATIO_1_1;
+        }
+        assert result != null;
         logger.info("Detected image ratio {} with value {}", result.name(), sizesRatio);
         return result;
     }

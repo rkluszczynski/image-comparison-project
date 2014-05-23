@@ -10,8 +10,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static pl.info.rkluszczynski.image.engine.model.enums.ImageOrientation.HORIZONTAL;
-import static pl.info.rkluszczynski.image.engine.model.enums.ImageSizesRatio.RATIO_2_3;
-import static pl.info.rkluszczynski.image.engine.model.enums.ImageSizesRatio.RATIO_3_4;
+import static pl.info.rkluszczynski.image.engine.model.enums.ImageSizesRatio.*;
 
 final
 public class SizeSupplier {
@@ -22,12 +21,14 @@ public class SizeSupplier {
         Map<ImageSizesRatio, Integer> suggestedSmallerSizeMap = Maps.newHashMap();
         suggestedSmallerSizeMap.put(RATIO_2_3, 300);
         suggestedSmallerSizeMap.put(RATIO_3_4, 300);
+        suggestedSmallerSizeMap.put(RATIO_1_1, 300);
 
         suggestedSmallerSize = Collections.unmodifiableMap(suggestedSmallerSizeMap);
 
         Map<ImageSizesRatio, Integer> suggestedLargerSizeMap = Maps.newHashMap();
         suggestedLargerSizeMap.put(RATIO_2_3, 450);
         suggestedLargerSizeMap.put(RATIO_3_4, 400);
+        suggestedLargerSizeMap.put(RATIO_1_1, 300);
 
         suggestedLargerSize = Collections.unmodifiableMap(suggestedLargerSizeMap);
     }
@@ -38,6 +39,7 @@ public class SizeSupplier {
         if (orientation == HORIZONTAL) {
             return new int[]{suggestedLargerSize.get(sizesRatio), suggestedSmallerSize.get(sizesRatio)};
         } else {
+            // Handles correctly vertical and square cases:
             return new int[]{suggestedSmallerSize.get(sizesRatio), suggestedLargerSize.get(sizesRatio)};
         }
     }
