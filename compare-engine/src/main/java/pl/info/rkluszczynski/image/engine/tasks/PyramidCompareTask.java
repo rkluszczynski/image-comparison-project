@@ -4,6 +4,7 @@ import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.tasks.metrics.Metric;
 import pl.info.rkluszczynski.image.engine.tasks.pyramid.SingleScaleStepProcessor;
 import pl.info.rkluszczynski.image.engine.tasks.pyramid.SizeSupplier;
+import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.ImageSizeScaleProcessor;
 import pl.info.rkluszczynski.image.utils.ImageHelper;
 
@@ -45,7 +46,7 @@ public class PyramidCompareTask extends AbstractTask {
                     ImageSizeScaleProcessor.getExactScaledImage(inputImage, pyramidStepDesiredWidth, pyramidStepDesiredHeight);
 
             SingleScaleStepProcessor singleScaleStepProcessor = SingleScaleStepProcessor.create(
-                    scaledInputImage, templateImage, metric, scaleFactor
+                    scaledInputImage, new BufferedImageWrapper(templateImage), metric, scaleFactor
             );
             singleScaleStepProcessor.process(resultImage, this, FULL_SCALE_STEP_PROGRESS);
         }

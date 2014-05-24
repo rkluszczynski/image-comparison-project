@@ -5,20 +5,18 @@ import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.tasks.AbstractTask;
 import pl.info.rkluszczynski.image.engine.tasks.metrics.Metric;
+import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.math.BigDecimal;
 
 final
 public class SingleScaleStepProcessor {
     protected static Logger logger = LoggerFactory.getLogger(SingleScaleStepProcessor.class);
 
-    public static final int TRANSPARENT_ALPHA_THRESHOLD_VALUE = 4;
-
     private final BufferedImage inputImage;
-    private final BufferedImage templateImage;
+    private final BufferedImageWrapper templateImageWrapper;
     private final Metric metric;
     private final double scaleFactor;
 
@@ -27,12 +25,12 @@ public class SingleScaleStepProcessor {
         int bestLeftPosition = -1;
         int bestTopPosition = -1;
 
-        double oneRowProgress = fullScaleStepProgress / (inputImage.getWidth() - templateImage.getWidth());
-        double matchDivisor = 256. * templateImage.getHeight() * templateImage.getWidth();
+        double oneRowProgress = fullScaleStepProgress / (inputImage.getWidth() - templateImageWrapper.getWidth());
+        double matchDivisor = 256. * templateImageWrapper.countNonAlphaPixels();
 
-        for (int iw = 0; iw < inputImage.getWidth() - templateImage.getWidth(); ++iw) {
-            for (int ih = 0; ih < inputImage.getHeight() - templateImage.getHeight(); ++ih) {
-                double result = checkPatternAtImagePosition(iw, ih, inputImage, templateImage);
+        for (int iw = 0; iw < inputImage.getWidth() - templateImageWrapper.getWidth(); ++iw) {
+            for (int ih = 0; ih < inputImage.getHeight() - templateImageWrapper.getHeight(); ++ih) {
+                double result = checkPatternAtImagePosition(iw, ih, inputImage, templateImageWrapper);
                 if (result < bestResult) {
                     bestResult = result;
                     bestLeftPosition = iw;
@@ -48,7 +46,7 @@ public class SingleScaleStepProcessor {
             ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s", metric.getName()));
             processingTask.saveStatisticData(statisticName, BigDecimal.valueOf(bestResult / matchDivisor));
 
-            drawRectangleOnImage(resultImage, bestLeftPosition, bestTopPosition, templateImage.getWidth(), templateImage.getHeight(), scaleFactor);
+            drawRectangleOnImage(resultImage, bestLeftPosition, bestTopPosition, templateImageWrapper.getWidth(), templateImageWrapper.getHeight(), scaleFactor);
         }
     }
 
@@ -66,45 +64,32 @@ public class SingleScaleStepProcessor {
         graph.dispose();
     }
 
-    private double checkPatternAtImagePosition(int w, int h, BufferedImage scaledInputImage, BufferedImage templateImage) {
+    private double checkPatternAtImagePosition(int w, int h, BufferedImage scaledInputImage, BufferedImageWrapper templateImage) {
         assert metric != null;
         metric.resetValue();
         for (int piw = 0; piw < templateImage.getWidth(); ++piw) {
             for (int pih = 0; pih < templateImage.getHeight(); ++pih) {
-                if (!isAlphaTemplateImagePixel(templateImage, piw, pih)) {
+                if (!templateImage.treatPixelAsAlpha(piw, pih)) {
                     Color scaledInputImagePixelValue = new Color(scaledInputImage.getRGB(w + piw, h + pih));
-                    Color templateImagePixelValue = new Color(templateImage.getRGB(piw, pih));
 
-                    metric.addPixelsDifference(scaledInputImagePixelValue, templateImagePixelValue);
+                    metric.addPixelsDifference(
+                            scaledInputImagePixelValue,
+                            templateImageWrapper.getPixelColor(piw, pih)
+                    );
                 }
             }
         }
         return metric.calculateValue();
     }
 
-    private boolean isAlphaTemplateImagePixel(BufferedImage image, int iw, int ih) {
-        Raster raster = image.getAlphaRaster();
-        if (raster == null) {
-            // there is no Alpha channel:
-            return false;
-        }
-        float[] sample = raster.getPixel(iw, ih, (float[]) null);
-        if (sample[0] > TRANSPARENT_ALPHA_THRESHOLD_VALUE) {
-            // alpha value is gt TRANSPARENT_ALPHA_THRESHOLD_VALUE (pixel should not be transparent):
-            return false;
-        }
-        // pixel is transparent:
-        return true;
+
+    public static SingleScaleStepProcessor create(BufferedImage inputImage, BufferedImageWrapper templateImageWrapper, Metric metric, double scaleFactor) {
+        return new SingleScaleStepProcessor(inputImage, templateImageWrapper, metric, scaleFactor);
     }
 
-
-    public static SingleScaleStepProcessor create(BufferedImage inputImage, BufferedImage templateImage, Metric metric, double scaleFactor) {
-        return new SingleScaleStepProcessor(inputImage, templateImage, metric, scaleFactor);
-    }
-
-    private SingleScaleStepProcessor(BufferedImage inputImage, BufferedImage templateImage, Metric metric, double scaleFactor) {
+    private SingleScaleStepProcessor(BufferedImage inputImage, BufferedImageWrapper templateImageWrapper, Metric metric, double scaleFactor) {
         this.inputImage = inputImage;
-        this.templateImage = templateImage;
+        this.templateImageWrapper = templateImageWrapper;
         this.metric = metric;
         this.scaleFactor = scaleFactor;
     }
