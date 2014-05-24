@@ -1,8 +1,8 @@
 package pl.info.rkluszczynski.image.app;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
 
@@ -15,18 +15,21 @@ public class AlphaCanalTestApp {
         System.out.println(System.getProperty("user.dir"));
         BufferedImage image;
 
-        image = ImageIO.read(new File("compare-web/src/main/resources/image-data/patterns/bon-pattern1-shelfstoper.png"));
+        image = ImageIO.read(new File("compare-web/src/main/resources/image-data/bon-pattern2-woobler.png"));
+        image = ImageIO.read(new File("compare-web/src/main/resources/image-data/zubr-pattern2-shelfstoper.png"));
 
-        Color pixel00 = new Color(image.getRGB(0, 0));
-        System.out.println("   red : " + pixel00.getRed());
-        System.out.println(" green : " + pixel00.getGreen());
-        System.out.println("  blue : " + pixel00.getBlue());
-        System.out.println(" alpha : " + pixel00.getAlpha());
-
-        Color pixelHalfHalf = new Color(image.getRGB(image.getWidth() / 2, image.getHeight() / 2));
-        System.out.println("   red : " + pixelHalfHalf.getRed());
-        System.out.println(" green : " + pixelHalfHalf.getGreen());
-        System.out.println("  blue : " + pixelHalfHalf.getBlue());
-        System.out.println(" alpha : " + pixelHalfHalf.getAlpha());
+        System.out.println("isAlphaPremultiplied: " + image.isAlphaPremultiplied());
+        Raster raster = image.getAlphaRaster();
+        if (raster == null) {
+            System.err.println("there is no Alpha channel!!!!!!!!!");
+        } else {
+            for (int iw = 0; iw < image.getWidth(); ++iw) {
+                System.out.print(":");
+                for (int ih = 0; ih < image.getHeight(); ++ih) {
+                    System.out.printf(" %3d", image.getRaster().getPixel(iw, ih, (int[]) null)[0]);
+                }
+                System.out.println();
+            }
+        }
     }
 }

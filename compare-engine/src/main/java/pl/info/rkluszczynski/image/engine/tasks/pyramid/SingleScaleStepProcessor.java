@@ -8,6 +8,7 @@ import pl.info.rkluszczynski.image.engine.tasks.metrics.Metric;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.math.BigDecimal;
 
 final
@@ -68,13 +69,30 @@ public class SingleScaleStepProcessor {
         metric.resetValue();
         for (int piw = 0; piw < templateImage.getWidth(); ++piw) {
             for (int pih = 0; pih < templateImage.getHeight(); ++pih) {
-                Color scaledInputImagePixelValue = new Color(scaledInputImage.getRGB(w + piw, h + pih));
-                Color templateImagePixelValue = new Color(templateImage.getRGB(piw, pih));
+                if (!isAlphaTemplateImagePixel(templateImage, piw, pih)) {
+                    Color scaledInputImagePixelValue = new Color(scaledInputImage.getRGB(w + piw, h + pih));
+                    Color templateImagePixelValue = new Color(templateImage.getRGB(piw, pih));
 
-                metric.addPixelsDifference(scaledInputImagePixelValue, templateImagePixelValue);
+                    metric.addPixelsDifference(scaledInputImagePixelValue, templateImagePixelValue);
+                }
             }
         }
         return metric.calculateValue();
+    }
+
+    private boolean isAlphaTemplateImagePixel(BufferedImage image, int iw, int ih) {
+        Raster raster = image.getAlphaRaster();
+        if (raster == null) {
+            // there is no Alpha channel:
+            return false;
+        }
+        float[] sample = raster.getPixel(iw, ih, (float[]) null);
+        if (sample[0] > 0) {
+            // alpha value is gt 0 (pixel should not be transparent):
+            return false;
+        }
+        // pixel is transparent:
+        return true;
     }
 
 
