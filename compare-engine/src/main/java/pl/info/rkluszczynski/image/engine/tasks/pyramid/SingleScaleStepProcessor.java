@@ -15,6 +15,8 @@ final
 public class SingleScaleStepProcessor {
     protected static Logger logger = LoggerFactory.getLogger(SingleScaleStepProcessor.class);
 
+    public static final int TRANSPARENT_ALPHA_THRESHOLD_VALUE = 4;
+
     private final BufferedImage inputImage;
     private final BufferedImage templateImage;
     private final Metric metric;
@@ -87,8 +89,8 @@ public class SingleScaleStepProcessor {
             return false;
         }
         float[] sample = raster.getPixel(iw, ih, (float[]) null);
-        if (sample[0] > 0) {
-            // alpha value is gt 0 (pixel should not be transparent):
+        if (sample[0] > TRANSPARENT_ALPHA_THRESHOLD_VALUE) {
+            // alpha value is gt TRANSPARENT_ALPHA_THRESHOLD_VALUE (pixel should not be transparent):
             return false;
         }
         // pixel is transparent:
