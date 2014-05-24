@@ -1,0 +1,18 @@
+
+1. Odrzucanie błędnych dopasowań wskutek etapowego porównywania, tzn.:
+a) szukamy miejsc z niską wartością funkcji porównującej po całym wzorcu,
+b) sprawdzamy dodatkowo nałożenie wzorca w znalezionym miejscu poprzez
+"blokowe" porównywanie (tej samej lub może innej miary) celem odrzucania
+bezsensownych dopasowań,
+c) uwzględniamy (jeśli to pomoże) na etapie a) lub b) "dominantę
+kolorystyczną".
+
+2. Znajdujemy określoną liczbę N najlepszych wyników z uwzględnieniem
+różnych lokalizacji na obrazie (np. co "pół" wzorca).
+Sparametryzować "pół" wzorca.
+
+3. Uwzględniamy okrągłe wzorce z wykorzystaniem kanału alpha (piksele z
+wysoką wartością tego kanału pomijamy w obliczeniach).
+
+4. Przystosowujemy aplikację do uruchamiania w wersji standalone.
+
