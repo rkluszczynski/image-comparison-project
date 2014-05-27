@@ -11,8 +11,7 @@ kolorystyczną".
 różnych lokalizacji na obrazie (np. co "pół" wzorca).
 Sparametryzować "pół" wzorca.
 
-3. Uwzględniamy okrągłe wzorce z wykorzystaniem kanału alpha (piksele z
-wysoką wartością tego kanału pomijamy w obliczeniach).
+
 
 4. Przystosowujemy aplikację do uruchamiania w wersji standalone.
 

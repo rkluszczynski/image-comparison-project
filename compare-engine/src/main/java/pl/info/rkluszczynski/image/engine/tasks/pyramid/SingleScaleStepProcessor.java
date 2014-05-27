@@ -2,14 +2,13 @@ package pl.info.rkluszczynski.image.engine.tasks.pyramid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.tasks.AbstractTask;
 import pl.info.rkluszczynski.image.engine.tasks.metrics.Metric;
+import pl.info.rkluszczynski.image.engine.tasks.strategy.BestMatchStrategy;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.math.BigDecimal;
 
 final
 public class SingleScaleStepProcessor {
@@ -21,47 +20,18 @@ public class SingleScaleStepProcessor {
     private final double scaleFactor;
 
     public void process(BufferedImage resultImage, AbstractTask processingTask, double fullScaleStepProgress) {
-        double bestResult = Double.MAX_VALUE;
-        int bestLeftPosition = -1;
-        int bestTopPosition = -1;
-
         double oneRowProgress = fullScaleStepProgress / (inputImage.getWidth() - templateImageWrapper.getWidth());
-        double matchDivisor = 256. * templateImageWrapper.countNonAlphaPixels();
 
+        BestMatchStrategy matchStrategy = processingTask.getMatchStrategy();
         for (int iw = 0; iw < inputImage.getWidth() - templateImageWrapper.getWidth(); ++iw) {
             for (int ih = 0; ih < inputImage.getHeight() - templateImageWrapper.getHeight(); ++ih) {
                 double result = checkPatternAtImagePosition(iw, ih, inputImage, templateImageWrapper);
-                if (result < bestResult) {
-                    bestResult = result;
-                    bestLeftPosition = iw;
-                    bestTopPosition = ih;
-                }
+                matchStrategy.put(result, iw, ih, scaleFactor);
             }
             processingTask.addProgress(oneRowProgress);
         }
 
-        if (bestResult < Double.MAX_VALUE) {
-            logger.info("Best result at level: " + bestResult + " at (" + bestLeftPosition + ", " + bestTopPosition + ")");
-
-            ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s", metric.getName()));
-            processingTask.saveStatisticData(statisticName, BigDecimal.valueOf(bestResult / matchDivisor));
-
-            drawRectangleOnImage(resultImage, bestLeftPosition, bestTopPosition, templateImageWrapper.getWidth(), templateImageWrapper.getHeight(), scaleFactor);
-        }
-    }
-
-    private void drawRectangleOnImage(BufferedImage image, int leftPosition, int topPosition, int width, int height, double scaleFactor) {
-        double invertedScaleFactor = 1. / scaleFactor;
-        int scaledLeftPosition = (int) (invertedScaleFactor * leftPosition);
-        int scaledTopPosition = (int) (invertedScaleFactor * topPosition);
-        int scaledWidth = (int) (invertedScaleFactor * width);
-        int scaledHeight = (int) (invertedScaleFactor * height);
-
-        Graphics2D graph = image.createGraphics();
-        graph.setColor(Color.WHITE);
-//        graph.fill(new Rectangle(scaledLeftPosition, scaledTopPosition, scaledWidth, scaledHeight));
-        graph.draw(new Rectangle(scaledLeftPosition, scaledTopPosition, scaledWidth, scaledHeight));
-        graph.dispose();
+        matchStrategy.applyBestResults(resultImage, templateImageWrapper, processingTask, metric);
     }
 
     private double checkPatternAtImagePosition(int w, int h, BufferedImage scaledInputImage, BufferedImageWrapper templateImage) {

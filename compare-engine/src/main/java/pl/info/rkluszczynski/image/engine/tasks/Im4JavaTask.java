@@ -15,7 +15,7 @@ public class Im4JavaTask extends AbstractTask {
     private static String GLOBAL_SEARCH_PATH = "D:\\PortableApps\\ImageMagick-6.8.8-7";
 
     public Im4JavaTask(SessionData sessionData) {
-        super(sessionData);
+        super(sessionData, null);
 //        logger.info(">>> " + sessionData.getSession().getServletContext().getContextPath());
 //        ProcessStarter.setGlobalSearchPath(GLOBAL_SEARCH_PATH);
     }

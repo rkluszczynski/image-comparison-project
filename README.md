@@ -4,28 +4,38 @@ image-comparison-project
 Project with Simple Image Web Application.
 
 
+Application features worth to be remembered
+-------------------------------------------
 
-== short on jetty installation ==
+* We are ignoring pixels with low alpha channel value in template images, 
+so it is possible to use any shape of template image (be aware of possible
+boundary problems).  
 
-1. Download
-2. Extract
-3. Make link to jetty.sh from /etc/init.d/
-4. Create /etc/default/jetty config file (default.config)
 
-5. Add login service to etc/jetty.xml:
+Shortly about Jetty installation
+--------------------------------
 
-    <Call name="addBean">
-        <Arg>
-            <New class="org.eclipse.jetty.security.HashLoginService">
-                <Set name="name">Test Realm</Set>
-                <Set name="config"><SystemProperty name="jetty.home"
-default="."/>/etc/realm.properties</Set>
-                <Set name="refreshInterval">0</Set>
-            </New>
-        </Arg>
-    </Call>
+1. Download Jetty archive.
+2. Extract it to folder */opt/jetty/*.
+3. Make a symbolic link to *jetty.sh* from */etc/init.d/*.
+4. Create */etc/default/jetty* config file base on *default.config*.
 
-</Configure>
+In order to access only particular users to use cargo-jetty-deployer plugin,
+login service has to be configured. 
 
-6. Add file etc/realm.properties
-7. uncomment security in cargo-jetty-deployer plugin
+1. Add login service in /opt/etc/jetty.xml file before the end of *Configure* tag:
+
+        <Call name="addBean">
+            <Arg>
+                <New class="org.eclipse.jetty.security.HashLoginService">
+                    <Set name="name">Test Realm</Set>
+                    <Set name="config"><SystemProperty name="jetty.home" default="."/>/etc/realm.properties</Set>
+                    <Set name="refreshInterval">0</Set>
+                </New>
+            </Arg>
+        </Call>
+
+2. Create file */opt/etc/realm.properties* with ACL.
+3. Uncomment security configuration in *cargo-jetty-deployer* plugin archive (JAR file).
+
+* * *

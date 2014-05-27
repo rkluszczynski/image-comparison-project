@@ -10,7 +10,7 @@ import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.DUMMY
 
 public class CopyInputImageTask extends AbstractTask {
     public CopyInputImageTask(SessionData sessionData) {
-        super(sessionData);
+        super(sessionData, null);
     }
 
     @Override

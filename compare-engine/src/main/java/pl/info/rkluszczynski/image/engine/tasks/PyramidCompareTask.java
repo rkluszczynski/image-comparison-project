@@ -4,6 +4,7 @@ import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.tasks.metrics.Metric;
 import pl.info.rkluszczynski.image.engine.tasks.pyramid.SingleScaleStepProcessor;
 import pl.info.rkluszczynski.image.engine.tasks.pyramid.SizeSupplier;
+import pl.info.rkluszczynski.image.engine.tasks.strategy.LowestMetricStrategy;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.ImageSizeScaleProcessor;
 import pl.info.rkluszczynski.image.utils.ImageHelper;
@@ -20,7 +21,7 @@ public class PyramidCompareTask extends AbstractTask {
 
 
     public PyramidCompareTask(SessionData sessionData, Metric metric) {
-        super(sessionData);
+        super(sessionData, new LowestMetricStrategy());
         this.metric = metric;
     }
 

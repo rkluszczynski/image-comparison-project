@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticData;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.tasks.strategy.BestMatchStrategy;
 
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
@@ -16,12 +17,14 @@ abstract
 public class AbstractTask extends Thread {
     protected static Logger logger = LoggerFactory.getLogger(AbstractTask.class);
 
-    protected SessionData sessionData;
+    protected final SessionData sessionData;
+    protected final BestMatchStrategy matchStrategy;
     private double taskProgress;
 
 
-    protected AbstractTask(SessionData sessionData) {
+    protected AbstractTask(SessionData sessionData, BestMatchStrategy matchStrategy) {
         this.sessionData = sessionData;
+        this.matchStrategy = matchStrategy;
     }
 
     SessionData getSessionData() {
@@ -59,5 +62,9 @@ public class AbstractTask extends Thread {
     public void addProgress(double progressValue) {
         taskProgress += progressValue;
         sessionData.setProgress((long) (Math.min(Math.max(taskProgress, 0.), 1.) * 100.));
+    }
+
+    public BestMatchStrategy getMatchStrategy() {
+        return matchStrategy;
     }
 }
