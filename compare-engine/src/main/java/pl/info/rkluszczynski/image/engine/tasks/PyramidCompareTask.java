@@ -35,6 +35,9 @@ public class PyramidCompareTask extends AbstractTask {
         BufferedImage resultImage = ImageHelper.scaleImagePixelsValue(
                 ImageSizeScaleProcessor.getExactScaledImage(inputImage, compromiseWidth, compromiseHeight), 0.8);
 
+        BufferedImageWrapper templateImageWrapper = new BufferedImageWrapper(templateImage);
+        logger.info("Number of non alpha pixels: {} (out of {})", templateImageWrapper.countNonAlphaPixels(),
+                templateImage.getWidth() * templateImage.getHeight());
         for (int scaleStep = -SCALE_PYRAMID_DEPTH; scaleStep <= SCALE_PYRAMID_DEPTH; ++scaleStep) {
             double scaleFactor = 1. + scaleStep * SCALE_PYRAMID_RATIO;
 
@@ -47,7 +50,7 @@ public class PyramidCompareTask extends AbstractTask {
                     ImageSizeScaleProcessor.getExactScaledImage(inputImage, pyramidStepDesiredWidth, pyramidStepDesiredHeight);
 
             SingleScaleStepProcessor singleScaleStepProcessor = SingleScaleStepProcessor.create(
-                    scaledInputImage, new BufferedImageWrapper(templateImage), metric, scaleFactor
+                    scaledInputImage, templateImageWrapper, metric, scaleFactor
             );
             singleScaleStepProcessor.process(resultImage, this, FULL_SCALE_STEP_PROGRESS);
         }
