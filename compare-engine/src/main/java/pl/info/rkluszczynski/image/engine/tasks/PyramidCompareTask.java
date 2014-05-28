@@ -21,7 +21,7 @@ public class PyramidCompareTask extends AbstractTask {
 
 
     public PyramidCompareTask(SessionData sessionData, Metric metric) {
-        super(sessionData, new LowestMetricStrategy());
+        super(sessionData);
         this.metric = metric;
     }
 
@@ -34,8 +34,9 @@ public class PyramidCompareTask extends AbstractTask {
 
         BufferedImage resultImage = ImageHelper.scaleImagePixelsValue(
                 ImageSizeScaleProcessor.getExactScaledImage(inputImage, compromiseWidth, compromiseHeight), 0.8);
-
         BufferedImageWrapper templateImageWrapper = new BufferedImageWrapper(templateImage);
+        setMatchStrategy(new LowestMetricStrategy(resultImage, templateImageWrapper));
+
         logger.info("Number of non alpha pixels: {} (out of {})", templateImageWrapper.countNonAlphaPixels(),
                 templateImage.getWidth() * templateImage.getHeight());
         for (int scaleStep = -SCALE_PYRAMID_DEPTH; scaleStep <= SCALE_PYRAMID_DEPTH; ++scaleStep) {

@@ -18,13 +18,13 @@ public class AbstractTask extends Thread {
     protected static Logger logger = LoggerFactory.getLogger(AbstractTask.class);
 
     protected final SessionData sessionData;
-    protected final BestMatchStrategy matchStrategy;
+
+    protected BestMatchStrategy matchStrategy;
     private double taskProgress;
 
 
-    protected AbstractTask(SessionData sessionData, BestMatchStrategy matchStrategy) {
+    protected AbstractTask(SessionData sessionData) {
         this.sessionData = sessionData;
-        this.matchStrategy = matchStrategy;
     }
 
     SessionData getSessionData() {
@@ -66,5 +66,9 @@ public class AbstractTask extends Thread {
 
     public BestMatchStrategy getMatchStrategy() {
         return matchStrategy;
+    }
+
+    public void setMatchStrategy(BestMatchStrategy matchStrategy) {
+        this.matchStrategy = matchStrategy;
     }
 }

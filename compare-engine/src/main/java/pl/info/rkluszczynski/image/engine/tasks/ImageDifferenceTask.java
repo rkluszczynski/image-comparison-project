@@ -13,7 +13,7 @@ import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.DIFFE
 
 public class ImageDifferenceTask extends AbstractTask {
     public ImageDifferenceTask(SessionData sessionData) {
-        super(sessionData, null);
+        super(sessionData);
     }
 
     @Override
