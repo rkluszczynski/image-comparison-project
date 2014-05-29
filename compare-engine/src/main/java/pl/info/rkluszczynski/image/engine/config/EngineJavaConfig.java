@@ -14,7 +14,7 @@ import static pl.info.rkluszczynski.image.engine.config.EngineConstants.ENGINE_L
 @Configuration
 @ComponentScan(basePackages = ENGINE_LIBRARY_BASE_PACKAGE)
 @EnableScheduling
-@PropertySource(value = "classpath:properties/image-engine.properties")
+@PropertySource(value = "classpath:compare-engine.properties")
 public class EngineJavaConfig {
 
     @Autowired

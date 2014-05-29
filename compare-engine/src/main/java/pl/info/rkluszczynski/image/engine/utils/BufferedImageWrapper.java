@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 
 public class BufferedImageWrapper {
-    public static final int TRANSPARENT_ALPHA_THRESHOLD_VALUE = 0x10;
+    private static final int TRANSPARENT_ALPHA_THRESHOLD_VALUE = 0x10;
 
     private final BufferedImage image;
     private final Raster alphaRaster;
