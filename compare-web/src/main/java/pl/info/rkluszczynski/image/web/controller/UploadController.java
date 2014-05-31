@@ -53,16 +53,16 @@ public class UploadController {
             method = RequestMethod.POST
     )
     public String handleImageFileUploadAndStoreInSession(Model model,
-            @RequestParam(value = "imageFile") MultipartFile file,
-            @RequestParam(value = "templateFile", required = false) String templateFilename,
-            @RequestParam(value = "processingOperation", required = false) String operation,
+                                                         @RequestParam(value = "imageFile") MultipartFile file,
+                                                         @RequestParam(value = "templateFile", required = false) String templateFilename,
+                                                         @RequestParam(value = "processingOperation", required = false) String operation,
 //            BindingResult result,
-            HttpSession session
-        )
-    {
+                                                         HttpSession session
+    ) {
         List<String> requestParamsErrors = getRequestParamsErrors(file, templateFilename, operation);
-        if (! requestParamsErrors.isEmpty()) {
+        if (!requestParamsErrors.isEmpty()) {
             model.addAttribute("errors", requestParamsErrors);
+            FooterHelper.setWebApplicationBuildDate(model);
             return "errors";
         }
 
@@ -103,17 +103,15 @@ public class UploadController {
             errorsList.add("Uploaded file has size 0!");
         }
 
-        if (templateFilename == null  ||  "".equalsIgnoreCase(templateFilename)) {
+        if (templateFilename == null || "".equalsIgnoreCase(templateFilename)) {
             errorsList.add("Template image not selected!");
-        }
-        else if (templateImageResources.isResourceKeyValueNotValid(templateFilename)) {
+        } else if (templateImageResources.isResourceKeyValueNotValid(templateFilename)) {
             errorsList.add("Template resource with key '" + templateFilename + "' not exists!");
         }
 
         if (operation == null) {
             errorsList.add("Processing operation not selected!");
-        }
-        else if (imageProcessingOperations.isOperationNameNotValid(operation)) {
+        } else if (imageProcessingOperations.isOperationNameNotValid(operation)) {
             errorsList.add("Processing operation '" + operation + "' not supported!");
         }
         return errorsList;

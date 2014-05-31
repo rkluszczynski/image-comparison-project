@@ -64,6 +64,7 @@ public class MainController {
         model.addAttribute("headerText", PAGE_HEADER_TEXT);
         model.addAttribute("templateImageItems", templateImageResources.getTemplateItems());
         model.addAttribute("imageOperationItems", imageProcessingOperations.getOperationDescriptions());
+        FooterHelper.setWebApplicationBuildDate(model);
         return "index";
     }
 
