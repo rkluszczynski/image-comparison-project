@@ -20,7 +20,7 @@ import java.util.List;
 public class LocalizedLowestStrategy implements BestMatchStrategy {
     protected static Logger logger = LoggerFactory.getLogger(LocalizedLowestStrategy.class);
 
-    public static int BEST_RESULTS_COUNT = 5;
+    public static int BEST_RESULTS_COUNT = 7;
 
     private final BufferedImage inputImage;
     private final BufferedImageWrapper templateImageWrapper;
@@ -41,8 +41,8 @@ public class LocalizedLowestStrategy implements BestMatchStrategy {
 
     @Override
     public void put(double result, int iw, int ih, double scaleFactor) {
-        int tableWidth = (int) (iw / offset);
-        int tableHeight = (int) (ih / offset);
+        int tableWidth = (int) ((iw / scaleFactor) / offset);
+        int tableHeight = (int) ((ih / scaleFactor) / offset);
 
         MatchItem item = bestResultsTable[tableWidth][tableHeight];
         if (item == null || result < item.getResult()) {
@@ -57,7 +57,9 @@ public class LocalizedLowestStrategy implements BestMatchStrategy {
         for (int iw = 0; iw < bestResultsWidth; ++iw) {
             for (int ih = 0; ih < bestResultsHeight; ++ih) {
                 MatchItem item = bestResultsTable[iw][ih];
-                results.add(item);
+                if (item != null) {
+                    results.add(item);
+                }
             }
         }
         Collections.sort(results);

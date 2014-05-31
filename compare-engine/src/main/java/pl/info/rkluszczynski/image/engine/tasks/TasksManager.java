@@ -45,6 +45,7 @@ public class TasksManager {
         logger.info("Executing executors clean up");
         for (AbstractTask abstractTask : abstractTasksList) {
             HttpSession session = abstractTask.getSessionData().getSession();
+            String sessionUniqueKey = abstractTask.getSessionData().getDataUniqueKey();
 
             boolean taskCleanMarker = false;
             try {
@@ -56,8 +57,12 @@ public class TasksManager {
                     taskCleanMarker = true;
                 }
             } catch (IllegalStateException ex) {
-                logger.warn("Accessing session {} raises IllegalStateException (is it already invalidated?)",
-                        abstractTask.getSessionData().getDataUniqueKey(), ex);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Accessing session {} raises IllegalStateException (is it already invalidated?)",
+                            sessionUniqueKey, ex);
+                } else {
+                    logger.warn("Accessing session {} which is probably invalid", sessionUniqueKey);
+                }
                 taskCleanMarker = true;
             }
 
@@ -65,8 +70,7 @@ public class TasksManager {
                 abstractTask.interrupt();
 
                 tasksToClean.add(abstractTask);
-                logger.debug("Session {} invalidated and task interrupted and cleaned",
-                        abstractTask.getSessionData().getDataUniqueKey());
+                logger.debug("Session {} invalidated and task interrupted and cleaned", sessionUniqueKey);
             }
         }
 

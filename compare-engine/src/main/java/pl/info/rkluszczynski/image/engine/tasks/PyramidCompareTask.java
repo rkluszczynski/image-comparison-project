@@ -4,7 +4,8 @@ import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.tasks.metrics.Metric;
 import pl.info.rkluszczynski.image.engine.tasks.pyramid.SingleScaleStepProcessor;
 import pl.info.rkluszczynski.image.engine.tasks.pyramid.SizeSupplier;
-import pl.info.rkluszczynski.image.engine.tasks.strategy.LowestMetricStrategy;
+import pl.info.rkluszczynski.image.engine.tasks.strategy.BestMatchStrategy;
+import pl.info.rkluszczynski.image.engine.tasks.strategy.LocalizedLowestStrategy;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.ImageSizeScaleProcessor;
 import pl.info.rkluszczynski.image.utils.ImageHelper;
@@ -35,7 +36,7 @@ public class PyramidCompareTask extends AbstractTask {
         BufferedImage resultImage = ImageHelper.scaleImagePixelsValue(
                 ImageSizeScaleProcessor.getExactScaledImage(inputImage, compromiseWidth, compromiseHeight), 0.8);
         BufferedImageWrapper templateImageWrapper = new BufferedImageWrapper(templateImage);
-        setMatchStrategy(new LowestMetricStrategy(resultImage, templateImageWrapper));
+        setMatchStrategy(new LocalizedLowestStrategy(resultImage, templateImageWrapper));
 
         logger.info("Number of non alpha pixels: {} (out of {})", templateImageWrapper.countNonAlphaPixels(),
                 templateImage.getWidth() * templateImage.getHeight());
@@ -55,6 +56,12 @@ public class PyramidCompareTask extends AbstractTask {
             );
             singleScaleStepProcessor.process(resultImage, this, FULL_SCALE_STEP_PROGRESS);
         }
+        finish();
         saveResultImage(resultImage);
+    }
+
+    public void finish() {
+        BestMatchStrategy matchStrategy = getMatchStrategy();
+        matchStrategy.applyBestResults(this, metric);
     }
 }

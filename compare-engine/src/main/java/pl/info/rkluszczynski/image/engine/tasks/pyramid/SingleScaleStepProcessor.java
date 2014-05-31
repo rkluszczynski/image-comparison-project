@@ -30,8 +30,6 @@ public class SingleScaleStepProcessor {
             }
             processingTask.addProgress(oneRowProgress);
         }
-
-        matchStrategy.applyBestResults(processingTask, metric);
     }
 
     private double checkPatternAtImagePosition(int w, int h, BufferedImage scaledInputImage, BufferedImageWrapper templateImage) {

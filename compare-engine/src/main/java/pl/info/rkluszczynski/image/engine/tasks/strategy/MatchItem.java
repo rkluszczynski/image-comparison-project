@@ -20,9 +20,9 @@ public class MatchItem implements Comparable {
     public int compareTo(Object o) {
         MatchItem item = (MatchItem) o;
         if (result < item.getResult()) {
-            return 1;
-        } else if (result > item.getResult()) {
             return -1;
+        } else if (result > item.getResult()) {
+            return 1;
         }
         return 0;
     }
