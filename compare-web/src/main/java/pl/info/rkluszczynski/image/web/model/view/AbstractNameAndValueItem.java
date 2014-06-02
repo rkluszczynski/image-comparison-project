@@ -9,12 +9,12 @@ class AbstractNameAndValueItem implements Comparable {
     private String name;
     private String value;
 
-    AbstractNameAndValueItem(String name, String value) {
+    protected AbstractNameAndValueItem(String name, String value) {
         this.name = name;
         this.value = value;
     }
 
-    String getValue() {
+    public String getValue() {
         return value;
     }
 
@@ -22,7 +22,7 @@ class AbstractNameAndValueItem implements Comparable {
         this.value = value;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 

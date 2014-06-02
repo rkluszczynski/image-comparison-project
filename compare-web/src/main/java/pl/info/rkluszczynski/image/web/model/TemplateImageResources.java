@@ -28,7 +28,7 @@ public class TemplateImageResources {
     private final List<TemplateResourceItem> imageResourcesItems;
 
     @Autowired
-    private TemplateImageResources(ApplicationContext applicationContext) {
+    public TemplateImageResources(ApplicationContext applicationContext) {
         imageResourcesMap = Maps.newHashMap();
         imageResourcesItems = Lists.newArrayList();
         try {
