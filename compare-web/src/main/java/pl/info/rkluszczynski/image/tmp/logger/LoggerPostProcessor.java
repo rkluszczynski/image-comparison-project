@@ -7,7 +7,9 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 
-/** LoggerPostProcessor => Custom Spring BeanPostProcessor **/
+/**
+ * LoggerPostProcessor => Custom Spring BeanPostProcessor *
+ */
 public class LoggerPostProcessor implements BeanPostProcessor {
 
     public Object postProcessAfterInitialization(Object bean, String beanName) throws

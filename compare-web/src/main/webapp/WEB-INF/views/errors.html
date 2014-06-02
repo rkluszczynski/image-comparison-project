@@ -1,18 +1,18 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="common/header :: head" />
+<head th:replace="common/header :: head"/>
 
 <body>
-    <div id="body-header" th:include="common/header :: header" />
+<div id="body-header" th:include="common/header :: header"/>
 
-    <h3>Errors:</h3>
-    <ul class="errorBlock">
-        <li class="error" th:each="error : ${errors}" th:text="${error}">error text</li>
-    </ul>
+<h3>Errors:</h3>
+<ul class="errorBlock">
+    <li class="error" th:each="error : ${errors}" th:text="${error}">error text</li>
+</ul>
 
-    Return to <a href="redirect">main page</a>.
+Return to <a href="redirect">main page</a>.
 
-    <div id="body-footer" th:include="common/footer :: footer" />
+<div id="body-footer" th:include="common/footer :: footer"/>
 
 </body>
 </html>

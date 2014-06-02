@@ -27,13 +27,13 @@ import static pl.info.rkluszczynski.image.web.config.WebConstants.*;
 
 @Controller
 @RequestMapping(value = COMPARE_CONTEXT_PATH__ROOT)
-public class UploadController {
+class UploadController {
 
-    private static Logger logger = LoggerFactory.getLogger(UploadController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
 
     @Autowired
-    @Qualifier("imageTasksManager")
-    private TasksManager imageTasksManager;
+    @Qualifier("detectorTasksManager")
+    private TasksManager detectorTasksManager;
     @Autowired
     private TemplateImageResources templateImageResources;
     @Autowired
@@ -86,10 +86,9 @@ public class UploadController {
             sessionData.setTemplateImage(templateImageResources.getTemplateImage(templateFilename));
             session.setAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, sessionData);
 
-            imageTasksManager.submitImageTask(
+            detectorTasksManager.submitDetectorTask(
                     imageProcessingOperations.getProcessingTask(operation, sessionData)
             );
-
         } catch (IOException e) {
             logger.warn("Could not read image from inputStream!", e);
             return "redirect:/error";

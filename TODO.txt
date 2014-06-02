@@ -7,11 +7,5 @@ bezsensownych dopasowań,
 c) uwzględniamy (jeśli to pomoże) na etapie a) lub b) "dominantę
 kolorystyczną".
 
-2. Znajdujemy określoną liczbę N najlepszych wyników z uwzględnieniem
-różnych lokalizacji na obrazie (np. co "pół" wzorca).
-Sparametryzować "pół" wzorca.
-
-
-
 4. Przystosowujemy aplikację do uruchamiania w wersji standalone.
 

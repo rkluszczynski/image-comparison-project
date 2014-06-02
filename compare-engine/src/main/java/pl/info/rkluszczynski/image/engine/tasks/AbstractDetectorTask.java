@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticData;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
-import pl.info.rkluszczynski.image.engine.tasks.strategy.BestMatchStrategy;
 
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
@@ -13,62 +12,59 @@ import java.math.BigDecimal;
 import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.CALCULATION_TIME;
 import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.ERROR_RESULT;
 
-abstract
-public class AbstractTask extends Thread {
-    protected static Logger logger = LoggerFactory.getLogger(AbstractTask.class);
+abstract class AbstractDetectorTask extends Thread implements PatternDetectorTask {
+    static final Logger logger = LoggerFactory.getLogger(AbstractDetectorTask.class);
 
-    protected final SessionData sessionData;
+    private final SessionData sessionData;
+    final DetectorTaskInput taskInput;
 
-    protected BestMatchStrategy matchStrategy;
-    private double taskProgress;
+    private double taskProgressValue;
 
-
-    protected AbstractTask(SessionData sessionData) {
+    AbstractDetectorTask(SessionData sessionData, DetectorTaskInput taskInput) {
         this.sessionData = sessionData;
-    }
-
-    SessionData getSessionData() {
-        return sessionData;
+        this.taskInput = taskInput;
     }
 
     @Override
     public void run() {
         super.run();
+
         long startMillis = System.currentTimeMillis();
-        taskProgress = 0.;
+        taskProgressValue = 0.;
         try {
             processImageData(sessionData.getInputImage(), sessionData.getTemplateImage());
+            storeResults();
         } catch (Exception e) {
             saveResultImage(null);
             saveStatisticData(ERROR_RESULT, BigDecimal.ZERO);
             logger.error("Error occurred during execution task: " + getClass().getName(), e);
         }
-        taskProgress = 1.;
+        taskProgressValue = 1.;
         long processMillis = System.currentTimeMillis() - startMillis;
+
         saveStatisticData(CALCULATION_TIME, BigDecimal.valueOf(processMillis));
     }
 
-    abstract
-    protected void processImageData(BufferedImage inputImage, BufferedImage templateImage);
+    public SessionData getSessionData() {
+        return sessionData;
+    }
 
-    protected void saveResultImage(BufferedImage resultImage) {
+    DetectorTaskInput getTaskInput() {
+        return taskInput;
+    }
+
+    void saveResultImage(BufferedImage resultImage) {
         sessionData.setResultImage(resultImage);
     }
 
+    @Override
     public void saveStatisticData(ImageStatisticNames statisticName, BigDecimal statisticValue) {
         sessionData.getImageStatistics().add(new ImageStatisticData(statisticName, statisticValue));
     }
 
+    @Override
     public void addProgress(double progressValue) {
-        taskProgress += progressValue;
-        sessionData.setProgress((long) (Math.min(Math.max(taskProgress, 0.), 1.) * 100.));
-    }
-
-    public BestMatchStrategy getMatchStrategy() {
-        return matchStrategy;
-    }
-
-    public void setMatchStrategy(BestMatchStrategy matchStrategy) {
-        this.matchStrategy = matchStrategy;
+        taskProgressValue += progressValue;
+        sessionData.setProgress((long) (Math.min(Math.max(taskProgressValue, 0.), 1.) * 100.));
     }
 }

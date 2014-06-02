@@ -4,13 +4,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class InputImageFile {
 
-	private MultipartFile imageFile;
+    private MultipartFile imageFile;
 
-	public MultipartFile getImageFile() {
-		return imageFile;
-	}
+    public MultipartFile getImageFile() {
+        return imageFile;
+    }
 
-	public void setImageFile(MultipartFile imageFile) {
-		this.imageFile = imageFile;
-	}
+    public void setImageFile(MultipartFile imageFile) {
+        this.imageFile = imageFile;
+    }
 }

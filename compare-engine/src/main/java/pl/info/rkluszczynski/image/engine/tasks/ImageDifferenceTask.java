@@ -11,9 +11,11 @@ import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.DIFFERENCE_COEFFICIENT;
 
 
-public class ImageDifferenceTask extends AbstractTask {
+public class ImageDifferenceTask extends AbstractDetectorTask {
+    private BufferedImage resultImage;
+
     public ImageDifferenceTask(SessionData sessionData) {
-        super(sessionData);
+        super(sessionData, null);
     }
 
     @Override
@@ -22,7 +24,7 @@ public class ImageDifferenceTask extends AbstractTask {
         int compromiseHeight = Math.max(inputImage.getHeight(), templateImage.getHeight());
         logger.debug("Scaling images to width={} and height={}", compromiseWidth, compromiseHeight);
 
-        BufferedImage resultImage = new BufferedImage(compromiseWidth, compromiseHeight, TYPE_INT_RGB);
+        resultImage = new BufferedImage(compromiseWidth, compromiseHeight, TYPE_INT_RGB);
         BufferedImage scaledInputImage =
                 ImageSizeScaleProcessor.getExactScaledImage(inputImage, compromiseWidth, compromiseHeight);
         BufferedImage scaledTemplateImage =
@@ -45,7 +47,10 @@ public class ImageDifferenceTask extends AbstractTask {
         }
         resultImage = ImageSizeScaleProcessor.getExactScaledImage(resultImage,
                 inputImage.getWidth(), inputImage.getHeight());
+    }
 
+    @Override
+    public void storeResults() {
         saveResultImage(resultImage);
         saveStatisticData(DIFFERENCE_COEFFICIENT, calculateDifferenceCoefficient(resultImage));
     }

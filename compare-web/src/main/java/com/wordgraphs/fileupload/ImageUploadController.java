@@ -17,22 +17,20 @@ import java.util.List;
 import java.util.Set;
 
 @Controller
-public class ImageUploadController
-{
-    private Integer IMAGE_MAX_SIZE = 500000;
+class ImageUploadController {
+    private final Integer IMAGE_MAX_SIZE = 500000;
 
     // list of allowed file extensions
-    private Set<String> allowedImageExtensions;
+    private final Set<String> allowedImageExtensions;
 
     // list of error messages
-    private List<String> errorMsgs = new ArrayList<String>();
+    private List<String> errorMsgs = new ArrayList<>();
 
-    private String uploadsDir = "/opt/tomcat/uploads";
+    private final String uploadsDir = "/opt/tomcat/uploads";
 
-    public ImageUploadController()
-    {
+    public ImageUploadController() {
         // define allowed file extensions
-        this.allowedImageExtensions = new HashSet<String>();
+        this.allowedImageExtensions = new HashSet<>();
         this.allowedImageExtensions.add("png");
         this.allowedImageExtensions.add("jpg");
         this.allowedImageExtensions.add("gif");
@@ -43,8 +41,7 @@ public class ImageUploadController
 
     // this method is prepares the upload form for display
     @RequestMapping(value = "/image/showUploadForm", method = RequestMethod.GET)
-    public ModelAndView showUploadForm()
-    {
+    public ModelAndView showUploadForm() {
         clearMessages();
         ModelAndView mv = new ModelAndView("image/uploadForm");
 
@@ -56,31 +53,26 @@ public class ImageUploadController
 
     // this method will be called when the upload form is submitted
     @RequestMapping(value = "/image/upload", method = RequestMethod.POST)
-    public ModelAndView upload (UploadItem uploadItem, HttpSession session) throws Exception
-    {
+    public ModelAndView upload(UploadItem uploadItem, HttpSession session) {
         // the state of the controller is preserved between calls, so each time
         // we need to clear the error messages from the previous submission
         clearMessages();
         CommonsMultipartFile file = uploadItem.getFileData();
 
-        try
-        {
-            if (file.getSize() > 0)
-            {
+        try {
+            if (file.getSize() > 0) {
                 InputStream inputStream = file.getInputStream();
 
                 String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
-                if (!this.allowedImageExtensions.contains(extension))
-                {
+                if (!this.allowedImageExtensions.contains(extension)) {
                     ModelAndView mv = new ModelAndView("image/uploadForm");
                     addError("Incorrect file extension - only JPG, GIF, PNG i TIFF are allowed");
                     mv.addObject("errorMsgs", this.errorMsgs);
                     return mv;
                 }
 
-                if (file.getSize() > IMAGE_MAX_SIZE)
-                {
+                if (file.getSize() > IMAGE_MAX_SIZE) {
                     ModelAndView mv = new ModelAndView("image/uploadForm");
                     addError("File size too large");
                     mv.addObject("errorMsgs", this.errorMsgs);
@@ -91,27 +83,22 @@ public class ImageUploadController
 
                 OutputStream outputStream = new FileOutputStream(fileName);
 
-                int readBytes = 0;
+                int readBytes;
                 byte[] buffer = new byte[IMAGE_MAX_SIZE];
-                while ((readBytes = inputStream.read(buffer, 0, 10000)) != -1)
-                {
+                while ((readBytes = inputStream.read(buffer, 0, 10000)) != -1) {
                     outputStream.write(buffer, 0, readBytes);
                 }
                 outputStream.close();
                 inputStream.close();
 
                 return new ModelAndView("redirect:/image/uploadSuccess");
-            }
-            else
-            {
+            } else {
                 ModelAndView mv = new ModelAndView("image/uploadForm");
                 addError("The file is empty");
-                mv.addObject("errorMsgs",this.errorMsgs);
+                mv.addObject("errorMsgs", this.errorMsgs);
                 return mv;
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             addError("Unknown error while uploading the file: " + e.getMessage());
             ModelAndView mv = new ModelAndView("image/uploadForm");
             mv.addObject("errorMsgs", this.errorMsgs);
@@ -130,13 +117,11 @@ public class ImageUploadController
 //        return image;
 //    }
 
-    private void clearMessages()
-    {
-        this.errorMsgs = new ArrayList<String>();
+    private void clearMessages() {
+        this.errorMsgs = new ArrayList<>();
     }
 
-    public void addError(String msg)
-    {
+    void addError(String msg) {
         this.errorMsgs.add(msg);
     }
 }

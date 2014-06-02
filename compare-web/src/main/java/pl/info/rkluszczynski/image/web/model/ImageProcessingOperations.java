@@ -6,11 +6,15 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
-import pl.info.rkluszczynski.image.engine.tasks.CopyInputImageTask;
-import pl.info.rkluszczynski.image.engine.tasks.Im4JavaTask;
+import pl.info.rkluszczynski.image.engine.model.comparators.PatternMatchComparator;
+import pl.info.rkluszczynski.image.engine.model.comparators.PixelDifferenceComparator;
+import pl.info.rkluszczynski.image.engine.model.metrics.*;
+import pl.info.rkluszczynski.image.engine.model.strategies.BestLocalizedMatchStrategy;
+import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
+import pl.info.rkluszczynski.image.engine.tasks.DetectorTaskInput;
+import pl.info.rkluszczynski.image.engine.tasks.Im4JavaCompareTask;
 import pl.info.rkluszczynski.image.engine.tasks.ImageDifferenceTask;
-import pl.info.rkluszczynski.image.engine.tasks.PyramidCompareTask;
-import pl.info.rkluszczynski.image.engine.tasks.metrics.*;
+import pl.info.rkluszczynski.image.engine.tasks.MultiScaleStageTask;
 import pl.info.rkluszczynski.image.web.model.view.ImageOperationItem;
 
 import java.util.List;
@@ -19,7 +23,7 @@ import java.util.List;
 @Qualifier("imageProcessingOperations")
 public class ImageProcessingOperations {
 
-    private List<ImageOperationItem> operationDescriptions;
+    private final List<ImageOperationItem> operationDescriptions;
 
     public ImageProcessingOperations() {
         operationDescriptions = Lists.newArrayList(
@@ -32,9 +36,8 @@ public class ImageProcessingOperations {
                 new ImageOperationItem("imagePatternMatchingGrayScaleRMSE", "Image pattern matching (grayscale metric: RMSE)"),
                 new ImageOperationItem("imagePatternMatchingGrayScalePSNR", "Image pattern matching (grayscale metric: PSNR)"),
 
-//                new ImageOperationItem("testingIm4Java", "Testing im4java convert"),
-                new ImageOperationItem("imageDifference", "Calculate image difference"),
-                new ImageOperationItem("copyInputImage", "Copy input image after delay")
+                new ImageOperationItem("testingIm4JavaCompare", "Testing im4java compare operation"),
+                new ImageOperationItem("imageDifference", "Calculate image difference")
         );
     }
 
@@ -43,27 +46,35 @@ public class ImageProcessingOperations {
     }
 
     public Runnable getProcessingTask(String operation, SessionData sessionData) {
+        PatternMatchStrategy matchStrategy = new BestLocalizedMatchStrategy();
+        PatternMatchComparator matchComparator = new PixelDifferenceComparator();
+
         switch (operation) {
-            case "copyInputImage":
-                return new CopyInputImageTask(sessionData);
+            case "imagePatternMatchingColorABS":
+                return new MultiScaleStageTask(sessionData,
+                        new DetectorTaskInput(new AbsColorMetric(), matchComparator, matchStrategy));
+            case "imagePatternMatchingColorRMSE":
+                return new MultiScaleStageTask(sessionData,
+                        new DetectorTaskInput(new RMSEColorMetric(), matchComparator, matchStrategy));
+            case "imagePatternMatchingColorNRMSE":
+                return new MultiScaleStageTask(sessionData,
+                        new DetectorTaskInput(new NRMSEColorMetric(), matchComparator, matchStrategy));
+            case "imagePatternMatchingColorPSNR":
+                return new MultiScaleStageTask(sessionData,
+                        new DetectorTaskInput(new PSNRColorMetric(), matchComparator, matchStrategy));
+            case "imagePatternMatchingGrayScaleABS":
+                return new MultiScaleStageTask(sessionData,
+                        new DetectorTaskInput(new AbsAveGrayScaleMetric(), matchComparator, matchStrategy));
+            case "imagePatternMatchingGrayScaleRMSE":
+                return new MultiScaleStageTask(sessionData,
+                        new DetectorTaskInput(new RMSEAveGrayScaleMetric(), matchComparator, matchStrategy));
+            case "imagePatternMatchingGrayScalePSNR":
+                return new MultiScaleStageTask(sessionData,
+                        new DetectorTaskInput(new PSNRAveGrayScaleMetric(), matchComparator, matchStrategy));
+            case "testingIm4JavaCompare":
+                return new Im4JavaCompareTask(sessionData);
             case "imageDifference":
                 return new ImageDifferenceTask(sessionData);
-            case "testingIm4Java":
-                return new Im4JavaTask(sessionData);
-            case "imagePatternMatchingColorABS":
-                return new PyramidCompareTask(sessionData, new AbsColorMetric());
-            case "imagePatternMatchingColorRMSE":
-                return new PyramidCompareTask(sessionData, new RMSEColorMetric());
-            case "imagePatternMatchingColorNRMSE":
-                return new PyramidCompareTask(sessionData, new NRMSEColorMetric());
-            case "imagePatternMatchingColorPSNR":
-                return new PyramidCompareTask(sessionData, new PSNRColorMetric());
-            case "imagePatternMatchingGrayScaleABS":
-                return new PyramidCompareTask(sessionData, new AbsAveGrayScaleMetric());
-            case "imagePatternMatchingGrayScaleRMSE":
-                return new PyramidCompareTask(sessionData, new RMSEAveGrayScaleMetric());
-            case "imagePatternMatchingGrayScalePSNR":
-                return new PyramidCompareTask(sessionData, new PSNRAveGrayScaleMetric());
             default:
                 return null;
         }

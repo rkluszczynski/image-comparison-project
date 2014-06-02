@@ -10,19 +10,19 @@ import pl.info.rkluszczynski.image.web.model.InputImageFile;
 @Qualifier(value = "inputImageFileValidator")
 public class InputImageFileValidator implements Validator {
 
-	@Override
-	public boolean supports(Class<?> arg0) {
-		return false;
-	}
+    @Override
+    public boolean supports(Class<?> arg0) {
+        return false;
+    }
 
-	@Override
-	public void validate(Object imageFile, Errors errors) {
-		InputImageFile file = (InputImageFile) imageFile;
+    @Override
+    public void validate(Object imageFile, Errors errors) {
+        InputImageFile file = (InputImageFile) imageFile;
 
-		if (file.getImageFile().getSize() == 0) {
-			errors.rejectValue("file",
+        if (file.getImageFile().getSize() == 0) {
+            errors.rejectValue("file",
                     "uploadForm.selectFile",
-					"Please select a file with size > 0!");
-		}
-	}
+                    "Please select a file with size > 0!");
+        }
+    }
 }

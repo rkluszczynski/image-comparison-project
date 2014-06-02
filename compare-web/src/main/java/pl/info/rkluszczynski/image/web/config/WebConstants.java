@@ -9,8 +9,8 @@ public interface WebConstants {
     String STATUS_CONTEXT_PATH__ROOT = "/status";
     String COMPARE_CONTEXT_PATH__ROOT = "/compare";
 
-    String COMPARE_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE    = "userSessionInputImage";
+    String COMPARE_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE = "userSessionInputImage";
     String COMPARE_CONTEXT_PATH__USER_SESSION_TEMPLATE_IMAGE = "userSessionTemplateImage";
-    String COMPARE_CONTEXT_PATH__USER_SESSION_RESULT_IMAGE   = "userSessionResultImage";
+    String COMPARE_CONTEXT_PATH__USER_SESSION_RESULT_IMAGE = "userSessionResultImage";
 
 }

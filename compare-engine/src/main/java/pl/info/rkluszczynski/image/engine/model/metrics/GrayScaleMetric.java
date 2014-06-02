@@ -1,11 +1,10 @@
-package pl.info.rkluszczynski.image.engine.tasks.metrics;
+package pl.info.rkluszczynski.image.engine.model.metrics;
 
 import java.awt.*;
 
-abstract
-public class GrayScaleMetric implements Metric {
+abstract class GrayScaleMetric implements Metric {
 
-    public int getGrayScaleAverageValue(Color colorPixel) {
+    int getGrayScaleAverageValue(Color colorPixel) {
         int grayValue = colorPixel.getRed();
         grayValue += colorPixel.getGreen();
         grayValue += colorPixel.getBlue();

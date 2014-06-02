@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-public class ErrorController {
+class ErrorController {
 
     @RequestMapping(value = "/error", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, Object> handleError(HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("status", request.getAttribute("javax.servlet.error.status_code"));
         map.put("reason", request.getAttribute("javax.servlet.error.message"));
         return map;

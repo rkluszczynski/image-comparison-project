@@ -24,7 +24,7 @@ import static pl.info.rkluszczynski.image.web.config.WebConstants.USER_SESSION_A
 @RequestMapping(value = COMPARE_CONTEXT_PATH__ROOT)
 public class MainController {
 
-    private static final String PAGE_HEADER_TEXT = "Image Comparison Test Page";
+    private static final String PAGE_HEADER_TEXT = "Image Pattern Detection Test Page";
 
     @Autowired
     private TemplateImageResources templateImageResources;

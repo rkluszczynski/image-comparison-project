@@ -21,9 +21,9 @@ import static pl.info.rkluszczynski.image.web.config.WebConstants.*;
 
 @Controller
 @RequestMapping(value = COMPARE_CONTEXT_PATH__ROOT)
-public class StreamController {
+class StreamController {
 
-    private static Logger logger = LoggerFactory.getLogger(StreamController.class);
+    private static final Logger logger = LoggerFactory.getLogger(StreamController.class);
 
     private static final String DEFAULT_BUFFERED_IMAGE_OUTPUT_FORMAT = "PNG";
     private static final int DEFAULT_INPUT_AND_TEMPLATE_IMAGE_STREAMING_WIDTH = 600;

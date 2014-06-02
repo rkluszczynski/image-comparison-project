@@ -33,7 +33,6 @@ public class CircularProjections {
 //            }
 
 
-
     }
 
     public static void cissq(BufferedImage bufferedImage) {

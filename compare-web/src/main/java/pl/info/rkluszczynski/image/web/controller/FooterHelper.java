@@ -10,8 +10,7 @@ import java.util.Date;
 /**
  * Created by Rafal on 2014-06-01.
  */
-final
-public class FooterHelper {
+final class FooterHelper {
 
     public static void setWebApplicationBuildDate(Model model) {
         model.addAttribute("webAppBuildDate", resolveWebAppBuildDate());
@@ -23,8 +22,7 @@ public class FooterHelper {
         try {
             dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             File archiveFile = new File(
-                    new FooterHelper()
-                            .getClass()
+                    FooterHelper.class
                             .getProtectionDomain()
                             .getCodeSource()
                             .getLocation()

@@ -4,8 +4,8 @@ image-comparison-project
 Project with Simple Image Web Application.
 
 
-Application features worth to be remembered
--------------------------------------------
+Features worth being remembered
+-------------------------------
 
 * We are ignoring pixels with low alpha channel value in template images, 
 so it is possible to use any shape of template image (be aware of possible

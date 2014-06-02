@@ -22,13 +22,13 @@ import java.util.Map;
 @Component
 @Qualifier("templateImageResources")
 public class TemplateImageResources {
-    private static Logger logger = LoggerFactory.getLogger(TemplateImageResources.class);
+    private static final Logger logger = LoggerFactory.getLogger(TemplateImageResources.class);
 
-    private Map<String, Resource> imageResourcesMap;
-    private List<TemplateResourceItem> imageResourcesItems;
+    private final Map<String, Resource> imageResourcesMap;
+    private final List<TemplateResourceItem> imageResourcesItems;
 
     @Autowired
-    public TemplateImageResources(ApplicationContext applicationContext) {
+    private TemplateImageResources(ApplicationContext applicationContext) {
         imageResourcesMap = Maps.newHashMap();
         imageResourcesItems = Lists.newArrayList();
         try {

@@ -15,8 +15,7 @@ public class LastModifiedTestApp {
         System.out.println(System.getProperty("user.dir"));
         try {
             File jarFile = new File(
-                    new LastModifiedTestApp()
-                            .getClass()
+                    LastModifiedTestApp.class
                             .getProtectionDomain()
                             .getCodeSource()
                             .getLocation()
@@ -30,7 +29,7 @@ public class LastModifiedTestApp {
 
             SimpleDateFormat dt1 = new SimpleDateFormat("E yyyy-MM-dd HH:mm");
             System.out.println(dt1.format(date));
-        } catch (URISyntaxException e1) {
+        } catch (URISyntaxException ignored) {
         }
     }
 }

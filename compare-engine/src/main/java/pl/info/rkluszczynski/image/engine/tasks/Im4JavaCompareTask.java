@@ -12,11 +12,13 @@ import java.math.BigDecimal;
 import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.DUMMY_RESULT;
 
 
-public class Im4JavaCompareTask extends AbstractTask {
+public class Im4JavaCompareTask extends AbstractDetectorTask {
     private static String GLOBAL_SEARCH_PATH = "D:\\PortableApps\\ImageMagick-6.8.8-7";
 
+    private BufferedImage resultImage;
+
     public Im4JavaCompareTask(SessionData sessionData) {
-        super(sessionData);
+        super(sessionData, null);
         logger.info(">>> " + sessionData.getSession().getServletContext().getContextPath());
 //        ProcessStarter.setGlobalSearchPath(GLOBAL_SEARCH_PATH);
     }
@@ -41,8 +43,11 @@ public class Im4JavaCompareTask extends AbstractTask {
         } catch (Exception e) {
             logger.error("Unable to run convert operation!", e);
         }
-        BufferedImage resultImage = s2b.getImage();
+        resultImage = s2b.getImage();
+    }
 
+    @Override
+    public void storeResults() {
         saveResultImage(resultImage);
         saveStatisticData(DUMMY_RESULT, BigDecimal.ZERO);
     }

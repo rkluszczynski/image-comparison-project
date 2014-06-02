@@ -4,17 +4,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class AbstractNameAndValueItem implements Comparable {
-    private static Logger logger = LoggerFactory.getLogger(AbstractNameAndValueItem.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractNameAndValueItem.class);
 
-    protected String name;
-    protected String value;
+    private String name;
+    private String value;
 
-    public AbstractNameAndValueItem(String name, String value) {
+    AbstractNameAndValueItem(String name, String value) {
         this.name = name;
         this.value = value;
     }
 
-    public String getValue() {
+    String getValue() {
         return value;
     }
 
@@ -22,7 +22,7 @@ class AbstractNameAndValueItem implements Comparable {
         this.value = value;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 

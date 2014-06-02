@@ -15,7 +15,7 @@ public class SessionData implements Serializable {
     private BufferedImage templateImage;
     private BufferedImage resultImage;
 
-    private List<ImageStatisticData> imageStatistics = Lists.newArrayList();
+    private final List<ImageStatisticData> imageStatistics = Lists.newArrayList();
     private long progress;
 
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import static pl.info.rkluszczynski.image.web.config.WebConstants.STATUS_CONTEXT_PATH__ROOT;
 
 @Controller
-public class StatusController {
+class StatusController {
 
     @RequestMapping(value = STATUS_CONTEXT_PATH__ROOT, method = RequestMethod.GET)
     @ResponseBody

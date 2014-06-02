@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-@Qualifier("imageTasksManager")
+@Qualifier("detectorTasksManager")
 public class TasksManager {
-    private static Logger logger = LoggerFactory.getLogger(TasksManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(TasksManager.class);
 
     private static final long HALF_AN_HOUR_IN_MS = 30L * 60L * 1000L;
 
@@ -26,13 +26,13 @@ public class TasksManager {
     @Qualifier("taskExecutor")
     private ThreadPoolTaskExecutor taskExecutor;
 
-    private List<AbstractTask> abstractTasksList = Lists.newArrayList();
+    private final List<AbstractDetectorTask> detectorTasksList = Lists.newArrayList();
 
 
-    public void submitImageTask(Runnable imageProcessingTask) {
+    public void submitDetectorTask(Runnable imageDetectorTask) {
         try {
-            abstractTasksList.add((AbstractTask) imageProcessingTask);
-            taskExecutor.execute(imageProcessingTask);
+            detectorTasksList.add((AbstractDetectorTask) imageDetectorTask);
+            taskExecutor.execute(imageDetectorTask);
         } catch (Exception e) {
             logger.info("Problem with task submission", e);
         }
@@ -40,12 +40,12 @@ public class TasksManager {
 
     @Scheduled(initialDelay = HALF_AN_HOUR_IN_MS, fixedRate = HALF_AN_HOUR_IN_MS)
     public void performExecutorsCleanUp() {
-        Set<AbstractTask> tasksToClean = Sets.newHashSet();
+        Set<AbstractDetectorTask> tasksToClean = Sets.newHashSet();
 
         logger.info("Executing executors clean up");
-        for (AbstractTask abstractTask : abstractTasksList) {
-            HttpSession session = abstractTask.getSessionData().getSession();
-            String sessionUniqueKey = abstractTask.getSessionData().getDataUniqueKey();
+        for (AbstractDetectorTask detectorTask : detectorTasksList) {
+            HttpSession session = detectorTask.getSessionData().getSession();
+            String sessionUniqueKey = session.getId();
 
             boolean taskCleanMarker = false;
             try {
@@ -67,14 +67,14 @@ public class TasksManager {
             }
 
             if (taskCleanMarker) {
-                abstractTask.interrupt();
+                detectorTask.interrupt();
 
-                tasksToClean.add(abstractTask);
+                tasksToClean.add(detectorTask);
                 logger.debug("Session {} invalidated and task interrupted and cleaned", sessionUniqueKey);
             }
         }
 
-        abstractTasksList.removeAll(tasksToClean);
+        detectorTasksList.removeAll(tasksToClean);
         logger.debug("Executors clean up done");
     }
 }

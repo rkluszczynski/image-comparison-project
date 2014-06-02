@@ -12,11 +12,11 @@ import static pl.info.rkluszczynski.image.engine.model.enums.ImageSizesRatio.*;
 
 final
 public class ImageInformationResolver {
-    protected static Logger logger = LoggerFactory.getLogger(ImageInformationResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImageInformationResolver.class);
 
-    private static double ratioValueOf2x3 = 2. / 3.;
-    private static double ratioValueOf3x4 = 3. / 4.;
-    private static double ratioValueOf1x1 = 1.;
+    private static final double ratioValueOf2x3 = 2. / 3.;
+    private static final double ratioValueOf3x4 = 3. / 4.;
+    private static final double ratioValueOf1x1 = 1.;
 
     public static ImageSizesRatio detectClosestSizesRatio(BufferedImage image) {
         double smallerImageSize = (double) Math.min(image.getWidth(), image.getHeight());

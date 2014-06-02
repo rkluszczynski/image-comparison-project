@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.engine.tasks.pyramid;
+package pl.info.rkluszczynski.image.engine.tasks.multiscale;
 
 import com.google.common.collect.Maps;
 import pl.info.rkluszczynski.image.engine.model.enums.ImageOrientation;

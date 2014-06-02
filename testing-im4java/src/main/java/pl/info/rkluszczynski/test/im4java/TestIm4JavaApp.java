@@ -45,7 +45,7 @@ public class TestIm4JavaApp {
         IMOperation op = new IMOperation();
         op.addImage();                        // input
         op.addImage("png:-");                 // output: stdout
-        String[] images = new String[] {
+        String[] images = new String[]{
                 RESOURCE_RELATIVE_PATH + "input/image.png"
         };
 
