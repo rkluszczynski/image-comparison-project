@@ -10,21 +10,15 @@ import java.util.List;
 public class SessionData implements Serializable {
 
     private final HttpSession session;
-
+    private final List<ImageStatisticData> imageStatistics = Lists.newArrayList();
     private BufferedImage inputImage;
     private BufferedImage templateImage;
     private BufferedImage resultImage;
-
-    private final List<ImageStatisticData> imageStatistics = Lists.newArrayList();
     private long progress;
 
 
     public SessionData(HttpSession session) {
         this.session = session;
-    }
-
-    public String getDataUniqueKey() {
-        return session.getId();
     }
 
     public HttpSession getSession() {
@@ -60,12 +54,11 @@ public class SessionData implements Serializable {
         this.resultImage = resultImage;
     }
 
+    public long getProgress() {
+        return progress;
+    }
 
     public void setProgress(long progress) {
         this.progress = progress;
-    }
-
-    public long getProgress() {
-        return progress;
     }
 }

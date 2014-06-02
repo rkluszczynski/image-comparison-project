@@ -4,9 +4,8 @@ import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
-import pl.info.rkluszczynski.image.engine.model.metrics.Metric;
-import pl.info.rkluszczynski.image.engine.tasks.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.PatternDetectorTask;
+import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.DrawHelper;
 
@@ -14,14 +13,15 @@ import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import static pl.info.rkluszczynski.image.engine.config.EngineConstants.MAX_PIXEL_VALUE;
+
 /**
  * Created by Rafal on 2014-05-27.
  */
-public class LowestScaleScoresStrategy implements PatternMatchStrategy {
+public class LowestScaleScoresStrategy extends AbstractMatchStrategy {
     private static final Logger logger = LoggerFactory.getLogger(LowestScaleScoresStrategy.class);
 
     private final Map<Double, MatchScore> scaleResults = Maps.newHashMap();
-
 
     @Override
     public void initialize(DetectorTaskInput taskInput) {
@@ -48,10 +48,10 @@ public class LowestScaleScoresStrategy implements PatternMatchStrategy {
                     bestScaleMatch.getHeightPosition(),
                     bestScaleMatch.getScaleFactor());
 
-            double matchDivisor = 256. * patternWrapper.countNonAlphaPixels();
-            Metric metric = taskInput.getMetric();
+            double matchDivisor = MAX_PIXEL_VALUE * patternWrapper.countNonAlphaPixels();
 
-            ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s", metric.getName()));
+            ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s",
+                    taskInput.getComparator().getMetric().getName()));
             detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(bestScaleMatch.getScore() / matchDivisor));
 
             DrawHelper.drawRectangleOnImage(resultImage,

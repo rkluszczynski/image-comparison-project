@@ -8,13 +8,14 @@ import org.springframework.stereotype.Component;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.model.comparators.PatternMatchComparator;
 import pl.info.rkluszczynski.image.engine.model.comparators.PixelDifferenceComparator;
+import pl.info.rkluszczynski.image.engine.model.comparators.SequenceComparator;
 import pl.info.rkluszczynski.image.engine.model.metrics.*;
 import pl.info.rkluszczynski.image.engine.model.strategies.BestLocalizedMatchStrategy;
 import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
-import pl.info.rkluszczynski.image.engine.tasks.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.Im4JavaCompareTask;
 import pl.info.rkluszczynski.image.engine.tasks.ImageDifferenceTask;
 import pl.info.rkluszczynski.image.engine.tasks.MultiScaleStageTask;
+import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.web.model.view.ImageOperationItem;
 
 import java.util.List;
@@ -46,31 +47,21 @@ public class ImageProcessingOperations {
     }
 
     public Runnable getProcessingTask(String operation, SessionData sessionData) {
-        PatternMatchStrategy matchStrategy = new BestLocalizedMatchStrategy();
-        PatternMatchComparator matchComparator = new PixelDifferenceComparator();
-
         switch (operation) {
             case "imagePatternMatchingColorABS":
-                return new MultiScaleStageTask(sessionData,
-                        new DetectorTaskInput(new AbsColorMetric(), matchComparator, matchStrategy));
+                return createMultiScaleTask(sessionData, new AbsColorMetric());
             case "imagePatternMatchingColorRMSE":
-                return new MultiScaleStageTask(sessionData,
-                        new DetectorTaskInput(new RMSEColorMetric(), matchComparator, matchStrategy));
+                return createMultiScaleTask(sessionData, new RMSEColorMetric());
             case "imagePatternMatchingColorNRMSE":
-                return new MultiScaleStageTask(sessionData,
-                        new DetectorTaskInput(new NRMSEColorMetric(), matchComparator, matchStrategy));
+                return createMultiScaleTask(sessionData, new NRMSEColorMetric());
             case "imagePatternMatchingColorPSNR":
-                return new MultiScaleStageTask(sessionData,
-                        new DetectorTaskInput(new PSNRColorMetric(), matchComparator, matchStrategy));
+                return createMultiScaleTask(sessionData, new PSNRColorMetric());
             case "imagePatternMatchingGrayScaleABS":
-                return new MultiScaleStageTask(sessionData,
-                        new DetectorTaskInput(new AbsAveGrayScaleMetric(), matchComparator, matchStrategy));
+                return createMultiScaleTask(sessionData, new AbsAveGrayScaleMetric());
             case "imagePatternMatchingGrayScaleRMSE":
-                return new MultiScaleStageTask(sessionData,
-                        new DetectorTaskInput(new RMSEAveGrayScaleMetric(), matchComparator, matchStrategy));
+                return createMultiScaleTask(sessionData, new RMSEAveGrayScaleMetric());
             case "imagePatternMatchingGrayScalePSNR":
-                return new MultiScaleStageTask(sessionData,
-                        new DetectorTaskInput(new PSNRAveGrayScaleMetric(), matchComparator, matchStrategy));
+                return createMultiScaleTask(sessionData, new PSNRAveGrayScaleMetric());
             case "testingIm4JavaCompare":
                 return new Im4JavaCompareTask(sessionData);
             case "imageDifference":
@@ -87,5 +78,14 @@ public class ImageProcessingOperations {
                 return input.getValue().equalsIgnoreCase(operation);
             }
         }).isEmpty();
+    }
+
+    private Runnable createMultiScaleTask(SessionData sessionData, Metric metric) {
+        PatternMatchStrategy matchStrategy = new BestLocalizedMatchStrategy();
+        PatternMatchComparator matchComparator = new SequenceComparator(
+                new PixelDifferenceComparator(metric)
+        );
+        DetectorTaskInput detectorTaskInput = new DetectorTaskInput(matchComparator, matchStrategy);
+        return new MultiScaleStageTask(sessionData, detectorTaskInput);
     }
 }

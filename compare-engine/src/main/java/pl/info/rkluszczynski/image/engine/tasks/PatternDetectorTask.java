@@ -1,6 +1,7 @@
 package pl.info.rkluszczynski.image.engine.tasks;
 
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
+import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
@@ -10,9 +11,14 @@ import java.math.BigDecimal;
  */
 public interface PatternDetectorTask {
 
+    void prepareImageData(BufferedImage inputImage, BufferedImage patternImage);
+
+    void initialize(TasksProperties tasksProperties);
+
     void processImageData(BufferedImage inputImage, BufferedImage patternImage);
 
     void storeResults();
+
 
     void addProgress(double progress);
 

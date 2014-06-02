@@ -18,6 +18,9 @@ public class ImageInformationResolver {
     private static final double ratioValueOf3x4 = 3. / 4.;
     private static final double ratioValueOf1x1 = 1.;
 
+    private ImageInformationResolver() {
+    }
+
     public static ImageSizesRatio detectClosestSizesRatio(BufferedImage image) {
         double smallerImageSize = (double) Math.min(image.getWidth(), image.getHeight());
         double biggerImageSize = (double) Math.max(image.getWidth(), image.getHeight());
@@ -55,8 +58,5 @@ public class ImageInformationResolver {
         }
         logger.info("Detected orientation {} for width {} and height {}", result.name(), image.getWidth(), image.getHeight());
         return result;
-    }
-
-    private ImageInformationResolver() {
     }
 }

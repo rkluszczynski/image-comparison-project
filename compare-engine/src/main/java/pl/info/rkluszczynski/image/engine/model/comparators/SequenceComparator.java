@@ -1,7 +1,7 @@
 package pl.info.rkluszczynski.image.engine.model.comparators;
 
 import com.google.common.collect.Lists;
-import pl.info.rkluszczynski.image.engine.tasks.DetectorTaskInput;
+import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 
 import java.awt.image.BufferedImage;
 import java.util.Collection;
@@ -9,10 +9,11 @@ import java.util.Collection;
 /**
  * Created by Rafal on 2014-06-02.
  */
-public class SequenceComparator extends AbstractPatternComparator {
+public class SequenceComparator extends AbstractMatchComparator {
     private final Collection<PatternMatchComparator> matchComparators;
 
     public SequenceComparator(PatternMatchComparator... matchComparators) {
+        super(null);
         this.matchComparators = Lists.newArrayList(matchComparators);
     }
 

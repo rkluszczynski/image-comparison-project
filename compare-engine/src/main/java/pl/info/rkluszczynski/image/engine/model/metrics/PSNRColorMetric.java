@@ -2,6 +2,8 @@ package pl.info.rkluszczynski.image.engine.model.metrics;
 
 import java.awt.*;
 
+import static pl.info.rkluszczynski.image.engine.config.EngineConstants.MAX_PIXEL_VALUE;
+
 public class PSNRColorMetric implements Metric {
     private double mseMetricValue;
     private double pixelMaxValue;
@@ -10,7 +12,7 @@ public class PSNRColorMetric implements Metric {
     @Override
     public void resetValue() {
         mseMetricValue = 0.;
-        pixelMaxValue = 255.;
+        pixelMaxValue = MAX_PIXEL_VALUE;
         pixelsNumber = 0.;
     }
 

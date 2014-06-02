@@ -1,6 +1,7 @@
 package pl.info.rkluszczynski.image.engine.tasks;
 
 import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 import pl.info.rkluszczynski.image.engine.utils.ImageSizeScaleProcessor;
 
 import java.awt.*;
@@ -16,6 +17,14 @@ public class ImageDifferenceTask extends AbstractDetectorTask {
 
     public ImageDifferenceTask(SessionData sessionData) {
         super(sessionData, null);
+    }
+
+    @Override
+    public void prepareImageData(BufferedImage inputImage, BufferedImage patternImage) {
+    }
+
+    @Override
+    public void initialize(TasksProperties tasksProperties) {
     }
 
     @Override

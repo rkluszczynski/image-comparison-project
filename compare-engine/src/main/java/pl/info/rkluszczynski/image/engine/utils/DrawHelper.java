@@ -9,6 +9,9 @@ import java.awt.image.BufferedImage;
 final
 public class DrawHelper {
 
+    private DrawHelper() {
+    }
+
     static
     public void drawRectangleOnImage(BufferedImage image, int leftPosition, int topPosition, int width, int height, double scaleFactor) {
         drawRectangleOnImage(image, leftPosition, topPosition, width, height, scaleFactor, null);
@@ -37,8 +40,5 @@ public class DrawHelper {
                     scaledTopPosition + height / 2);
         }
         graph.dispose();
-    }
-
-    private DrawHelper() {
     }
 }

@@ -2,9 +2,9 @@ package pl.info.rkluszczynski.image.engine.model.metrics;
 
 import java.awt.*;
 
-public class PSNRAveGrayScaleMetric extends GrayScaleMetric {
-    private final double pixelMaxValue = 256.;
+import static pl.info.rkluszczynski.image.engine.config.EngineConstants.MAX_PIXEL_VALUE;
 
+public class PSNRAveGrayScaleMetric extends GrayScaleMetric {
     private double mseMetricValue;
     private double pixelsNumber;
 
@@ -16,7 +16,7 @@ public class PSNRAveGrayScaleMetric extends GrayScaleMetric {
 
     @Override
     public double calculateValue() {
-        return 20. * Math.log10(pixelMaxValue) - 10. * Math.log10(mseMetricValue / pixelsNumber);
+        return 20. * Math.log10(MAX_PIXEL_VALUE) - 10. * Math.log10(mseMetricValue / pixelsNumber);
     }
 
     @Override

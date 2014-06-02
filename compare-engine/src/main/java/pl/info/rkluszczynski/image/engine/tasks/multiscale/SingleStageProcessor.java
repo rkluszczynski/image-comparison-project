@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.engine.model.comparators.PatternMatchComparator;
 import pl.info.rkluszczynski.image.engine.model.strategies.MatchScore;
 import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
-import pl.info.rkluszczynski.image.engine.tasks.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.PatternDetectorTask;
+import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 
 import java.awt.image.BufferedImage;
@@ -18,6 +18,16 @@ public class SingleStageProcessor {
     private final BufferedImage inputImage;
     private final DetectorTaskInput taskInput;
     private final double scaleFactor;
+
+    private SingleStageProcessor(BufferedImage inputImage, DetectorTaskInput taskInput, double scaleFactor) {
+        this.inputImage = inputImage;
+        this.taskInput = taskInput;
+        this.scaleFactor = scaleFactor;
+    }
+
+    public static SingleStageProcessor create(BufferedImage inputImage, DetectorTaskInput taskInput, double scaleFactor) {
+        return new SingleStageProcessor(inputImage, taskInput, scaleFactor);
+    }
 
     public void process(PatternDetectorTask detectorTask, double fullScaleStepProgress) {
         BufferedImageWrapper patternWrapper = taskInput.getPatternWrapper();
@@ -33,17 +43,5 @@ public class SingleStageProcessor {
             }
             detectorTask.addProgress(oneRowProgress);
         }
-    }
-
-
-    public static SingleStageProcessor create(BufferedImage inputImage, DetectorTaskInput taskInput, double scaleFactor) {
-        return new SingleStageProcessor(inputImage, taskInput, scaleFactor);
-    }
-
-
-    private SingleStageProcessor(BufferedImage inputImage, DetectorTaskInput taskInput, double scaleFactor) {
-        this.inputImage = inputImage;
-        this.taskInput = taskInput;
-        this.scaleFactor = scaleFactor;
     }
 }

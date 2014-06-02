@@ -12,6 +12,8 @@ public enum ImageStatisticNames {
     METRIC_VALUE_NRMSE_GS("Grayscale metric NRMSE value"),
     METRIC_VALUE_PSNR_GS("Grayscale metric PSNR value"),
 
+    METRIC_VALUE_SUM("Sum of used metrics"),
+
     DIFFERENCE_COEFFICIENT("Difference coefficient value"),
 
     DUMMY_RESULT("Dummy result value"),

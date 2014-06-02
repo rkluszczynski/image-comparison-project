@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 
 import javax.servlet.http.HttpSession;
 import java.util.Calendar;
@@ -19,19 +20,22 @@ import java.util.Set;
 @Qualifier("detectorTasksManager")
 public class TasksManager {
     private static final Logger logger = LoggerFactory.getLogger(TasksManager.class);
-
     private static final long HALF_AN_HOUR_IN_MS = 30L * 60L * 1000L;
+
+    private final List<AbstractDetectorTask> detectorTasksList = Lists.newArrayList();
 
     @Autowired
     @Qualifier("taskExecutor")
     private ThreadPoolTaskExecutor taskExecutor;
 
-    private final List<AbstractDetectorTask> detectorTasksList = Lists.newArrayList();
+    @Autowired
+    private TasksProperties tasksProperties;
 
-
-    public void submitDetectorTask(Runnable imageDetectorTask) {
+    public void submitDetectorTask(Runnable detectorTask) {
         try {
-            detectorTasksList.add((AbstractDetectorTask) imageDetectorTask);
+            AbstractDetectorTask imageDetectorTask = (AbstractDetectorTask) detectorTask;
+            imageDetectorTask.initialize(tasksProperties);
+            detectorTasksList.add(imageDetectorTask);
             taskExecutor.execute(imageDetectorTask);
         } catch (Exception e) {
             logger.info("Problem with task submission", e);

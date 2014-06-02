@@ -1,12 +1,10 @@
 package pl.info.rkluszczynski.image.engine.model.strategies;
 
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.metrics.Metric;
-import pl.info.rkluszczynski.image.engine.tasks.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.PatternDetectorTask;
+import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.DrawHelper;
 
@@ -15,26 +13,25 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import static pl.info.rkluszczynski.image.engine.config.EngineConstants.*;
+
 /**
  * Created by Rafal on 2014-05-27.
  */
 public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
-    protected static Logger logger = LoggerFactory.getLogger(BestLocalizedMatchStrategy.class);
-
-    private static final int BEST_RESULTS_COUNT = 7;
 
     private double offset;
     private int bestResultsWidth;
     private int bestResultsHeight;
     private MatchScore[][] bestResultsTable;
 
-
     @Override
     public void initialize(DetectorTaskInput taskInput) {
         BufferedImageWrapper patternWrapper = taskInput.getPatternWrapper();
         BufferedImage resultImage = taskInput.getResultImage();
 
-        offset = 0.5 * Math.min(patternWrapper.getWidth(), patternWrapper.getHeight());
+        offset = BEST_LOCALIZED_SCORES_OFFSET > 0 ? BEST_LOCALIZED_SCORES_OFFSET
+                : BEST_LOCALIZED_SCORES_MIN_SIZE_RATIO * Math.min(patternWrapper.getWidth(), patternWrapper.getHeight());
         bestResultsWidth = (int) (resultImage.getWidth() / offset) + 1;
         bestResultsHeight = (int) (resultImage.getHeight() / offset) + 1;
         bestResultsTable = new MatchScore[bestResultsWidth][bestResultsHeight];
@@ -70,14 +67,15 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
 
         BufferedImageWrapper patternWrapper = taskInput.getPatternWrapper();
         BufferedImage resultImage = taskInput.getResultImage();
-        Metric metric = taskInput.getMetric();
+        Metric metric = taskInput.getComparator().getMetric();
 
-        for (int i = 0; i < BEST_RESULTS_COUNT; ++i) {
+        for (int i = 0; i < BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT; ++i) {
             MatchScore item = results.get(i);
 
-            double matchDivisor = 256. * patternWrapper.countNonAlphaPixels();
+            double matchDivisor = MAX_PIXEL_VALUE * patternWrapper.countNonAlphaPixels();
 
-            ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s", metric.getName()));
+            ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s",
+                    metric == null ? "SUM" : metric.getName()));
             detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(item.getScore() / matchDivisor));
 
             DrawHelper.drawRectangleOnImage(resultImage,

@@ -2,6 +2,8 @@ package pl.info.rkluszczynski.image.engine.tasks;
 
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
+import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
+import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 import pl.info.rkluszczynski.image.engine.tasks.multiscale.SingleStageProcessor;
 import pl.info.rkluszczynski.image.engine.tasks.multiscale.SizeSupplier;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
@@ -14,38 +16,50 @@ import java.awt.image.BufferedImage;
  * Created by Rafal on 2014-06-01.
  */
 public class MultiScaleStageTask extends AbstractDetectorTask {
-    private final int SCALE_PYRAMID_DEPTH = 1;
-    private final double SCALE_PYRAMID_RATIO = .1;
 
-    private final double FULL_SCALE_STEP_PROGRESS = 1. / (2. * SCALE_PYRAMID_DEPTH + 1.);
+    private Integer multistageScaleDepth;
+    private Double multistageScaleRatio;
+    private double fullScaleStepProgress;
 
+    private BufferedImage resultImage;
+    private BufferedImageWrapper patternWrapper;
 
     public MultiScaleStageTask(SessionData sessionData, DetectorTaskInput taskInput) {
         super(sessionData, taskInput);
     }
 
     @Override
-    public void processImageData(BufferedImage inputImage, BufferedImage patternImage) {
+    public void prepareImageData(BufferedImage inputImage, BufferedImage patternImage) {
         int[] suggestedProcessingSizes = SizeSupplier.getSuggestedProcessingSizes(inputImage);
         int compromiseWidth = suggestedProcessingSizes[0];
         int compromiseHeight = suggestedProcessingSizes[1];
         logger.info("Determined image scaling to width={} and height={}", compromiseWidth, compromiseHeight);
 
-        BufferedImage resultImage = ImageHelper.scaleImagePixelsValue(
+        resultImage = ImageHelper.scaleImagePixelsValue(
                 ImageSizeScaleProcessor.getExactScaledImage(inputImage, compromiseWidth, compromiseHeight), 0.7);
-        BufferedImageWrapper patternImageWrapper = new BufferedImageWrapper(patternImage);
+        patternWrapper = new BufferedImageWrapper(patternImage);
 
-        getTaskInput().setPatternWrapper(patternImageWrapper);
-        getTaskInput().setResultImage(resultImage);
-        // TODO: move initialization in some automatically executed place
-        getTaskInput().getStrategy().initialize(taskInput);
-        getTaskInput().getComparator().initialize(taskInput);
+        DetectorTaskInput taskInput = getTaskInput();
+        taskInput.setPatternWrapper(patternWrapper);
+        taskInput.setResultImage(resultImage);
+    }
 
+    @Override
+    public void initialize(TasksProperties tasksProperties) {
+        multistageScaleDepth = tasksProperties.getMultistageScaleDepth();
+        multistageScaleRatio = tasksProperties.getMultistageScaleRatio();
+        fullScaleStepProgress = 1. / (2. * multistageScaleDepth + 1.);
+    }
 
-        logger.info("Number of non alpha pixels: {} (out of {})", patternImageWrapper.countNonAlphaPixels(),
+    @Override
+    public void processImageData(BufferedImage inputImage, BufferedImage patternImage) {
+        int compromiseWidth = resultImage.getWidth();
+        int compromiseHeight = resultImage.getHeight();
+
+        logger.info("Number of non alpha pixels: {} (out of {})", patternWrapper.countNonAlphaPixels(),
                 patternImage.getWidth() * patternImage.getHeight());
-        for (int scaleStep = -SCALE_PYRAMID_DEPTH; scaleStep <= SCALE_PYRAMID_DEPTH; ++scaleStep) {
-            double scaleFactor = 1. + scaleStep * SCALE_PYRAMID_RATIO;
+        for (int scaleStep = -multistageScaleDepth; scaleStep <= multistageScaleDepth; ++scaleStep) {
+            double scaleFactor = 1. + scaleStep * multistageScaleRatio;
 
             int pyramidStepDesiredWidth = (int) (scaleFactor * compromiseWidth);
             int pyramidStepDesiredHeight = (int) (scaleFactor * compromiseHeight);
@@ -58,17 +72,17 @@ public class MultiScaleStageTask extends AbstractDetectorTask {
             SingleStageProcessor singleStageProcessor = SingleStageProcessor.create(
                     scaledInputImage, getTaskInput(), scaleFactor
             );
-            singleStageProcessor.process(
-                    this,
-                    FULL_SCALE_STEP_PROGRESS);
+            singleStageProcessor.process(this, fullScaleStepProgress);
         }
     }
 
     @Override
     public void storeResults() {
-        PatternMatchStrategy matchStrategy = getTaskInput().getStrategy();
-        matchStrategy.applyBestScores(this, getTaskInput());
+        DetectorTaskInput taskInput = getTaskInput();
 
-        saveResultImage(getTaskInput().getResultImage());
+        PatternMatchStrategy matchStrategy = taskInput.getStrategy();
+        matchStrategy.applyBestScores(this, taskInput);
+
+        saveResultImage(taskInput.getResultImage());
     }
 }

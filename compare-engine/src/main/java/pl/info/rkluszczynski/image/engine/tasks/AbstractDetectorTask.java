@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticData;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
@@ -13,10 +14,10 @@ import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.CALCU
 import static pl.info.rkluszczynski.image.engine.model.ImageStatisticNames.ERROR_RESULT;
 
 abstract class AbstractDetectorTask extends Thread implements PatternDetectorTask {
-    static final Logger logger = LoggerFactory.getLogger(AbstractDetectorTask.class);
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractDetectorTask.class);
 
+    private final DetectorTaskInput taskInput;
     private final SessionData sessionData;
-    final DetectorTaskInput taskInput;
 
     private double taskProgressValue;
 
@@ -32,6 +33,8 @@ abstract class AbstractDetectorTask extends Thread implements PatternDetectorTas
         long startMillis = System.currentTimeMillis();
         taskProgressValue = 0.;
         try {
+            prepareImageData(sessionData.getInputImage(), sessionData.getTemplateImage());
+            getTaskInput().initialize();
             processImageData(sessionData.getInputImage(), sessionData.getTemplateImage());
             storeResults();
         } catch (Exception e) {
@@ -45,15 +48,15 @@ abstract class AbstractDetectorTask extends Thread implements PatternDetectorTas
         saveStatisticData(CALCULATION_TIME, BigDecimal.valueOf(processMillis));
     }
 
-    public SessionData getSessionData() {
+    protected SessionData getSessionData() {
         return sessionData;
     }
 
-    DetectorTaskInput getTaskInput() {
+    protected DetectorTaskInput getTaskInput() {
         return taskInput;
     }
 
-    void saveResultImage(BufferedImage resultImage) {
+    protected void saveResultImage(BufferedImage resultImage) {
         sessionData.setResultImage(resultImage);
     }
 

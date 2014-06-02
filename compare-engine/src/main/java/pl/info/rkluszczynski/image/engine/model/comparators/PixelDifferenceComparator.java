@@ -1,17 +1,23 @@
 package pl.info.rkluszczynski.image.engine.model.comparators;
 
 import pl.info.rkluszczynski.image.engine.model.metrics.Metric;
+import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class PixelDifferenceComparator extends AbstractPatternComparator {
+public class PixelDifferenceComparator extends AbstractMatchComparator {
+
+    public PixelDifferenceComparator(Metric metric) {
+        super(metric);
+    }
 
     @Override
     public double calculatePatternMatchScore(BufferedImage image, int widthPosition, int heightPosition) {
+        Metric metric = getMetric();
+        DetectorTaskInput taskInput = getTaskInput();
         BufferedImageWrapper patternWrapper = taskInput.getPatternWrapper();
-        Metric metric = taskInput.getMetric();
 
         assert metric != null;
         metric.resetValue();

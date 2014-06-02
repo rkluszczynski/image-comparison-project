@@ -5,6 +5,7 @@ import org.im4java.core.IMOperation;
 import org.im4java.core.Stream2BufferedImage;
 import org.im4java.process.StandardStream;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
@@ -21,6 +22,14 @@ public class Im4JavaCompareTask extends AbstractDetectorTask {
         super(sessionData, null);
         logger.info(">>> " + sessionData.getSession().getServletContext().getContextPath());
 //        ProcessStarter.setGlobalSearchPath(GLOBAL_SEARCH_PATH);
+    }
+
+    @Override
+    public void prepareImageData(BufferedImage inputImage, BufferedImage patternImage) {
+    }
+
+    @Override
+    public void initialize(TasksProperties tasksProperties) {
     }
 
     @Override
