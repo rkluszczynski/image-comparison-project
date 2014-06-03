@@ -18,7 +18,7 @@ import static pl.info.rkluszczynski.image.web.config.WebConstants.WEB_APPLICATIO
 @Configuration
 @ComponentScan(basePackages = {WEB_APPLICATION_BASE_PACKAGE})
 @Import(value = {EngineJavaConfig.class})
-@PropertySource(value = "classpath:properties/image-web.properties")
+@PropertySource(value = "classpath:compare-web.properties")
 class WebJavaConfig {
     private static Logger logger = LoggerFactory.getLogger(WebJavaConfig.class);
 

@@ -34,13 +34,12 @@ public class TemplateImageResources {
         try {
             Resource[] resources = applicationContext.getResources("classpath:image-data/patterns/*");
             for (Resource resource : resources) {
-                Resource templateResource = resource;
-                String templateResourceFilename = resource.getFilename();
-                String templateResourceName = resource.getFilename();
+                String resourceFilename = resource.getFilename();
+                String resourceName = resource.getFilename();
 
                 logger.info("RESOURCE: {}", resource.getURL().toString());
-                imageResourcesMap.put(templateResourceFilename, templateResource);
-                imageResourcesItems.add(new TemplateResourceItem(templateResourceFilename, templateResourceName));
+                imageResourcesMap.put(resourceFilename, resource);
+                imageResourcesItems.add(new TemplateResourceItem(resourceFilename, resourceName));
             }
         } catch (IOException e) {
             logger.warn("Problem with loading image patterns resources!", e);
