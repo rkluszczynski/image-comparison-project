@@ -16,7 +16,8 @@ public class PSNRAveGrayScaleMetric extends GrayScaleMetric {
 
     @Override
     public double calculateValue() {
-        return 20. * Math.log10(MAX_PIXEL_VALUE) - 10. * Math.log10(mseMetricValue / pixelsNumber);
+//        return 20. * Math.log10(MAX_PIXEL_VALUE) - 10. * Math.log10(mseMetricValue / pixelsNumber);
+        return 20. * Math.log10(MAX_PIXEL_VALUE / Math.sqrt(mseMetricValue / pixelsNumber));
     }
 
     @Override

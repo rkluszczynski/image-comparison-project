@@ -1,8 +1,8 @@
 package pl.info.rkluszczynski.image.engine.model.strategies;
 
 import com.google.common.collect.Lists;
+import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
-import pl.info.rkluszczynski.image.engine.model.metrics.Metric;
 import pl.info.rkluszczynski.image.engine.tasks.PatternDetectorTask;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
@@ -67,7 +67,7 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
 
         BufferedImageWrapper patternWrapper = taskInput.getPatternWrapper();
         BufferedImage resultImage = taskInput.getResultImage();
-        Metric metric = taskInput.getComparator().getMetric();
+        CompareMetric metric = taskInput.getComparator().getMetric();
 
         for (int i = 0; i < BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT; ++i) {
             MatchScore item = results.get(i);

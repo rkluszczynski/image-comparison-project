@@ -1,6 +1,6 @@
 package pl.info.rkluszczynski.image.engine.model.comparators;
 
-import pl.info.rkluszczynski.image.engine.model.metrics.Metric;
+import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 
 import java.awt.image.BufferedImage;
@@ -18,6 +18,6 @@ public interface PatternMatchComparator {
             int heightPosition
     );
 
-    Metric getMetric();
+    CompareMetric getMetric();
 
 }

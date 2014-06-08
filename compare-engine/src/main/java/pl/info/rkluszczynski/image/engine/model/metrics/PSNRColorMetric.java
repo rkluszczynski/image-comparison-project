@@ -1,10 +1,12 @@
 package pl.info.rkluszczynski.image.engine.model.metrics;
 
+import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
+
 import java.awt.*;
 
 import static pl.info.rkluszczynski.image.engine.config.EngineConstants.MAX_PIXEL_VALUE;
 
-public class PSNRColorMetric implements Metric {
+public class PSNRColorMetric implements CompareMetric {
     private double mseMetricValue;
     private double pixelMaxValue;
     private double pixelsNumber;
@@ -18,7 +20,8 @@ public class PSNRColorMetric implements Metric {
 
     @Override
     public double calculateValue() {
-        return 20. * Math.log10(pixelMaxValue) - 10. * Math.log10(mseMetricValue / (3. * pixelsNumber));
+//        return 20. * Math.log10(pixelMaxValue) - 10. * Math.log10(mseMetricValue / (3. * pixelsNumber));
+        return 20. * Math.log10(pixelMaxValue / Math.sqrt(mseMetricValue / (3. * pixelsNumber)));
     }
 
     @Override

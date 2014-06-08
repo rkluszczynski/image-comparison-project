@@ -1,6 +1,6 @@
 package pl.info.rkluszczynski.image.engine.model.comparators;
 
-import pl.info.rkluszczynski.image.engine.model.metrics.Metric;
+import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 
 /**
@@ -8,10 +8,10 @@ import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
  */
 abstract class AbstractMatchComparator implements PatternMatchComparator {
 
-    private final Metric metric;
+    private final CompareMetric metric;
     private DetectorTaskInput taskInput;
 
-    public AbstractMatchComparator(Metric metric) {
+    public AbstractMatchComparator(CompareMetric metric) {
         this.metric = metric;
     }
 
@@ -24,7 +24,7 @@ abstract class AbstractMatchComparator implements PatternMatchComparator {
         return taskInput;
     }
 
-    public Metric getMetric() {
+    public CompareMetric getMetric() {
         return metric;
     }
 

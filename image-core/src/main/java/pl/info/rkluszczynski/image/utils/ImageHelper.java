@@ -13,6 +13,9 @@ import java.awt.image.WritableRaster;
 final
 public class ImageHelper {
 
+    private ImageHelper() {
+    }
+
     public static BufferedImage deepCopy(BufferedImage bufferedImage) {
         ColorModel colorModel = bufferedImage.getColorModel();
         boolean isAlphaPremultiplied = colorModel.isAlphaPremultiplied();
@@ -36,8 +39,5 @@ public class ImageHelper {
             }
         }
         return image;
-    }
-
-    private ImageHelper() {
     }
 }

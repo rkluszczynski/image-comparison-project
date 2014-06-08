@@ -1,8 +1,10 @@
 package pl.info.rkluszczynski.image.engine.model.metrics;
 
+import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
+
 import java.awt.*;
 
-public class AbsColorMetric implements Metric {
+public class AbsColorMetric implements CompareMetric {
     private double metricValue;
 
     @Override

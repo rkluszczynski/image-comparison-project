@@ -1,8 +1,8 @@
-package pl.info.rkluszczynski.image.engine.model.metrics;
+package pl.info.rkluszczynski.image.compare.metric;
 
 import java.awt.*;
 
-public interface Metric {
+public interface CompareMetric {
 
     public void resetValue();
 

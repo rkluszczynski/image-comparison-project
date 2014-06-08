@@ -1,8 +1,10 @@
 package pl.info.rkluszczynski.image.engine.model.metrics;
 
+import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
+
 import java.awt.*;
 
-abstract class GrayScaleMetric implements Metric {
+abstract class GrayScaleMetric implements CompareMetric {
 
     int getGrayScaleAverageValue(Color colorPixel) {
         int grayValue = colorPixel.getRed();

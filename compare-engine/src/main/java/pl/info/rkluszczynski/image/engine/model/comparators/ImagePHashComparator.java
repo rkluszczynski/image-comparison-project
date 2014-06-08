@@ -7,9 +7,9 @@ import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class PixelDifferenceComparator extends AbstractMatchComparator {
+public class ImagePHashComparator extends AbstractMatchComparator {
 
-    public PixelDifferenceComparator(CompareMetric metric) {
+    public ImagePHashComparator(CompareMetric metric) {
         super(metric);
     }
 

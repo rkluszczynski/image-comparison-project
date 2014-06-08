@@ -5,6 +5,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.model.comparators.PatternMatchComparator;
 import pl.info.rkluszczynski.image.engine.model.comparators.PixelDifferenceComparator;
@@ -80,7 +81,7 @@ public class ImageProcessingOperations {
         }).isEmpty();
     }
 
-    private Runnable createMultiScaleTask(SessionData sessionData, Metric metric) {
+    private Runnable createMultiScaleTask(SessionData sessionData, CompareMetric metric) {
         PatternMatchStrategy matchStrategy = new BestLocalizedMatchStrategy();
         PatternMatchComparator matchComparator = new SequenceComparator(
                 new PixelDifferenceComparator(metric)
