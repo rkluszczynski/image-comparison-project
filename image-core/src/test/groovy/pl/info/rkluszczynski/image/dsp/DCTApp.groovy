@@ -1,20 +1,16 @@
 package pl.info.rkluszczynski.image.dsp
 
-import spock.lang.Specification
-
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 
-class DCTTest extends Specification {
-    ImgMod34a imgMod34a
+/**
+ * Created by Rafal on 2014-06-08.
+ */
+class DCTApp {
 
-    void setup() {
-        imgMod34a = new ImgMod34a()
-    }
-
-    def "should forward and inverse be id"() {
-        when:
+    public static void main(String[] args) {
         println System.getProperty("user.dir")
+        def imgMod34a = new ImgMod34a()
 
         BufferedImage image = ImageIO.read(new File("image-core/src/test/resources/happy-face.png"))
         def imageToIntArray = ImageDataConverter.bufferedImageToIntArray(image)
@@ -27,8 +23,5 @@ class DCTTest extends Specification {
 //        def orgImgArray = ImgMod34a.processImg(dctIntArray, image.getWidth(), image.getHeight())
 //        def orgImage = ImageDataConverter.intArrayToBufferedImage(orgImgArray)
 //        ImageIO.write(orgImage, "PNG", new File("image-core/src/test/resources/stage2.png"))
-
-        then:
-        true
     }
 }
