@@ -31,7 +31,7 @@ public class EngineJavaConfig {
     }
 
     @Bean
-    public PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
+    public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
 }

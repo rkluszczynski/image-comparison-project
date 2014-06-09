@@ -1,7 +1,5 @@
 package pl.info.rkluszczynski.image.engine.model.metrics;
 
-import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
-
 import java.awt.*;
 
 public class RMSEColorMetric implements CompareMetric {
@@ -16,7 +14,7 @@ public class RMSEColorMetric implements CompareMetric {
 
     @Override
     public double calculateValue() {
-        return Math.sqrt(metricValue / pixelsNumber);
+        return Math.sqrt(metricValue / (3. * pixelsNumber));
     }
 
     @Override
@@ -24,7 +22,7 @@ public class RMSEColorMetric implements CompareMetric {
         metricValue += ((inputPixel.getRed() - templatePixel.getRed()) * (inputPixel.getRed() - templatePixel.getRed()));
         metricValue += ((inputPixel.getGreen() - templatePixel.getGreen()) * (inputPixel.getGreen() - templatePixel.getGreen()));
         metricValue += ((inputPixel.getBlue() - templatePixel.getBlue()) * (inputPixel.getBlue() - templatePixel.getBlue()));
-        pixelsNumber += 3;
+        ++pixelsNumber;
     }
 
     @Override

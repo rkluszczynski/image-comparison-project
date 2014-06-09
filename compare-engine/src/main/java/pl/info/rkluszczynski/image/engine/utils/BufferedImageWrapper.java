@@ -52,4 +52,8 @@ public class BufferedImageWrapper {
         }
         return nonAlphaPixels;
     }
+
+    public BufferedImage getBufferedImage() {
+        return image;
+    }
 }

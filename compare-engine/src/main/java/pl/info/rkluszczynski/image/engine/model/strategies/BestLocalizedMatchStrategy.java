@@ -1,8 +1,12 @@
 package pl.info.rkluszczynski.image.engine.model.strategies;
 
 import com.google.common.collect.Lists;
-import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pl.info.rkluszczynski.image.compare.phash.HammingDistance;
+import pl.info.rkluszczynski.image.compare.phash.ImagePHash03;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
+import pl.info.rkluszczynski.image.engine.model.metrics.CompareMetric;
 import pl.info.rkluszczynski.image.engine.tasks.PatternDetectorTask;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
@@ -19,11 +23,14 @@ import static pl.info.rkluszczynski.image.engine.config.EngineConstants.*;
  * Created by Rafal on 2014-05-27.
  */
 public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
+    protected static final Logger logger = LoggerFactory.getLogger(BestLocalizedMatchStrategy.class);
 
     private double offset;
     private int bestResultsWidth;
     private int bestResultsHeight;
     private MatchScore[][] bestResultsTable;
+
+    ImagePHash03 imagePHash = new ImagePHash03();
 
     @Override
     public void initialize(DetectorTaskInput taskInput) {
@@ -69,8 +76,20 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
         BufferedImage resultImage = taskInput.getResultImage();
         CompareMetric metric = taskInput.getComparator().getMetric();
 
-        for (int i = 0; i < BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT; ++i) {
+        int bestScoresAmount = Math.min(BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT, results.size());
+        String patternPHash = imagePHash.getHash(patternWrapper.getBufferedImage());
+        for (int i = 0; i < bestScoresAmount; ++i) {
             MatchScore item = results.get(i);
+
+            String subImagePHash = determineSubImagePHash(resultImage,
+                    item.getWidthPosition(), item.getHeightPosition(),
+                    patternWrapper.getWidth(), patternWrapper.getHeight(), item.getScaleFactor());
+            int distance = HammingDistance.calculate(patternPHash, subImagePHash);
+            logger.info("Distance {} with pHashes {}, {} at position ({}, {})", distance,
+                    patternPHash, subImagePHash, item.getWidthPosition(), item.getHeightPosition());
+            if (distance > 23) {
+                continue;
+            }
 
             double matchDivisor = MAX_PIXEL_VALUE * patternWrapper.countNonAlphaPixels();
 
@@ -84,5 +103,17 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
                     item.getScaleFactor(),
                     String.valueOf(i));
         }
+    }
+
+    private String determineSubImagePHash(BufferedImage image, int widthPosition, int heightPosition, int width, int height, double scaleFactor) {
+        double invertedScaleFactor = 1. / scaleFactor;
+        int scaledLeftPosition = (int) (invertedScaleFactor * widthPosition);
+        int scaledTopPosition = (int) (invertedScaleFactor * heightPosition);
+        int scaledWidth = (int) (invertedScaleFactor * width);
+        int scaledHeight = (int) (invertedScaleFactor * height);
+
+        BufferedImage subImage = image.getSubimage(scaledLeftPosition, scaledTopPosition, scaledWidth, scaledHeight);
+        String hash = imagePHash.getHash(subImage);
+        return hash;
     }
 }

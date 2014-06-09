@@ -7,5 +7,6 @@
  * Papers:
  * - http://www.ijirset.com/upload/december/3-Comparison%20of%20Digital%20Image.pdf
  * - https://ece.uwaterloo.ca/~z70wang/publications/iciar10.pdf
+ * - http://www.cs.tut.fi/~foi/papers/VPQM2006-SADCT_Color_Denoising.pdf
  */
 package pl.info.rkluszczynski.image.compare.phash;

@@ -12,7 +12,7 @@ class DCTApp {
         println System.getProperty("user.dir")
         def imgMod34a = new ImgMod34a()
 
-        BufferedImage image = ImageIO.read(new File("image-core/src/test/resources/happy-face.png"))
+        BufferedImage image = ImageIO.read(new File("image-core/src/test/resources/happy-face-scaled.png"))
         def imageToIntArray = ImageDataConverter.bufferedImageToIntArray(image)
         def img = imgMod34a.processImg(imageToIntArray, image.getWidth(), image.getHeight())
 

@@ -1,27 +1,27 @@
 package pl.info.rkluszczynski.image.compare.phash;
 
-import javax.imageio.ImageIO;
+import org.imgscalr.Scalr;
+
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
-import java.io.InputStream;
 
 /*
  * pHash-like image hash.
  * Author: Elliot Shepherd (elliot@jarofworms.com
  * Based On: http://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html
  */
-public class ImagePHash {
+public class ImagePHash02 {
 
     private int size = 32;
     private int smallerSize = 8;
 
-    public ImagePHash() {
+    public ImagePHash02() {
         initCoefficients();
     }
 
-    public ImagePHash(int size, int smallerSize) {
+    public ImagePHash02(int size, int smallerSize) {
         this.size = size;
         this.smallerSize = smallerSize;
 
@@ -39,16 +39,15 @@ public class ImagePHash {
     }
 
     // Returns a 'binary string' (like. 001010111011100010) which is easy to do a hamming distance on.
-    public String getHash(InputStream is) throws Exception {
-        BufferedImage img = ImageIO.read(is);
-
-		/* 1. Reduce size.
+    public String getHash(BufferedImage image) throws Exception {
+        /* 1. Reduce size.
          * Like Average Hash, pHash starts with a small image.
 		 * However, the image is larger than 8x8; 32x32 is a good size.
 		 * This is really done to simplify the DCT computation and not
 		 * because it is needed to reduce the high frequencies.
 		 */
-        img = resize(img, size, size);
+        BufferedImage img = Scalr.resize(image,
+                Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, size, size);
 
 		/* 2. Reduce color.
 		 * The image is reduced to a grayscale just to further simplify
