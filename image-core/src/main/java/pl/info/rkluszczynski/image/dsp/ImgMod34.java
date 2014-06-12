@@ -313,8 +313,7 @@ class ImgMod34 {//implements ImgIntfc02{
         for (int row = 0; row < imgRows; row++) {
             double[] theRow = extractRow(colorPlane, row);
 
-            double[] theXform = new double[theRow.length];
-            DCT.forward(theRow, theXform);
+            double[] theXform = DCT.forward(theRow);
 
             //Insert the transformed row into the color plane.
             // The row now contains spectral data.
@@ -327,8 +326,7 @@ class ImgMod34 {//implements ImgIntfc02{
         for (int col = 0; col < imgCols; col++) {
             double[] theCol = extractCol(colorPlane, col);
 
-            double[] theXform = new double[theCol.length];
-            DCT.forward(theCol, theXform);
+            double[] theXform = DCT.forward(theCol);
 
             insertCol(colorPlane, theXform, col);
         }//end for loop
@@ -383,9 +381,7 @@ class ImgMod34 {//implements ImgIntfc02{
         for (int col = 0; col < imgCols; col++) {
             double[] theXform = extractCol(colorPlane, col);
 
-            double[] theCol = new double[theXform.length];
-            //Now transform it back
-            DCT.inverse(theXform, theCol);
+            double[] theCol = DCT.inverse(theXform);
 
             //Insert it back into the color plane.
             insertCol(colorPlane, theCol, col);
@@ -397,9 +393,7 @@ class ImgMod34 {//implements ImgIntfc02{
         for (int row = 0; row < imgRows; row++) {
             double[] theXform = extractRow(colorPlane, row);
 
-            double[] theRow = new double[theXform.length];
-            //Now transform it back
-            DCT.inverse(theXform, theRow);
+            double[] theRow = DCT.inverse(theXform);
 
             //Insert it back in
             insertRow(colorPlane, theRow, row);

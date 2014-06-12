@@ -284,8 +284,7 @@ class ImgMod34a implements ImgIntfc02 {
         for (int row = 0; row < imgRows; row++) {
             double[] theRow = extractRow(colorPlane, row);
 
-            double[] theXform = new double[theRow.length];
-            DCT.forward(theRow, theXform);
+            double[] theXform = DCT.forward(theRow);
 
             //Insert the transformed row into the color plane.
             // The row now contains spectral data.
@@ -298,8 +297,7 @@ class ImgMod34a implements ImgIntfc02 {
         for (int col = 0; col < imgCols; col++) {
             double[] theCol = extractCol(colorPlane, col);
 
-            double[] theXform = new double[theCol.length];
-            DCT.forward(theCol, theXform);
+            double[] theXform = DCT.forward(theCol);
 
             insertCol(colorPlane, theXform, col);
         }//end for loop

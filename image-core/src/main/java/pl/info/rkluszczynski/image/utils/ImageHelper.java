@@ -1,7 +1,9 @@
 package pl.info.rkluszczynski.image.utils;
 
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 
@@ -40,4 +42,11 @@ public class ImageHelper {
         }
         return image;
     }
+
+    public static BufferedImage convertImageToGrayScale(BufferedImage bufferedImage) {
+        return colorConvertOperation.filter(bufferedImage, null);
+    }
+
+    private static ColorConvertOp colorConvertOperation =
+            new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
 }

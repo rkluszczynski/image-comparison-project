@@ -12,8 +12,9 @@ public class DCT {
     private DCT() {
     }
 
-    public static void forward(double[] x, double[] y) {
+    public static double[] forward(double[] x) {
         int N = x.length;
+        double[] y = new double[N];
 
         // Outer loop interates on frequency values.
         for (int k = 0; k < N; k++) {
@@ -30,10 +31,12 @@ public class DCT {
             double alpha = (k == 0) ? inverseSqrt2 : 1.;
             y[k] = sum * alpha * sqrt(2.0 / N);
         } // end outer loop
+        return y;
     }
 
-    public static void inverse(double[] y, double[] x) {
+    public static double[] inverse(double[] y) {
         int N = y.length;
+        double[] x = new double[N];
 
         // Outer loop interates on time values.
         for (int n = 0; n < N; ++n) {
@@ -50,5 +53,6 @@ public class DCT {
             } // end inner loop
             x[n] = sum * sqrt(2.0 / N);
         } // end outer loop
+        return x;
     }
 }
