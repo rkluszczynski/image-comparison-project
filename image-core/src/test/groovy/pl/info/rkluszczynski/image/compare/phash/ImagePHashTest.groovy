@@ -63,7 +63,7 @@ class ImagePHashTest extends Specification {
     def "should calculate my phash and hamming distance"() {
         when:
         println System.getProperty("user.dir")
-        def dir = "image-core/";
+        def dir = "";//"image-core/";
 
         dir += "src/test/resources";
         def img1 = ImageIO.read(new File(dir + "/happy-face-scaled.png"))
