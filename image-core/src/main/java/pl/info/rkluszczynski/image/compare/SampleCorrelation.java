@@ -3,6 +3,9 @@ package pl.info.rkluszczynski.image.compare;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+import java.util.Arrays;
+
 /**
  * DIC (Digital Image Correlation):
  * <p/>
@@ -45,6 +48,41 @@ public class SampleCorrelation {
 
         result = covariance / (stddev1 * stddev2);
         logger.info("sample correlation coefficient := {}", result);
+        return result;
+    }
+
+    public static double[] calculateForRGB(Color imageArray1[], Color imageArray2[]) {
+        if (imageArray1.length != imageArray2.length) {
+            throw new IllegalArgumentException("Image arrays length differs!");
+        }
+        double result[] = new double[3];
+        int pixelsCount = imageArray1.length;
+
+        for (int rgb = 0; rgb < 3; ++rgb) {
+            double scores1[] = new double[pixelsCount];
+            double scores2[] = new double[pixelsCount];
+
+            for (int i = 0; i < pixelsCount; ++i) {
+                switch (rgb) {
+                    case 0:
+                        scores1[i] = imageArray1[i].getRed();
+                        scores2[i] = imageArray2[i].getRed();
+                        break;
+                    case 1:
+                        scores1[i] = imageArray1[i].getGreen();
+                        scores2[i] = imageArray2[i].getGreen();
+                        break;
+                    case 2:
+                        scores1[i] = imageArray1[i].getBlue();
+                        scores2[i] = imageArray2[i].getBlue();
+                        break;
+                    default:
+                        throw new RuntimeException();
+                }
+            }
+            result[rgb] = calculate(scores1, scores2);
+        }
+        logger.info("Sample correlation coefficients for RGB: {}", Arrays.toString(result));
         return result;
     }
 }

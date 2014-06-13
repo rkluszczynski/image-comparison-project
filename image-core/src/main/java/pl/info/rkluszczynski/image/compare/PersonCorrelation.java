@@ -112,7 +112,7 @@ public class PersonCorrelation {
             }
             result[rgb] = calculate(scores1, scores2);
         }
-        logger.info("Pearson coefficients for RGB: {}", Arrays.toString(result));
+        logger.info("Pearson correlation coefficients for RGB: {}", Arrays.toString(result));
         return result;
     }
 }

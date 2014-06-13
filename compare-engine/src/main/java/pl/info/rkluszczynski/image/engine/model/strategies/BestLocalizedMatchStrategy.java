@@ -3,6 +3,7 @@ package pl.info.rkluszczynski.image.engine.model.strategies;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.info.rkluszczynski.image.compare.ImageDiffer;
 import pl.info.rkluszczynski.image.compare.phash.HammingDistance;
 import pl.info.rkluszczynski.image.compare.phash.ImagePHash03;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
@@ -81,6 +82,11 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
         for (int i = 0; i < bestScoresAmount; ++i) {
             MatchScore item = results.get(i);
 
+            BufferedImage subImage = getMatchSubImage(resultImage,
+                    item.getWidthPosition(), item.getHeightPosition(),
+                    patternWrapper.getWidth(), patternWrapper.getHeight(), item.getScaleFactor());
+            ImageDiffer.calculateDifferStatistics(patternWrapper.getBufferedImage(), subImage);
+
             String subImagePHash = determineSubImagePHash(resultImage,
                     item.getWidthPosition(), item.getHeightPosition(),
                     patternWrapper.getWidth(), patternWrapper.getHeight(), item.getScaleFactor());
@@ -106,14 +112,18 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
     }
 
     private String determineSubImagePHash(BufferedImage image, int widthPosition, int heightPosition, int width, int height, double scaleFactor) {
+        BufferedImage subImage = getMatchSubImage(image, widthPosition, heightPosition, width, height, scaleFactor);
+        String hash = imagePHash.getHash(subImage);
+        return hash;
+    }
+
+    private BufferedImage getMatchSubImage(BufferedImage image, int widthPosition, int heightPosition, int width, int height, double scaleFactor) {
         double invertedScaleFactor = 1. / scaleFactor;
         int scaledLeftPosition = (int) (invertedScaleFactor * widthPosition);
         int scaledTopPosition = (int) (invertedScaleFactor * heightPosition);
         int scaledWidth = (int) (invertedScaleFactor * width);
         int scaledHeight = (int) (invertedScaleFactor * height);
 
-        BufferedImage subImage = image.getSubimage(scaledLeftPosition, scaledTopPosition, scaledWidth, scaledHeight);
-        String hash = imagePHash.getHash(subImage);
-        return hash;
+        return image.getSubimage(scaledLeftPosition, scaledTopPosition, scaledWidth, scaledHeight);
     }
 }
