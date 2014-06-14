@@ -69,8 +69,8 @@ class ImagePHashTest extends Specification {
         def img1 = ImageIO.read(new File(dir + "/happy-face-scaled.png"))
         def img2 = ImageIO.read(new File(dir + "/happy-face-rotated.png"))
 
-        def pHash05_1 = imagePHash05.getHash(img1)
-        def pHash05_2 = imagePHash05.getHash(img2)
+        def pHash05_1 = imagePHash05.getGrayScaleHash(img1)
+        def pHash05_2 = imagePHash05.getGrayScaleHash(img2)
 
         then:
         pHash05_1.size() == 64

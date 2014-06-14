@@ -12,6 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 class WebMvcConfig extends WebMvcConfigurerAdapter {
 
+    private static final int ONE_MB_IN_BYTES = 1024 * 1024;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
@@ -32,6 +34,4 @@ class WebMvcConfig extends WebMvcConfigurerAdapter {
         commonsMultipartResolver.setMaxInMemorySize(64 * ONE_MB_IN_BYTES);
         return commonsMultipartResolver;
     }
-
-    private static final int ONE_MB_IN_BYTES = 1024 * 1024;
 }

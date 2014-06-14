@@ -63,6 +63,9 @@ public class SampleCorrelation {
             double scores2[] = new double[pixelsCount];
 
             for (int i = 0; i < pixelsCount; ++i) {
+                if (imageArray1[i] == null)
+                    throw new RuntimeException();
+
                 switch (rgb) {
                     case 0:
                         scores1[i] = imageArray1[i].getRed();

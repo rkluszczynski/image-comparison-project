@@ -17,10 +17,22 @@ public class ImageDiffer {
 
     public static void calculateDifferStatistics(BufferedImage image1, BufferedImage image2) {
         Color[][] imageColorArray1 = convertImageToColorArray(image1);
+        for (int iw = 0; iw < imageColorArray1.length; ++iw)
+            for (int ih = 0; ih < imageColorArray1[0].length; ++ih)
+                if (imageColorArray1[iw][ih] == null) throw new RuntimeException();
         Color[][] imageColorArray2 = convertImageToColorArray(image2);
+        for (int iw = 0; iw < imageColorArray2.length; ++iw)
+            for (int ih = 0; ih < imageColorArray2[0].length; ++ih)
+                if (imageColorArray2[iw][ih] == null) throw new RuntimeException();
 
         Color[] imageColorOneDimensionalArray1 = convertArrayToOneDimension(imageColorArray1);
+        for (int i = 0; i < imageColorArray1.length; ++i) {
+            if (imageColorArray1[i] == null) throw new RuntimeException();
+        }
         Color[] imageColorOneDimensionalArray2 = convertArrayToOneDimension(imageColorArray2);
+        for (int i = 0; i < imageColorArray2.length; ++i) {
+            if (imageColorArray2[i] == null) throw new RuntimeException();
+        }
 
         double[] resultArray;
         double resultValue;
@@ -31,16 +43,27 @@ public class ImageDiffer {
         resultArray = PersonCorrelation.calculateForRGB(imageColorOneDimensionalArray1, imageColorOneDimensionalArray2);
         logger.info("Person Correlation Coefficients for RGB: {}", Arrays.toString(resultArray));
 
-        resultValue = calculatePHash(image1, image2);
+        resultValue = calculateGrayScalePHash(image1, image2);
         logger.info("GrayScale PHash distance: {}", resultValue);
 
-
+        resultArray = calculateColorPHashes(image1, image2);
+        logger.info("Color PHashes distances for RGB: {}", Arrays.toString(resultArray));
     }
 
-    private static double calculatePHash(BufferedImage image1, BufferedImage image2) {
+    private static double[] calculateColorPHashes(BufferedImage image1, BufferedImage image2) {
         ImagePHash05 imagePHash = new ImagePHash05();
-        String pHash1 = imagePHash.getHash(image1);
-        String pHash2 = imagePHash.getHash(image2);
+        String[] pHashes1 = imagePHash.getColorHashes(image1);
+        String[] pHashes2 = imagePHash.getColorHashes(image2);
+        double[] result = new double[3];
+        for (int i = 0; i < 3; ++i)
+            result[i] = HammingDistance.calculate(pHashes1[i], pHashes2[i]);
+        return result;
+    }
+
+    private static double calculateGrayScalePHash(BufferedImage image1, BufferedImage image2) {
+        ImagePHash05 imagePHash = new ImagePHash05();
+        String pHash1 = imagePHash.getGrayScaleHash(image1);
+        String pHash2 = imagePHash.getGrayScaleHash(image2);
         return HammingDistance.calculate(pHash1, pHash2);
     }
 
@@ -48,8 +71,10 @@ public class ImageDiffer {
         int N = imageColorArray.length * imageColorArray[0].length;
         Color[] oneDimensionalColorArray = new Color[N];
         for (int iw = 0; iw < imageColorArray.length; ++iw) {
-            for (int ih = 0; ih < imageColorArray[0].length; ++ih) {
-                oneDimensionalColorArray[iw * imageColorArray.length + ih] = imageColorArray[iw][ih];
+            int columnHeight = imageColorArray[0].length;
+            for (int ih = 0; ih < columnHeight; ++ih) {
+                oneDimensionalColorArray[iw * columnHeight + ih] =
+                        new Color(imageColorArray[iw][ih].getRGB());
             }
         }
         return oneDimensionalColorArray;

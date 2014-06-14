@@ -17,59 +17,6 @@ public class ImagePHash05 {
     private int smallImageSize = 32;
     private int reducedDctSmallerSize = 8;
 
-    // Returns a 'binary string' (like. 001010111011100010) which is easy to do a hamming distance on.
-    public String getHash(BufferedImage bufferedImage) {
-        /* 1. Reduce smallImageSize to 32x32 */
-        BufferedImage smallImage = Scalr.resize(bufferedImage,
-                Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, smallImageSize, smallImageSize);
-
-		/* 2. Reduce color. */
-        BufferedImage reducedImage = ImageHelper.convertImageToGrayScale(smallImage);
-
-		/* 3. Compute the DCT. */
-        double[][] imageColorPlane = new double[smallImageSize][smallImageSize];
-
-        for (int iw = 0; iw < reducedImage.getWidth(); ++iw) {
-            for (int ih = 0; ih < reducedImage.getHeight(); ++ih) {
-                Color pixelColor = new Color(reducedImage.getRGB(iw, ih));
-                imageColorPlane[iw][ih] = pixelColor.getGreen();
-            }
-        }
-        processImagePlane(imageColorPlane);
-
-		/* 4. Reduce the DCT. */
-        double[][] reducedPlane = new double[reducedDctSmallerSize][reducedDctSmallerSize];
-        for (int x = 0; x < reducedDctSmallerSize; x++) {
-            for (int y = 0; y < reducedDctSmallerSize; y++) {
-                reducedPlane[x][y] = imageColorPlane[x][y];
-            }
-        }
-
-		/* 5. Compute the median/average  value. */
-        ArrayList<Double> list = Lists.newArrayList();
-        double sum = 0.;
-        for (int x = 0; x < reducedDctSmallerSize; x++) {
-            for (int y = 0; y < reducedDctSmallerSize; y++) {
-                list.add(reducedPlane[x][y]);
-                sum += reducedPlane[x][y];
-            }
-        }
-        Collections.sort(list);
-        double median = list.get(reducedDctSmallerSize * reducedDctSmallerSize / 2);
-        median = sum / (reducedDctSmallerSize * reducedDctSmallerSize);
-
-		/* 6. Further reduce the DCT. */
-        String imagePHash = "";
-        for (int x = 0; x < reducedDctSmallerSize; x++) {
-            for (int y = 0; y < reducedDctSmallerSize; y++) {
-//                if (x != 0 && y != 0)
-                imagePHash += (reducedPlane[x][y] > median ? "1" : "0");
-            }
-        }
-        return imagePHash;
-    }
-
-
     protected static void processImagePlane(double[][] colorPlane) {
         int imageWidth = colorPlane.length;
         int imageHeight = colorPlane[0].length;
@@ -227,5 +174,98 @@ public class ImagePHash05 {
         }//end outer loop
 
     }//end normalize
+
+    // Returns a 'binary string' (like. 001010111011100010) which is easy to do a hamming distance on.
+    public String getGrayScaleHash(BufferedImage bufferedImage) {
+        /* 1. Reduce smallImageSize to 32x32 */
+        BufferedImage smallImage = Scalr.resize(bufferedImage,
+                Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, smallImageSize, smallImageSize);
+
+		/* 2. Reduce color. */
+        BufferedImage reducedImage = ImageHelper.convertImageToGrayScale(smallImage);
+
+		/* 3. Compute the DCT. */
+        double[][] imageColorPlane = new double[smallImageSize][smallImageSize];
+
+        for (int iw = 0; iw < reducedImage.getWidth(); ++iw) {
+            for (int ih = 0; ih < reducedImage.getHeight(); ++ih) {
+                Color pixelColor = new Color(reducedImage.getRGB(iw, ih));
+                imageColorPlane[iw][ih] = pixelColor.getGreen();
+            }
+        }
+        return getColorPlaneHash(imageColorPlane);
+    }
+
+    public String[] getColorHashes(BufferedImage bufferedImage) {
+        String[] result = new String[3];
+
+        /* 1. Reduce smallImageSize to 32x32 */
+        BufferedImage smallImage = Scalr.resize(bufferedImage,
+                Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, smallImageSize, smallImageSize);
+
+		/* 2. Iterate over colors. */
+        for (int rgb = 0; rgb < 3; ++rgb) {
+            /* 3. Compute the DCT. */
+            double[][] imageColorPlane = new double[smallImageSize][smallImageSize];
+
+            for (int iw = 0; iw < smallImageSize; ++iw) {
+                for (int ih = 0; ih < smallImageSize; ++ih) {
+                    Color pixelColor = new Color(smallImage.getRGB(iw, ih));
+                    int colorValue = -1;
+                    switch (rgb) {
+                        case 0:
+                            colorValue = pixelColor.getRed();
+                            break;
+                        case 1:
+                            colorValue = pixelColor.getGreen();
+                            break;
+                        case 2:
+                            colorValue = pixelColor.getBlue();
+                            break;
+                        default:
+                            throw new RuntimeException();
+                    }
+                    imageColorPlane[iw][ih] = colorValue;
+                }
+            }
+            result[rgb] = getColorPlaneHash(imageColorPlane);
+        }
+        return result;
+    }
+
+    private String getColorPlaneHash(double[][] imageColorPlane) {
+        processImagePlane(imageColorPlane);
+
+		/* 4. Reduce the DCT. */
+        double[][] reducedPlane = new double[reducedDctSmallerSize][reducedDctSmallerSize];
+        for (int x = 0; x < reducedDctSmallerSize; x++) {
+            for (int y = 0; y < reducedDctSmallerSize; y++) {
+                reducedPlane[x][y] = imageColorPlane[x][y];
+            }
+        }
+
+		/* 5. Compute the median/average  value. */
+        ArrayList<Double> list = Lists.newArrayList();
+        double sum = 0.;
+        for (int x = 0; x < reducedDctSmallerSize; x++) {
+            for (int y = 0; y < reducedDctSmallerSize; y++) {
+                list.add(reducedPlane[x][y]);
+                sum += reducedPlane[x][y];
+            }
+        }
+        Collections.sort(list);
+        double median = list.get(reducedDctSmallerSize * reducedDctSmallerSize / 2);
+        median = sum / (reducedDctSmallerSize * reducedDctSmallerSize);
+
+		/* 6. Further reduce the DCT. */
+        String imagePHash = "";
+        for (int x = 0; x < reducedDctSmallerSize; x++) {
+            for (int y = 0; y < reducedDctSmallerSize; y++) {
+//                if (x != 0 && y != 0)
+                imagePHash += (reducedPlane[x][y] > median ? "1" : "0");
+            }
+        }
+        return imagePHash;
+    }
 }
 

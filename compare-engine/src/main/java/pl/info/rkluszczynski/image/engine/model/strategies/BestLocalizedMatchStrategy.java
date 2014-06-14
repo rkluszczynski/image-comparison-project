@@ -1,10 +1,10 @@
 package pl.info.rkluszczynski.image.engine.model.strategies;
 
 import com.google.common.collect.Lists;
+import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.compare.ImageDiffer;
-import pl.info.rkluszczynski.image.compare.phash.HammingDistance;
 import pl.info.rkluszczynski.image.compare.phash.ImagePHash03;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.metrics.CompareMetric;
@@ -25,13 +25,11 @@ import static pl.info.rkluszczynski.image.engine.config.EngineConstants.*;
  */
 public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
     protected static final Logger logger = LoggerFactory.getLogger(BestLocalizedMatchStrategy.class);
-
+    ImagePHash03 imagePHash = new ImagePHash03();
     private double offset;
     private int bestResultsWidth;
     private int bestResultsHeight;
     private MatchScore[][] bestResultsTable;
-
-    ImagePHash03 imagePHash = new ImagePHash03();
 
     @Override
     public void initialize(DetectorTaskInput taskInput) {
@@ -82,20 +80,23 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
         for (int i = 0; i < bestScoresAmount; ++i) {
             MatchScore item = results.get(i);
 
+            logger.info("Matching {}:", i);
             BufferedImage subImage = getMatchSubImage(resultImage,
                     item.getWidthPosition(), item.getHeightPosition(),
                     patternWrapper.getWidth(), patternWrapper.getHeight(), item.getScaleFactor());
-            ImageDiffer.calculateDifferStatistics(patternWrapper.getBufferedImage(), subImage);
+            BufferedImage exactSubImage = Scalr.resize(subImage,
+                    Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, patternWrapper.getWidth(), patternWrapper.getHeight());
+            ImageDiffer.calculateDifferStatistics(patternWrapper.getBufferedImage(), exactSubImage);
 
-            String subImagePHash = determineSubImagePHash(resultImage,
-                    item.getWidthPosition(), item.getHeightPosition(),
-                    patternWrapper.getWidth(), patternWrapper.getHeight(), item.getScaleFactor());
-            int distance = HammingDistance.calculate(patternPHash, subImagePHash);
-            logger.info("Distance {} with pHashes {}, {} at position ({}, {})", distance,
-                    patternPHash, subImagePHash, item.getWidthPosition(), item.getHeightPosition());
-            if (distance > 23) {
-                continue;
-            }
+//            String subImagePHash = determineSubImagePHash(resultImage,
+//                    item.getWidthPosition(), item.getHeightPosition(),
+//                    patternWrapper.getWidth(), patternWrapper.getHeight(), item.getScaleFactor());
+//            int distance = HammingDistance.calculate(patternPHash, subImagePHash);
+//            logger.info("Distance {} with pHashes {}, {} at position ({}, {})", distance,
+//                    patternPHash, subImagePHash, item.getWidthPosition(), item.getHeightPosition());
+//            if (distance > 23) {
+//                continue;
+//            }
 
             double matchDivisor = MAX_PIXEL_VALUE * patternWrapper.countNonAlphaPixels();
 

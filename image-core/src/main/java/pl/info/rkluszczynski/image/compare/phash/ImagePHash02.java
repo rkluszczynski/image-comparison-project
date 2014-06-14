@@ -16,6 +16,8 @@ public class ImagePHash02 {
 
     private int size = 32;
     private int smallerSize = 8;
+    private ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+    private double[] c;
 
     public ImagePHash02() {
         initCoefficients();
@@ -26,6 +28,10 @@ public class ImagePHash02 {
         this.smallerSize = smallerSize;
 
         initCoefficients();
+    }
+
+    private static int getBlue(BufferedImage img, int x, int y) {
+        return (img.getRGB(x, y)) & 0xff;
     }
 
     public int distance(String s1, String s2) {
@@ -50,7 +56,7 @@ public class ImagePHash02 {
                 Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, size, size);
 
 		/* 2. Reduce color.
-		 * The image is reduced to a grayscale just to further simplify
+         * The image is reduced to a grayscale just to further simplify
 		 * the number of computations.
 		 */
         img = grayscale(img);
@@ -64,7 +70,7 @@ public class ImagePHash02 {
         }
 
 		/* 3. Compute the DCT.
-		 * The DCT separates the image into a collection of frequencies
+         * The DCT separates the image into a collection of frequencies
 		 * and scalars. While JPEG uses an 8x8 DCT, this algorithm uses
 		 * a 32x32 DCT.
 		 */
@@ -125,20 +131,12 @@ public class ImagePHash02 {
         return resizedImage;
     }
 
-    private ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+    // DCT function stolen from http://stackoverflow.com/questions/4240490/problems-with-dct-and-idct-algorithm-in-java
 
     private BufferedImage grayscale(BufferedImage img) {
         colorConvert.filter(img, img);
         return img;
     }
-
-    private static int getBlue(BufferedImage img, int x, int y) {
-        return (img.getRGB(x, y)) & 0xff;
-    }
-
-    // DCT function stolen from http://stackoverflow.com/questions/4240490/problems-with-dct-and-idct-algorithm-in-java
-
-    private double[] c;
 
     private void initCoefficients() {
         c = new double[size];

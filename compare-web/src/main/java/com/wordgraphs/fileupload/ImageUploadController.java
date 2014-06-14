@@ -22,11 +22,9 @@ class ImageUploadController {
 
     // list of allowed file extensions
     private final Set<String> allowedImageExtensions;
-
+    private final String uploadsDir = "/opt/tomcat/uploads";
     // list of error messages
     private List<String> errorMsgs = new ArrayList<>();
-
-    private final String uploadsDir = "/opt/tomcat/uploads";
 
     public ImageUploadController() {
         // define allowed file extensions

@@ -15,6 +15,9 @@ import java.awt.image.WritableRaster;
 final
 public class ImageHelper {
 
+    private static ColorConvertOp colorConvertOperation =
+            new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+
     private ImageHelper() {
     }
 
@@ -46,7 +49,4 @@ public class ImageHelper {
     public static BufferedImage convertImageToGrayScale(BufferedImage bufferedImage) {
         return colorConvertOperation.filter(bufferedImage, null);
     }
-
-    private static ColorConvertOp colorConvertOperation =
-            new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
 }

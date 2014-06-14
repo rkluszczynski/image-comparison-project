@@ -21,6 +21,11 @@ public class EngineJavaConfig {
     @Autowired
     private Environment env;
 
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+
     @Bean(name = "taskExecutor")
     public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
@@ -28,10 +33,5 @@ public class EngineJavaConfig {
         threadPoolTaskExecutor.setMaxPoolSize(15);
 //        threadPoolTaskExecutor.setQueueCapacity();
         return threadPoolTaskExecutor;
-    }
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
     }
 }

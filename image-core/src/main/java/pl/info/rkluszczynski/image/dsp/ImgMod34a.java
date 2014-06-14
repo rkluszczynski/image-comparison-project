@@ -65,62 +65,6 @@ class ImgMod34a implements ImgIntfc02 {
     // left over from the class named ImgMod34, which was the
     // class from which this class was created.
 
-    //This method is required by ImgIntfc02.  It is called at
-    // the beginning of the run and each time thereafter that
-    // the user clicks the Replot button on the Frame
-    // contaning the images.
-    public int[][][] processImg(int[][][] threeDPix,
-                                int imgRows,
-                                int imgCols) {
-
-        //Create an empty output array of the same size as the
-        // incoming array.
-        int[][][] output = new int[imgRows][imgCols][4];
-
-        //Make a working copy of the 3D pixel array as type
-        // double to avoid making permanent changes to the
-        // original image data.  Also, all processing will be
-        // performed as type double.
-        double[][][] working3D = copyToDouble(threeDPix);
-
-        //The following code can be enabled to set any of the
-        // three colors to black, thus removing them from the
-        // output.
-        for (int row = 0; row < imgRows; row++) {
-            for (int col = 0; col < imgCols; col++) {
-//        working3D[row][col][1] = 0;
-//        working3D[row][col][2] = 0;
-//        working3D[row][col][3] = 0;
-            }//end inner loop
-        }//end outer loop
-
-        //Extract and process the red plane
-        double[][] redPlane = extractPlane(working3D, 1);
-        processPlane(redPlane);
-        //Insert the plane back into the 3D array
-        insertPlane(working3D, redPlane, 1);
-
-        //Extract and process the green plane
-        double[][] greenPlane = extractPlane(working3D, 2);
-        processPlane(greenPlane);
-        //Insert the plane back into the 3D array
-        insertPlane(working3D, greenPlane, 2);
-
-        //Extract and process the blue plane
-        double[][] bluePlane = extractPlane(working3D, 3);
-        processPlane(bluePlane);
-        //Insert the plane back into the 3D array
-        insertPlane(working3D, bluePlane, 3);
-
-        //Convert the image color planes to type int and return
-        // the array of pixel data to the calling method.
-        output = copyToInt(working3D);
-        //Return a reference to the output array.
-        return output;
-
-    }//end processImg method
-    //-----------------------------------------------------//
-
     //The purpose of this method is to extract a specified
     // row from a double 2D plane and to return it as a one-
     // dimensional array of type double.
@@ -265,14 +209,6 @@ class ImgMod34a implements ImgIntfc02 {
     }//end copyToInt
     //-----------------------------------------------------//
 
-    //This method processes a color plane received as an
-    // incoming parameter.  First it performs a 2D-DCT on
-    // the color plane producing spectral results.  Then it
-    // normalizes the spectral values in the plane to make
-    // them compatible with being displayed as an image.  In
-    // so doing, it converts the spectral data to decibels in
-    // order to preserve the plotting dynamic range.
-
     static void processPlane(double[][] colorPlane) {
 
         int imgRows = colorPlane.length;
@@ -309,6 +245,15 @@ class ImgMod34a implements ImgIntfc02 {
         //Normalize the spectral values to the range 0 - 255.
         normalize(colorPlane);
     }//end processPlane
+    //-----------------------------------------------------//
+
+    //This method processes a color plane received as an
+    // incoming parameter.  First it performs a 2D-DCT on
+    // the color plane producing spectral results.  Then it
+    // normalizes the spectral values in the plane to make
+    // them compatible with being displayed as an image.  In
+    // so doing, it converts the spectral data to decibels in
+    // order to preserve the plotting dynamic range.
 
     //-----------------------------------------------------//
     //Normalizes the data in a 2D double plane to make it
@@ -417,6 +362,61 @@ class ImgMod34a implements ImgIntfc02 {
         }//end outer loop
 
     }//end normalize
+
+    //This method is required by ImgIntfc02.  It is called at
+    // the beginning of the run and each time thereafter that
+    // the user clicks the Replot button on the Frame
+    // contaning the images.
+    public int[][][] processImg(int[][][] threeDPix,
+                                int imgRows,
+                                int imgCols) {
+
+        //Create an empty output array of the same size as the
+        // incoming array.
+        int[][][] output = new int[imgRows][imgCols][4];
+
+        //Make a working copy of the 3D pixel array as type
+        // double to avoid making permanent changes to the
+        // original image data.  Also, all processing will be
+        // performed as type double.
+        double[][][] working3D = copyToDouble(threeDPix);
+
+        //The following code can be enabled to set any of the
+        // three colors to black, thus removing them from the
+        // output.
+        for (int row = 0; row < imgRows; row++) {
+            for (int col = 0; col < imgCols; col++) {
+//        working3D[row][col][1] = 0;
+//        working3D[row][col][2] = 0;
+//        working3D[row][col][3] = 0;
+            }//end inner loop
+        }//end outer loop
+
+        //Extract and process the red plane
+        double[][] redPlane = extractPlane(working3D, 1);
+        processPlane(redPlane);
+        //Insert the plane back into the 3D array
+        insertPlane(working3D, redPlane, 1);
+
+        //Extract and process the green plane
+        double[][] greenPlane = extractPlane(working3D, 2);
+        processPlane(greenPlane);
+        //Insert the plane back into the 3D array
+        insertPlane(working3D, greenPlane, 2);
+
+        //Extract and process the blue plane
+        double[][] bluePlane = extractPlane(working3D, 3);
+        processPlane(bluePlane);
+        //Insert the plane back into the 3D array
+        insertPlane(working3D, bluePlane, 3);
+
+        //Convert the image color planes to type int and return
+        // the array of pixel data to the calling method.
+        output = copyToInt(working3D);
+        //Return a reference to the output array.
+        return output;
+
+    }//end processImg method
     //-----------------------------------------------------//
 
 }//end class ImgMod34a

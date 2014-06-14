@@ -12,6 +12,9 @@ import java.util.Date;
  */
 final class FooterHelper {
 
+    private FooterHelper() {
+    }
+
     public static void setWebApplicationBuildDate(Model model) {
         model.addAttribute("webAppBuildDate", resolveWebAppBuildDate());
     }
@@ -34,8 +37,5 @@ final class FooterHelper {
             date = new Date();
         }
         return String.format("build: %s", dateFormat.format(date));
-    }
-
-    private FooterHelper() {
     }
 }
