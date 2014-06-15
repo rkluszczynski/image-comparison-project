@@ -1,5 +1,7 @@
 package pl.info.rkluszczynski.image.engine.model.metrics;
 
+import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
+
 import java.awt.*;
 
 import static pl.info.rkluszczynski.image.engine.config.EngineConstants.MAX_PIXEL_VALUE;

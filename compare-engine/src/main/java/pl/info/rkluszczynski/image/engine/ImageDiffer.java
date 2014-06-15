@@ -1,11 +1,15 @@
-package pl.info.rkluszczynski.image.compare;
+package pl.info.rkluszczynski.image.engine;
 
 import JavaMI.MutualInformation;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.info.rkluszczynski.image.compare.PersonCorrelation;
+import pl.info.rkluszczynski.image.compare.SampleCorrelation;
+import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.compare.phash.HammingDistance;
 import pl.info.rkluszczynski.image.compare.phash.ImagePHash05;
+import pl.info.rkluszczynski.image.engine.model.metrics.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,6 +25,8 @@ public class ImageDiffer {
     private static final Logger logger = LoggerFactory.getLogger(ImageDiffer.class);
 
     public static void calculateDifferStatistics(BufferedImage image1, BufferedImage image2) {
+        Locale.setDefault(Locale.ENGLISH);
+
         Color[][] imageColorArray1 = convertImageToColorArray(image1);
         Color[][] imageColorArray2 = convertImageToColorArray(image2);
 
@@ -30,6 +36,15 @@ public class ImageDiffer {
         double[] resultArray;
         double resultValue;
 
+        CompareMetric[] compareMetrics = {
+                new AbsAveGrayScaleMetric(), new PSNRAveGrayScaleMetric(), new RMSEAveGrayScaleMetric(),
+                new AbsColorMetric(), new ExpColorMetric(), new PSNRColorMetric(), new RMSEColorMetric(),
+                new NRMSEColorMetric()
+        };
+        for (CompareMetric metric : compareMetrics) {
+            logger.info(calculateMetricValue(imageColorArray1, imageColorArray2, metric));
+        }
+
         resultArray = SampleCorrelation.calculateForRGB(imageColorOneDimensionalArray1, imageColorOneDimensionalArray2);
         logger.info("  Sample Correlation Coefficients for RGB: {}", getResultArrayString(resultArray));
 
@@ -37,14 +52,25 @@ public class ImageDiffer {
         logger.info("  Person Correlation Coefficients for RGB: {}", getResultArrayString(resultArray));
 
         resultValue = calculateGrayScalePHash(image1, image2);
-        logger.info("                 GrayScale PHash distance: {}", resultValue);
+        logger.info(String.format("                 GrayScale PHash distance: %.3f", resultValue));
 
         resultArray = calculateColorPHashes(image1, image2);
         logger.info("          Color PHashes distances for RGB: {}", getResultArrayString(resultArray));
 
         resultArray = calculateMI4RGB(imageColorOneDimensionalArray1, imageColorOneDimensionalArray2);
         logger.info("        Mutual Information values for RGB: {}", getResultArrayString(resultArray));
+    }
 
+    private static String calculateMetricValue(Color[][] imageArray1, Color[][] imageArray2, CompareMetric metric) {
+        metric.resetValue();
+        for (int iw = 0; iw < imageArray1.length; ++iw) {
+            int columnHeight = imageArray1[0].length;
+            for (int ih = 0; ih < columnHeight; ++ih) {
+                metric.addPixelsDifference(imageArray1[iw][ih], imageArray2[iw][ih]);
+            }
+        }
+        return
+                String.format("                  Metric %10s value: %.3f", metric.getName(), metric.calculateValue());
     }
 
     private static String getResultArrayString(double[] resultArray) {
@@ -73,7 +99,6 @@ public class ImageDiffer {
         if (iMax == -1)
             return "[]";
 
-        Locale.setDefault(Locale.ENGLISH);
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {

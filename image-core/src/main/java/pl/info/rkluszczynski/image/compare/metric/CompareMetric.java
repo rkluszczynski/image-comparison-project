@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.engine.model.metrics;
+package pl.info.rkluszczynski.image.compare.metric;
 
 import java.awt.*;
 

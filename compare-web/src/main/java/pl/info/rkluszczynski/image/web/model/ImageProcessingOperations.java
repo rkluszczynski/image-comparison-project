@@ -5,6 +5,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.model.comparators.PatternMatchComparator;
 import pl.info.rkluszczynski.image.engine.model.comparators.PixelDifferenceComparator;
@@ -37,6 +38,8 @@ public class ImageProcessingOperations {
                 new ImageOperationItem("imagePatternMatchingGrayScaleRMSE", "Image pattern matching (grayscale metric: RMSE)"),
                 new ImageOperationItem("imagePatternMatchingGrayScalePSNR", "Image pattern matching (grayscale metric: PSNR)"),
 
+                new ImageOperationItem("imagePatterMatchingWithExp", "Pattern matching with Exp function"),
+
                 new ImageOperationItem("testingIm4JavaCompare", "Testing im4java compare operation"),
                 new ImageOperationItem("imageDifference", "Calculate image difference")
         );
@@ -62,6 +65,8 @@ public class ImageProcessingOperations {
                 return createMultiScaleTask(sessionData, new RMSEAveGrayScaleMetric());
             case "imagePatternMatchingGrayScalePSNR":
                 return createMultiScaleTask(sessionData, new PSNRAveGrayScaleMetric());
+            case "imagePatterMatchingWithExp":
+                return createMultiScaleTask(sessionData, new ExpColorMetric());
             case "testingIm4JavaCompare":
                 return new Im4JavaCompareTask(sessionData);
             case "imageDifference":

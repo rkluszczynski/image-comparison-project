@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.compare
+package pl.info.rkluszczynski.image.engine
 
 import pl.info.rkluszczynski.image.config.ImageCoreTestConfig
 import spock.lang.Specification
