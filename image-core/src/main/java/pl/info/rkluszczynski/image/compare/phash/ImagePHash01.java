@@ -76,11 +76,11 @@ public class ImagePHash01 {
         System.out.println("DCT: " + (System.currentTimeMillis() - start));
 
 		/* 4. Reduce the DCT.
-		 * This is the magic step. While the DCT is 32x32, just keep the
+         * This is the magic step. While the DCT is 32x32, just keep the
 		 * top-left 8x8. Those represent the lowest frequencies in the
 		 * picture.
 		 */
-		/* 5. Compute the average value.
+        /* 5. Compute the average value.
 		 * Like the Average Hash, compute the mean DCT value (using only
 		 * the 8x8 DCT low-frequency values and excluding the first term
 		 * since the DC coefficient can be significantly different from

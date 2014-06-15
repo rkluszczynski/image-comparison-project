@@ -47,7 +47,7 @@ public class PersonCorrelation {
         double cov_x_y = sum_coproduct / N;
         result = cov_x_y / (pop_sd_x * pop_sd_y);
 
-        logger.info("Pearson coefficient := {}", result);
+        logger.trace("Pearson coefficient := {}", result);
         return result;
     }
 
@@ -76,7 +76,7 @@ public class PersonCorrelation {
         double denominator2 = (N * sum_x2 - sum_x * sum_x) * (N * sum_y2 - sum_y * sum_y);
         result = nominator / Math.sqrt(denominator2);
 
-        logger.info("Pearson coefficient := {}", result);
+        logger.trace("Pearson coefficient := {}", result);
         return result;
     }
 
@@ -112,7 +112,7 @@ public class PersonCorrelation {
             }
             result[rgb] = calculate(scores1, scores2);
         }
-        logger.info("Pearson correlation coefficients for RGB: {}", Arrays.toString(result));
+        logger.debug("Pearson correlation coefficients for RGB: {}", Arrays.toString(result));
         return result;
     }
 }

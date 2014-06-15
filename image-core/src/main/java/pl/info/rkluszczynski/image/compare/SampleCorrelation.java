@@ -47,7 +47,7 @@ public class SampleCorrelation {
         double stddev2 = Math.sqrt(sum_diff_values2 / (N - 1));
 
         result = covariance / (stddev1 * stddev2);
-        logger.info("sample correlation coefficient := {}", result);
+        logger.trace("sample correlation coefficient := {}", result);
         return result;
     }
 
@@ -85,7 +85,7 @@ public class SampleCorrelation {
             }
             result[rgb] = calculate(scores1, scores2);
         }
-        logger.info("Sample correlation coefficients for RGB: {}", Arrays.toString(result));
+        logger.debug("Sample correlation coefficients for RGB: {}", Arrays.toString(result));
         return result;
     }
 }
