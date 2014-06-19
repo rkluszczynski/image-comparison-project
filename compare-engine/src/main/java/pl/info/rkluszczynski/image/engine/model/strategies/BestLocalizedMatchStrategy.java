@@ -13,7 +13,10 @@ import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.DrawHelper;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -86,6 +89,7 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
                     patternWrapper.getWidth(), patternWrapper.getHeight(), item.getScaleFactor());
             BufferedImage exactSubImage = Scalr.resize(subImage,
                     Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, patternWrapper.getWidth(), patternWrapper.getHeight());
+            saveImageMatch(exactSubImage, i);
             ImageDiffer.calculateDifferStatistics(patternWrapper.getBufferedImage(), exactSubImage);
 
 //            String subImagePHash = determineSubImagePHash(resultImage,
@@ -109,6 +113,14 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
                     patternWrapper.getWidth(), patternWrapper.getHeight(),
                     item.getScaleFactor(),
                     String.valueOf(i));
+        }
+    }
+
+    private void saveImageMatch(BufferedImage image, int suffixNum) {
+        try {
+            ImageIO.write(image, "PNG", new File(String.format("templateResult-%d.png", suffixNum)));
+        } catch (IOException e) {
+            logger.error("Problem during saving subImage!", e);
         }
     }
 

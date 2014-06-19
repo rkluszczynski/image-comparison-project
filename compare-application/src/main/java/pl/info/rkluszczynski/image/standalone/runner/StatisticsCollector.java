@@ -1,5 +1,7 @@
 package pl.info.rkluszczynski.image.standalone.runner;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +13,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -40,19 +45,16 @@ public class StatisticsCollector {
         return entry;
     }
 
-    public void saveAsCSV(String filename) {
+    public void saveAsCSV(String filename) throws IOException {
         Path path = Paths.get(filename);
-//        String[] statsLines = Collections2.transform(entryList, new Function() {
-//
-//        }
-//        );
-//
-//        void writeSmallTextFile(List<String> aLines, String aFileName) throws IOException {
-//            Path path = Paths.get(aFileName);
-//            Files.write(path, aLines, ENCODING);
-//        }
+        Collection<String> strings = Collections2.transform(entryList, new Function<StatisticsEntry, String>() {
+            @Override
+            public String apply(StatisticsEntry entry) {
+                return entry.toString();
+            }
+        });
+        Files.write(path, strings, StandardCharsets.UTF_8);
     }
-
 
     class StatisticsEntry {
         private final String baseFilename;

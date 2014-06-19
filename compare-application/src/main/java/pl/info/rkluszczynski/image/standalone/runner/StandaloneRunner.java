@@ -24,22 +24,26 @@ public class StandaloneRunner {
             logger.info("Processing file: " + baseFile.getAbsolutePath());
 
             String filename = baseFile.getName();
-            final String basename = filename.substring(0, filename.lastIndexOf("."));
+            String basename = filename.substring(0, filename.lastIndexOf("."));
 
-            FilenameFilter filter = new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.startsWith(basename);
-                }
-            };
-            for (File compareFile : compareSetDir.listFiles(filter)) {
+            FilenameFilter filenameFilter = createFilenameFilter(String.format("%s-", basename));
+            for (File compareFile : compareSetDir.listFiles(filenameFilter)) {
                 String compareFilename = compareFile.getName();
                 logger.info(" -> comparing files {} with {}", filename, compareFilename);
 
                 statisticsCollector.process(baseFile, compareFile);
             }
         }
-        statisticsCollector.saveAsCSV("statistics.csv");
+        statisticsCollector.saveAsCSV("tmp/statistics.csv");
+    }
+
+    private FilenameFilter createFilenameFilter(final String basename) {
+        return new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.startsWith(basename);
+            }
+        };
     }
 
     private File checkAndGetDirectoryFile(String dirPath) throws IOException {
