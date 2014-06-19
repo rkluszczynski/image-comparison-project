@@ -2,6 +2,7 @@
 /.gradle/
 /*/build/
 /classes/
+/tmp/
 
 # Ignore files with container's deploy credentials:
 /compare-web/gradle.properties
