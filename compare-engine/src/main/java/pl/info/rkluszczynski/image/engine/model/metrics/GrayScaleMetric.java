@@ -1,6 +1,6 @@
 package pl.info.rkluszczynski.image.engine.model.metrics;
 
-import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
+import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
 
 import java.awt.*;
 

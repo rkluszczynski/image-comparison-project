@@ -1,6 +1,6 @@
 package pl.info.rkluszczynski.image.engine.model.comparators;
 
-import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
+import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 
 import java.awt.image.BufferedImage;

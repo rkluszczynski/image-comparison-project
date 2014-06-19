@@ -1,5 +1,6 @@
 package pl.info.rkluszczynski.image.engine.tasks;
 
+import pl.info.rkluszczynski.image.core.utils.ImageHelper;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
@@ -8,7 +9,6 @@ import pl.info.rkluszczynski.image.engine.tasks.multiscale.SingleStageProcessor;
 import pl.info.rkluszczynski.image.engine.tasks.multiscale.SizeSupplier;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.ImageSizeScaleProcessor;
-import pl.info.rkluszczynski.image.utils.ImageHelper;
 
 import java.awt.image.BufferedImage;
 

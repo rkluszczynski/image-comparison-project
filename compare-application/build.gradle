@@ -1,5 +1,6 @@
 dependencies {
     compile project(':compare-engine')
 
+//    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.3.2'
 }

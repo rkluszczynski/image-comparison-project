@@ -4,11 +4,11 @@ import JavaMI.MutualInformation;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.info.rkluszczynski.image.compare.PersonCorrelation;
-import pl.info.rkluszczynski.image.compare.SampleCorrelation;
-import pl.info.rkluszczynski.image.compare.metric.CompareMetric;
-import pl.info.rkluszczynski.image.compare.phash.HammingDistance;
-import pl.info.rkluszczynski.image.compare.phash.ImagePHash05;
+import pl.info.rkluszczynski.image.core.compare.PersonCorrelation;
+import pl.info.rkluszczynski.image.core.compare.SampleCorrelation;
+import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
+import pl.info.rkluszczynski.image.core.compare.phash.HammingDistance;
+import pl.info.rkluszczynski.image.core.compare.phash.ImagePHash05;
 import pl.info.rkluszczynski.image.engine.model.metrics.*;
 
 import java.awt.*;
@@ -25,6 +25,10 @@ public class ImageDiffer {
     private static final Logger logger = LoggerFactory.getLogger(ImageDiffer.class);
 
     public static void calculateDifferStatistics(BufferedImage image1, BufferedImage image2) {
+        calculateDifferStatistics(image1, image2, null);
+    }
+
+    public static void calculateDifferStatistics(BufferedImage image1, BufferedImage image2, List<Double> stats) {
         Locale.setDefault(Locale.ENGLISH);
 
         Color[][] imageColorArray1 = convertImageToColorArray(image1);

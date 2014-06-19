@@ -1,6 +1,6 @@
 package pl.info.rkluszczynski.image.engine
 
-import pl.info.rkluszczynski.image.config.ImageCoreTestConfig
+import pl.info.rkluszczynski.image.engine.config.CompareEngineTestConfig
 import spock.lang.Specification
 
 import javax.imageio.ImageIO
@@ -12,7 +12,7 @@ class ImageDifferTest extends Specification {
 
     def "should ImageDiffer calculate statistics"() {
         when:
-        def dir = ImageCoreTestConfig.getTestResourcesDirectory()
+        def dir = CompareEngineTestConfig.getTestResourcesDirectory()
         println dir
         dir += '/src/test/resources/'
 
