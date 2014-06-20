@@ -19,7 +19,7 @@ class ImageDifferTest extends Specification {
         def img1 = ImageIO.read(new File(dir + 'happy-face-scaled.png'))
         def img2 = ImageIO.read(new File(dir + 'happy-face-rotated.png'))
 
-        ImageDiffer.calculateDifferStatistics(img1, img2)
+        ImageDiffer.calculateDifferStatistics(img1, img2, null, null)
 
         then:
         true

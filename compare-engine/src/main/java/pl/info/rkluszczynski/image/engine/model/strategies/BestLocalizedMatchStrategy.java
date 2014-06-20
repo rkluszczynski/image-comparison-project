@@ -90,7 +90,7 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
             BufferedImage exactSubImage = Scalr.resize(subImage,
                     Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, patternWrapper.getWidth(), patternWrapper.getHeight());
             saveImageMatch(exactSubImage, i);
-            ImageDiffer.calculateDifferStatistics(patternWrapper.getBufferedImage(), exactSubImage);
+            ImageDiffer.calculateDifferStatistics(patternWrapper.getBufferedImage(), exactSubImage, null, null);
 
 //            String subImagePHash = determineSubImagePHash(resultImage,
 //                    item.getWidthPosition(), item.getHeightPosition(),

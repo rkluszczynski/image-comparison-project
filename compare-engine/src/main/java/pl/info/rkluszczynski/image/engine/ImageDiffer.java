@@ -25,10 +25,10 @@ public class ImageDiffer {
     private static final Logger logger = LoggerFactory.getLogger(ImageDiffer.class);
 
     public static void calculateDifferStatistics(BufferedImage image1, BufferedImage image2) {
-        calculateDifferStatistics(image1, image2, null);
+        calculateDifferStatistics(image1, image2, null, null);
     }
 
-    public static void calculateDifferStatistics(BufferedImage image1, BufferedImage image2, List<Double> stats) {
+    public static void calculateDifferStatistics(BufferedImage image1, BufferedImage image2, List<String> entryColNames, List<Double> stats) {
         Locale.setDefault(Locale.ENGLISH);
 
         Color[][] imageColorArray1 = convertImageToColorArray(image1);
@@ -46,29 +46,37 @@ public class ImageDiffer {
                 new NRMSEColorMetric()
         };
         for (CompareMetric metric : compareMetrics) {
-            logger.info(calculateMetricValue(imageColorArray1, imageColorArray2, metric, stats));
+            logger.info(calculateMetricValue(imageColorArray1, imageColorArray2, metric, entryColNames, stats));
         }
 
         resultArray = SampleCorrelation.calculateForRGB(imageColorOneDimensionalArray1, imageColorOneDimensionalArray2);
-        logger.info("  Sample Correlation Coefficients for RGB: {}", getResultArrayString(resultArray, stats));
+        logger.info("  Sample Correlation Coefficients for RGB: {}", getResultArrayString(resultArray, "sampleCorr", entryColNames, stats));
 
         resultArray = PersonCorrelation.calculateForRGB(imageColorOneDimensionalArray1, imageColorOneDimensionalArray2);
-        logger.info("  Person Correlation Coefficients for RGB: {}", getResultArrayString(resultArray, stats));
+        logger.info("  Person Correlation Coefficients for RGB: {}", getResultArrayString(resultArray, "personCorr", entryColNames, stats));
 
         resultValue = calculateGrayScalePHash(image1, image2);
-        if (stats != null) {
+        if (entryColNames != null && stats != null) {
+            entryColNames.add("GS::Phash");
             stats.add(resultValue);
         }
         logger.info(String.format("                 GrayScale PHash distance: %.3f", resultValue));
 
         resultArray = calculateColorPHashes(image1, image2);
-        logger.info("          Color PHashes distances for RGB: {}", getResultArrayString(resultArray, stats));
+        logger.info("          Color PHashes distances for RGB: {}", getResultArrayString(resultArray, "C::Phash", entryColNames, stats));
 
         resultArray = calculateMI4RGB(imageColorOneDimensionalArray1, imageColorOneDimensionalArray2);
-        logger.info("        Mutual Information values for RGB: {}", getResultArrayString(resultArray, stats));
+        logger.info("        Mutual Information values for RGB: {}", getResultArrayString(resultArray, "MI", entryColNames, stats));
+
+        resultValue = ImageBlockDiffCalc.processImageBlockByBlock(image1, image2);
+        if (entryColNames != null && stats != null) {
+            entryColNames.add("Block");
+            stats.add(resultValue);
+        }
+        logger.info(String.format("                 Block max distance: %.3f", resultValue));
     }
 
-    private static String calculateMetricValue(Color[][] imageArray1, Color[][] imageArray2, CompareMetric metric, List<Double> stats) {
+    private static String calculateMetricValue(Color[][] imageArray1, Color[][] imageArray2, CompareMetric metric, List<String> entryColNames, List<Double> stats) {
         metric.resetValue();
         for (int iw = 0; iw < imageArray1.length; ++iw) {
             int columnHeight = imageArray1[0].length;
@@ -77,14 +85,15 @@ public class ImageDiffer {
             }
         }
         double value = metric.calculateValue();
-        if (stats != null) {
+        if (entryColNames != null && stats != null) {
+            entryColNames.add(metric.getName());
             stats.add(value);
         }
         return
                 String.format("                  Metric %10s value: %.3f", metric.getName(), value);
     }
 
-    private static String getResultArrayString(double[] resultArray, List<Double> stats) {
+    private static String getResultArrayString(double[] resultArray, String metricName, List<String> entryColNames, List<Double> stats) {
         List<Double> resultsList = Lists.newArrayList();
         double resultSum = 0;
         for (int i = 0; i < resultArray.length; ++i) {
@@ -100,12 +109,15 @@ public class ImageDiffer {
             median /= 2;
         }
 
-        if (stats != null) {
+        if (entryColNames != null && stats != null) {
             for (int i = 0; i < resultArray.length; ++i) {
+                entryColNames.add(String.format("%s[%d]", metricName, i));
                 stats.add(new Double(resultArray[i]));
             }
             stats.add(resultAvg);
+            entryColNames.add(String.format("%s::AVG", metricName));
             stats.add(median);
+            entryColNames.add(String.format("%s::Median", metricName));
         }
         return String.format("%s, mean=%.3f, median=%.3f", covertArrayToString(resultArray), resultAvg, median);
     }
@@ -192,7 +204,7 @@ public class ImageDiffer {
         return oneDimensionalColorArray;
     }
 
-    private static Color[][] convertImageToColorArray(BufferedImage image) {
+    public static Color[][] convertImageToColorArray(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
 

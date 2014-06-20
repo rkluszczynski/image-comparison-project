@@ -41,4 +41,14 @@ public class DrawHelper {
         }
         graph.dispose();
     }
+
+    static
+    public BufferedImage createEmptyImage(int width, int height) {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+        g.setColor(new Color(0, 0, 0, 0));
+        g.fillRect(0, 0, width, height);
+        g.dispose();
+        return image;
+    }
 }

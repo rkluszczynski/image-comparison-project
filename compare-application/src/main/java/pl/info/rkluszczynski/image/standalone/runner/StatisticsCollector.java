@@ -17,13 +17,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.List;
 
 @Component
 public class StatisticsCollector {
     private static final Logger logger = LoggerFactory.getLogger(StatisticsCollector.class);
 
+    private List<String> entryColNames = Lists.newArrayList("baseFilename", "compareFilename");
     private List<StatisticsEntry> entryList = Lists.newArrayList();
 
     void process(File baseFile, File compareFile) throws IOException {
@@ -35,7 +35,7 @@ public class StatisticsCollector {
                 compareFile.getName()
         );
         List<Double> stats = Lists.newArrayList();
-        ImageDiffer.calculateDifferStatistics(baseImage, compareImage, stats);
+        ImageDiffer.calculateDifferStatistics(baseImage, compareImage, entryColNames, stats);
         entry.addStatistics(stats);
     }
 
@@ -47,13 +47,15 @@ public class StatisticsCollector {
 
     public void saveAsCSV(String filename) throws IOException {
         Path path = Paths.get(filename);
-        Collection<String> strings = Collections2.transform(entryList, new Function<StatisticsEntry, String>() {
+        String csvHeader = StringUtils.collectionToDelimitedString(entryColNames, ",");
+        List<String> lines = Lists.newArrayList(csvHeader);
+        lines.addAll(Collections2.transform(entryList, new Function<StatisticsEntry, String>() {
             @Override
             public String apply(StatisticsEntry entry) {
                 return entry.toString();
             }
-        });
-        Files.write(path, strings, StandardCharsets.UTF_8);
+        }));
+        Files.write(path, lines, StandardCharsets.UTF_8);
     }
 
     class StatisticsEntry {
