@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.core.compare.phash
+package pl.info.rkluszczynski.image.core.compare.hash
 
 import spock.lang.Specification
 

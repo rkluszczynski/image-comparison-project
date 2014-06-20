@@ -1,32 +1,27 @@
-package pl.info.rkluszczynski.image.core.compare.phash;
-
-import com.google.common.collect.Lists;
-import org.imgscalr.Scalr;
+package pl.info.rkluszczynski.image.core.compare.hash;
 
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
-import java.util.ArrayList;
-import java.util.Collections;
 
 /*
  * pHash-like image hash.
  * Author: Elliot Shepherd (elliot@jarofworms.com
  * Based On: http://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html
  */
-public class ImagePHash03 {
+public class ImagePHash01 {
 
     private int size = 32;
     private int smallerSize = 8;
     private ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
     private double[] c;
 
-    public ImagePHash03() {
+    public ImagePHash01() {
         initCoefficients();
     }
 
-    public ImagePHash03(int size, int smallerSize) {
+    public ImagePHash01(int size, int smallerSize) {
         this.size = size;
         this.smallerSize = smallerSize;
 
@@ -48,15 +43,14 @@ public class ImagePHash03 {
     }
 
     // Returns a 'binary string' (like. 001010111011100010) which is easy to do a hamming distance on.
-    public String getHash(BufferedImage image) {
+    public String getHash(BufferedImage image) throws Exception {
         /* 1. Reduce size.
          * Like Average Hash, pHash starts with a small image.
 		 * However, the image is larger than 8x8; 32x32 is a good size.
 		 * This is really done to simplify the DCT computation and not
 		 * because it is needed to reduce the high frequencies.
 		 */
-        BufferedImage img = Scalr.resize(image,
-                Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, size, size);
+        BufferedImage img = resize(image, size, size);
 
 		/* 2. Reduce color.
          * The image is reduced to a grayscale just to further simplify
@@ -77,9 +71,9 @@ public class ImagePHash03 {
 		 * and scalars. While JPEG uses an 8x8 DCT, this algorithm uses
 		 * a 32x32 DCT.
 		 */
-//        long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         double[][] dctVals = applyDCT(vals);
-//        System.out.println("DCT: " + (System.currentTimeMillis() - start));
+        System.out.println("DCT: " + (System.currentTimeMillis() - start));
 
 		/* 4. Reduce the DCT.
          * This is the magic step. While the DCT is 32x32, just keep the
@@ -92,18 +86,19 @@ public class ImagePHash03 {
 		 * since the DC coefficient can be significantly different from
 		 * the other values and will throw off the average).
 		 */
-        ArrayList<Double> list = Lists.newArrayList();
+        double total = 0;
 
         for (int x = 0; x < smallerSize; x++) {
             for (int y = 0; y < smallerSize; y++) {
-                list.add(dctVals[x][y]);
+                total += dctVals[x][y];
             }
         }
-        Collections.sort(list);
-        double median = list.get(smallerSize * smallerSize / 2);
+        total -= dctVals[0][0];
+
+        double avg = total / (double) ((smallerSize * smallerSize) - 1);
 
 		/* 6. Further reduce the DCT.
-		 * This is the magic step. Set the 64 hash bits to 0 or 1
+         * This is the magic step. Set the 64 hash bits to 0 or 1
 		 * depending on whether each of the 64 DCT values is above or
 		 * below the average value. The result doesn't tell us the
 		 * actual low frequencies; it just tells us the very-rough
@@ -117,7 +112,7 @@ public class ImagePHash03 {
         for (int x = 0; x < smallerSize; x++) {
             for (int y = 0; y < smallerSize; y++) {
                 if (x != 0 && y != 0) {
-                    hash += (dctVals[x][y] > median ? "1" : "0");
+                    hash += (dctVals[x][y] > avg ? "1" : "0");
                 }
             }
         }

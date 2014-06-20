@@ -2,9 +2,9 @@ package pl.info.rkluszczynski.image.engine.model.comparators;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.info.rkluszczynski.image.core.compare.hash.HammingDistance;
+import pl.info.rkluszczynski.image.core.compare.hash.ImagePHash03;
 import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
-import pl.info.rkluszczynski.image.core.compare.phash.HammingDistance;
-import pl.info.rkluszczynski.image.core.compare.phash.ImagePHash03;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 

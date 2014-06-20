@@ -6,9 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.core.compare.PersonCorrelation;
 import pl.info.rkluszczynski.image.core.compare.SampleCorrelation;
+import pl.info.rkluszczynski.image.core.compare.hash.*;
 import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
-import pl.info.rkluszczynski.image.core.compare.phash.HammingDistance;
-import pl.info.rkluszczynski.image.core.compare.phash.ImagePHash05;
 import pl.info.rkluszczynski.image.engine.model.metrics.*;
 
 import java.awt.*;
@@ -55,15 +54,23 @@ public class ImageDiffer {
         resultArray = PersonCorrelation.calculateForRGB(imageColorOneDimensionalArray1, imageColorOneDimensionalArray2);
         logger.info("  Person Correlation Coefficients for RGB: {}", getResultArrayString(resultArray, "personCorr", entryColNames, stats));
 
-        resultValue = calculateGrayScalePHash(image1, image2);
-        if (entryColNames != null && stats != null) {
-            entryColNames.add("GS::Phash");
-            stats.add(resultValue);
-        }
-        logger.info(String.format("                 GrayScale PHash distance: %.3f", resultValue));
+        AbstractHash[] abstractHashes = {
+                new ImagePHash05(), new ImageAHash(), new ImageDHash(), new ImageDHash05()
+        };
+        for (AbstractHash hashCalculator : abstractHashes) {
+            String hashName = hashCalculator.getHashName();
 
-        resultArray = calculateColorPHashes(image1, image2);
-        logger.info("          Color PHashes distances for RGB: {}", getResultArrayString(resultArray, "C::Phash", entryColNames, stats));
+            resultValue = calculateGrayScalePHash(image1, image2, hashCalculator);
+            if (entryColNames != null && stats != null) {
+                entryColNames.add(String.format("GS::%s", hashName));
+                stats.add(resultValue);
+            }
+            logger.info(String.format("               GrayScale %7s distance: %.3f", hashName, resultValue));
+
+            resultArray = calculateColorPHashes(image1, image2, hashCalculator);
+            logger.info("          Color {} distances for RGB: {}", String.format("%7s", hashName),
+                    getResultArrayString(resultArray, String.format("C::%s", hashName), entryColNames, stats));
+        }
 
         resultArray = calculateMI4RGB(imageColorOneDimensionalArray1, imageColorOneDimensionalArray2);
         logger.info("        Mutual Information values for RGB: {}", getResultArrayString(resultArray, "MI", entryColNames, stats));
@@ -174,20 +181,18 @@ public class ImageDiffer {
         return result;
     }
 
-    private static double[] calculateColorPHashes(BufferedImage image1, BufferedImage image2) {
-        ImagePHash05 imagePHash = new ImagePHash05();
-        String[] pHashes1 = imagePHash.getColorHashes(image1);
-        String[] pHashes2 = imagePHash.getColorHashes(image2);
+    private static double[] calculateColorPHashes(BufferedImage image1, BufferedImage image2, AbstractHash hashCalc) {
+        String[] pHashes1 = hashCalc.getColorHashes(image1);
+        String[] pHashes2 = hashCalc.getColorHashes(image2);
         double[] result = new double[3];
         for (int i = 0; i < 3; ++i)
             result[i] = HammingDistance.calculate(pHashes1[i], pHashes2[i]);
         return result;
     }
 
-    private static double calculateGrayScalePHash(BufferedImage image1, BufferedImage image2) {
-        ImagePHash05 imagePHash = new ImagePHash05();
-        String pHash1 = imagePHash.getGrayScaleHash(image1);
-        String pHash2 = imagePHash.getGrayScaleHash(image2);
+    private static double calculateGrayScalePHash(BufferedImage image1, BufferedImage image2, AbstractHash hashCalc) {
+        String pHash1 = hashCalc.getGrayScaleHash(image1);
+        String pHash2 = hashCalc.getGrayScaleHash(image2);
         return HammingDistance.calculate(pHash1, pHash2);
     }
 

@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.core.compare.phash;
+package pl.info.rkluszczynski.image.core.compare.hash;
 
 /**
  * http://blogs.ucl.ac.uk/chime/2010/06/28/java-example-code-of-common-similarity-algorithms-used-in-data-mining/

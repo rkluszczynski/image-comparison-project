@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.info.rkluszczynski.image.core.compare.hash.ImagePHash03;
 import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
-import pl.info.rkluszczynski.image.core.compare.phash.ImagePHash03;
 import pl.info.rkluszczynski.image.engine.ImageDiffer;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.tasks.PatternDetectorTask;
@@ -117,8 +117,9 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
     }
 
     private void saveImageMatch(BufferedImage image, int suffixNum) {
+        String prefixName = "bon-pattern1-shelfstoper";
         try {
-            ImageIO.write(image, "PNG", new File(String.format("templateResult-%d.png", suffixNum)));
+            ImageIO.write(image, "PNG", new File(String.format("%s-%d.png", prefixName, suffixNum)));
         } catch (IOException e) {
             logger.error("Problem during saving subImage!", e);
         }

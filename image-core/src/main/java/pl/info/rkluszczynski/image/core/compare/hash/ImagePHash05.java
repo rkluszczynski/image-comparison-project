@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.core.compare.phash;
+package pl.info.rkluszczynski.image.core.compare.hash;
 
 import com.google.common.collect.Lists;
 import org.imgscalr.Scalr;
@@ -12,7 +12,7 @@ import java.util.Collections;
 
 import static java.lang.Math.log10;
 
-public class ImagePHash05 {
+public class ImagePHash05 implements AbstractHash {
 
     private int smallImageSize = 32;
     private int reducedDctSmallerSize = 8;
@@ -176,6 +176,7 @@ public class ImagePHash05 {
     }//end normalize
 
     // Returns a 'binary string' (like. 001010111011100010) which is easy to do a hamming distance on.
+    @Override
     public String getGrayScaleHash(BufferedImage bufferedImage) {
         /* 1. Reduce smallImageSize to 32x32 */
         BufferedImage smallImage = Scalr.resize(bufferedImage,
@@ -196,6 +197,7 @@ public class ImagePHash05 {
         return getColorPlaneHash(imageColorPlane);
     }
 
+    @Override
     public String[] getColorHashes(BufferedImage bufferedImage) {
         String[] result = new String[3];
 
@@ -231,6 +233,11 @@ public class ImagePHash05 {
             result[rgb] = getColorPlaneHash(imageColorPlane);
         }
         return result;
+    }
+
+    @Override
+    public String getHashName() {
+        return "PHash05";
     }
 
     private String getColorPlaneHash(double[][] imageColorPlane) {

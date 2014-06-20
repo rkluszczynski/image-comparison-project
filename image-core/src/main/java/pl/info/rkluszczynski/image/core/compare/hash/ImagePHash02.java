@@ -1,4 +1,6 @@
-package pl.info.rkluszczynski.image.core.compare.phash;
+package pl.info.rkluszczynski.image.core.compare.hash;
+
+import org.imgscalr.Scalr;
 
 import java.awt.*;
 import java.awt.color.ColorSpace;
@@ -10,18 +12,18 @@ import java.awt.image.ColorConvertOp;
  * Author: Elliot Shepherd (elliot@jarofworms.com
  * Based On: http://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html
  */
-public class ImagePHash01 {
+public class ImagePHash02 {
 
     private int size = 32;
     private int smallerSize = 8;
     private ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
     private double[] c;
 
-    public ImagePHash01() {
+    public ImagePHash02() {
         initCoefficients();
     }
 
-    public ImagePHash01(int size, int smallerSize) {
+    public ImagePHash02(int size, int smallerSize) {
         this.size = size;
         this.smallerSize = smallerSize;
 
@@ -50,7 +52,8 @@ public class ImagePHash01 {
 		 * This is really done to simplify the DCT computation and not
 		 * because it is needed to reduce the high frequencies.
 		 */
-        BufferedImage img = resize(image, size, size);
+        BufferedImage img = Scalr.resize(image,
+                Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, size, size);
 
 		/* 2. Reduce color.
          * The image is reduced to a grayscale just to further simplify
@@ -98,7 +101,7 @@ public class ImagePHash01 {
         double avg = total / (double) ((smallerSize * smallerSize) - 1);
 
 		/* 6. Further reduce the DCT.
-		 * This is the magic step. Set the 64 hash bits to 0 or 1
+         * This is the magic step. Set the 64 hash bits to 0 or 1
 		 * depending on whether each of the 64 DCT values is above or
 		 * below the average value. The result doesn't tell us the
 		 * actual low frequencies; it just tells us the very-rough
