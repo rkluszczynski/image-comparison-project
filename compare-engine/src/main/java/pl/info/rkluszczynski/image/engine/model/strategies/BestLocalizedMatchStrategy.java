@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.core.compare.hash.ImagePHash03;
 import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
-import pl.info.rkluszczynski.image.engine.ImageDiffer;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.tasks.PatternDetectorTask;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
@@ -80,6 +79,7 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
 
         int bestScoresAmount = Math.min(BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT, results.size());
         String patternPHash = imagePHash.getHash(patternWrapper.getBufferedImage());
+
         for (int i = 0; i < bestScoresAmount; ++i) {
             MatchScore item = results.get(i);
 
@@ -89,24 +89,18 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
                     patternWrapper.getWidth(), patternWrapper.getHeight(), item.getScaleFactor());
             BufferedImage exactSubImage = Scalr.resize(subImage,
                     Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, patternWrapper.getWidth(), patternWrapper.getHeight());
-            saveImageMatch(exactSubImage, i);
-            ImageDiffer.calculateDifferStatistics(patternWrapper.getBufferedImage(), exactSubImage, null, null);
+//            saveImageMatch(exactSubImage, i);
+//            ImageDiffer.calculateDifferStatistics(patternWrapper.getBufferedImage(), exactSubImage, null, null);
+        }
 
-//            String subImagePHash = determineSubImagePHash(resultImage,
-//                    item.getWidthPosition(), item.getHeightPosition(),
-//                    patternWrapper.getWidth(), patternWrapper.getHeight(), item.getScaleFactor());
-//            int distance = HammingDistance.calculate(patternPHash, subImagePHash);
-//            logger.info("Distance {} with pHashes {}, {} at position ({}, {})", distance,
-//                    patternPHash, subImagePHash, item.getWidthPosition(), item.getHeightPosition());
-//            if (distance > 23) {
-//                continue;
-//            }
-
-            double matchDivisor = MAX_PIXEL_VALUE * patternWrapper.countNonAlphaPixels();
+        for (int i = 0; i < bestScoresAmount; ++i) {
+            MatchScore item = results.get(i);
+//            double matchDivisor = MAX_PIXEL_VALUE * patternWrapper.countNonAlphaPixels();
 
             ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s",
                     metric == null ? "SUM" : metric.getName()));
-            detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(item.getScore() / matchDivisor));
+//            detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(item.getScore() / matchDivisor));
+            detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(item.getScore()));
 
             DrawHelper.drawRectangleOnImage(resultImage,
                     item.getWidthPosition(), item.getHeightPosition(),
@@ -117,9 +111,11 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
     }
 
     private void saveImageMatch(BufferedImage image, int suffixNum) {
-        String prefixName = "bon-pattern1-shelfstoper";
+        String prefixName = "matchTemplate";
+        prefixName = "bon-pattern1-shelfstoper_col-abs";
+//        prefixName = "zubr-pattern1-poster_col-abs";
         try {
-            ImageIO.write(image, "PNG", new File(String.format("%s-%d.png", prefixName, suffixNum)));
+            ImageIO.write(image, "PNG", new File(String.format("%s-%03d.png", prefixName, suffixNum)));
         } catch (IOException e) {
             logger.error("Problem during saving subImage!", e);
         }

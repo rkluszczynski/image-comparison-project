@@ -25,6 +25,11 @@ public class ExpColorMetric implements CompareMetric {
     }
 
     @Override
+    public double maxValue() {
+        return 1.;
+    }
+
+    @Override
     public void addPixelsDifference(Color inputPixel, Color templatePixel) {
         double expArg = inputPixel.getRed() - templatePixel.getRed();
         expArg += (inputPixel.getGreen() - templatePixel.getGreen());

@@ -15,7 +15,12 @@ public class NRMSEColorMetric extends RMSEColorMetric {
 
     @Override
     public double calculateValue() {
-        return super.calculateValue() / (maxValue - minValue);
+        return (super.calculateValue() * super.maxValue()) / (maxValue - minValue);
+    }
+
+    @Override
+    public double maxValue() {
+        return 1.;
     }
 
     @Override

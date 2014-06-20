@@ -1,5 +1,7 @@
 package pl.info.rkluszczynski.image.engine.model.metrics;
 
+import pl.info.rkluszczynski.image.engine.config.EngineConstants;
+
 import java.awt.*;
 
 public class RMSEAveGrayScaleMetric extends GrayScaleMetric {
@@ -14,7 +16,12 @@ public class RMSEAveGrayScaleMetric extends GrayScaleMetric {
 
     @Override
     public double calculateValue() {
-        return Math.sqrt(mseMetricValue / pixelsNumber);
+        return Math.sqrt(mseMetricValue / pixelsNumber) / maxValue();
+    }
+
+    @Override
+    public double maxValue() {
+        return EngineConstants.MAX_PIXEL_VALUE;
     }
 
     @Override
@@ -24,7 +31,7 @@ public class RMSEAveGrayScaleMetric extends GrayScaleMetric {
 
         double diff = (grayScaleTemplateValue - grayScaleInputValue);
         mseMetricValue += (diff * diff);
-        pixelsNumber += 1;
+        ++pixelsNumber;
     }
 
     @Override

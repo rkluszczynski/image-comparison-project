@@ -8,6 +8,8 @@ public interface CompareMetric {
 
     public double calculateValue();
 
+    public double maxValue();
+
     public void addPixelsDifference(Color inputPixel, Color templatePixel);
 
     public String getName();

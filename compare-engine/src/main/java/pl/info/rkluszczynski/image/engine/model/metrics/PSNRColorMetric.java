@@ -6,22 +6,33 @@ import java.awt.*;
 
 import static pl.info.rkluszczynski.image.engine.config.EngineConstants.MAX_PIXEL_VALUE;
 
+/*
+    http://www.mathworks.com/help/vision/ref/psnr.html
+ */
 public class PSNRColorMetric implements CompareMetric {
+    private static double pixelMaxValueSquared = MAX_PIXEL_VALUE * MAX_PIXEL_VALUE;
+
     private double mseMetricValue;
-    private double pixelMaxValue;
     private double pixelsNumber;
 
     @Override
     public void resetValue() {
         mseMetricValue = 0.;
-        pixelMaxValue = MAX_PIXEL_VALUE;
         pixelsNumber = 0.;
     }
 
     @Override
     public double calculateValue() {
-//        return 20. * Math.log10(pixelMaxValue) - 10. * Math.log10(mseMetricValue / (3. * pixelsNumber));
-        return 20. * Math.log10(pixelMaxValue / Math.sqrt(mseMetricValue / (3. * pixelsNumber)));
+//        return 20. * Math.log10(pixelMaxValueSquared) - 10. * Math.log10(mseMetricValue / (3. * pixelsNumber));
+        double mse = mseMetricValue / (3. * pixelsNumber);
+        mse = Math.max(mse, 1.); // in case there is 0
+        double psnr = 10. * Math.log10(pixelMaxValueSquared / mse);
+        return (maxValue() - psnr) / maxValue();
+    }
+
+    @Override
+    public double maxValue() {
+        return 10. * Math.log10(pixelMaxValueSquared);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package pl.info.rkluszczynski.image.engine.model.metrics;
 
 import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
+import pl.info.rkluszczynski.image.engine.config.EngineConstants;
 
 import java.awt.*;
 
@@ -16,7 +17,12 @@ public class RMSEColorMetric implements CompareMetric {
 
     @Override
     public double calculateValue() {
-        return Math.sqrt(metricValue / (3. * pixelsNumber));
+        return Math.sqrt(metricValue / (3. * pixelsNumber)) / maxValue();
+    }
+
+    @Override
+    public double maxValue() {
+        return EngineConstants.MAX_PIXEL_VALUE;
     }
 
     @Override

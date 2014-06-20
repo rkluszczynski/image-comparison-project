@@ -35,7 +35,8 @@ public class StatisticsCollector {
                 compareFile.getName()
         );
         List<Double> stats = Lists.newArrayList();
-        ImageDiffer.calculateDifferStatistics(baseImage, compareImage, entryColNames, stats);
+        ImageDiffer.calculateDifferStatistics(baseImage, compareImage,
+                entryColNames.size() == 2 ? entryColNames : null, stats);
         entry.addStatistics(stats);
     }
 

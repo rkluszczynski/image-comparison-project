@@ -26,7 +26,10 @@ public class StandaloneRunner {
             String filename = baseFile.getName();
             String basename = filename.substring(0, filename.lastIndexOf("."));
 
-            FilenameFilter filenameFilter = createFilenameFilter(String.format("%s-", basename));
+            FilenameFilter filenameFilter = createFilenameFilter(
+                    String.format("%s-", basename),
+                    String.format("%s_", basename)
+            );
             for (File compareFile : compareSetDir.listFiles(filenameFilter)) {
                 String compareFilename = compareFile.getName();
                 logger.info(" -> comparing files {} with {}", filename, compareFilename);
@@ -37,11 +40,15 @@ public class StandaloneRunner {
         statisticsCollector.saveAsCSV("tmp/statistics.csv");
     }
 
-    private FilenameFilter createFilenameFilter(final String basename) {
+    private FilenameFilter createFilenameFilter(final String... basenames) {
         return new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.startsWith(basename);
+                for (String basename : basenames) {
+                    if (name.startsWith(basename))
+                        return true;
+                }
+                return false;
             }
         };
     }
