@@ -77,7 +77,7 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
         CompareMetric metric = taskInput.getComparator().getMetric();
 
         int bestScoresAmount = Math.min(BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT, results.size());
-        saveBestMatchImages(results, bestScoresAmount, taskInput);
+//        saveBestMatchImages(results, bestScoresAmount, taskInput);
 
         for (int i = 0; i < bestScoresAmount; ++i) {
             MatchScore item = results.get(i);
@@ -106,7 +106,7 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
 
         BufferedImage matchSubImage = getMatchSubImage(matchScore, queryImageWrapper, patternWrapper);
 
-        return matchScore != null;
+        return matchSubImage != null;
     }
 
     private void saveBestMatchImages(List<MatchScore> results, int bestScoresAmount, DetectorTaskInput taskInput) {
