@@ -12,6 +12,8 @@ public interface CompareMetric {
 
     public void addPixelsDifference(Color inputPixel, Color templatePixel);
 
+    public void addPointDifference(double value1, double value2);
+
     public String getName();
 
 }

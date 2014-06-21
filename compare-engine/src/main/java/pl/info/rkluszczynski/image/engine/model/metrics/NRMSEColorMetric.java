@@ -1,7 +1,5 @@
 package pl.info.rkluszczynski.image.engine.model.metrics;
 
-import java.awt.*;
-
 public class NRMSEColorMetric extends RMSEColorMetric {
     private double maxValue;
     private double minValue;
@@ -24,22 +22,14 @@ public class NRMSEColorMetric extends RMSEColorMetric {
     }
 
     @Override
-    public void addPixelsDifference(Color inputPixel, Color templatePixel) {
-        super.addPixelsDifference(inputPixel, templatePixel);
+    public void addPointDifference(double value1, double value2) {
+        super.addPointDifference(value1, value2);
 
-        maxValue = Math.max(maxValue, inputPixel.getRed());
-        maxValue = Math.max(maxValue, templatePixel.getRed());
-        maxValue = Math.max(maxValue, inputPixel.getGreen());
-        maxValue = Math.max(maxValue, templatePixel.getGreen());
-        maxValue = Math.max(maxValue, inputPixel.getBlue());
-        maxValue = Math.max(maxValue, templatePixel.getBlue());
+        maxValue = Math.max(maxValue, value1);
+        maxValue = Math.max(maxValue, value2);
 
-        minValue = Math.min(minValue, inputPixel.getRed());
-        minValue = Math.min(minValue, templatePixel.getRed());
-        minValue = Math.min(minValue, inputPixel.getGreen());
-        minValue = Math.min(minValue, templatePixel.getGreen());
-        minValue = Math.min(minValue, inputPixel.getBlue());
-        minValue = Math.min(minValue, templatePixel.getBlue());
+        minValue = Math.min(minValue, value1);
+        minValue = Math.min(minValue, value2);
     }
 
     @Override

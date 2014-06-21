@@ -9,6 +9,7 @@ import pl.info.rkluszczynski.image.core.compare.PersonCorrelation;
 import pl.info.rkluszczynski.image.core.compare.SampleCorrelation;
 import pl.info.rkluszczynski.image.core.compare.hash.*;
 import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
+import pl.info.rkluszczynski.image.engine.config.EngineConstants;
 import pl.info.rkluszczynski.image.engine.model.metrics.*;
 
 import java.awt.*;
@@ -118,6 +119,13 @@ public class ImageDiffer {
         resultValue = HistogramDiffer.processGSSampleCorr(eqImageHistogramsList1, eqImageHistogramsList2);
         logger.info("                   Eq.Histogram MI for GS: {}", getResultValueString(resultValue, "GS::eqHistMI", entryColNames, stats));
 
+        for (CompareMetric metric : compareMetrics) {
+            calculateHistogramMetricValue(imageHistogramsList1, imageHistogramsList2, "hist", metric, entryColNames, stats);
+            calculateHistogramMetricValue(eqImageHistogramsList1, eqImageHistogramsList2, "eqHist", metric, entryColNames, stats);
+        }
+
+        calculateColorsStatistics(image1, image2, entryColNames, stats);
+
         resultValue = ImageBlockDiffCalc.processImageBlockByBlock(image1, image2);
         if (entryColNames != null) {
             entryColNames.add("Block");
@@ -126,6 +134,98 @@ public class ImageDiffer {
             stats.add(resultValue);
         }
         logger.info(String.format("                 Block max distance: %.3f", resultValue));
+    }
+
+    private static void calculateColorsStatistics(BufferedImage image1, BufferedImage image2, List<String> entryColNames, List<Double> stats) {
+        double[] means1 = new double[3];
+        double[] means2 = new double[3];
+        for (int iw = 0; iw < image1.getWidth(); ++iw) {
+            for (int ih = 0; ih < image1.getHeight(); ++ih) {
+                Color color = new Color(image1.getRGB(iw, ih));
+                means1[0] += color.getRed();
+                means1[1] += color.getGreen();
+                means1[2] += color.getBlue();
+            }
+        }
+        for (int i = 0; i < 3; ++i) {
+            means1[i] /= (image1.getWidth() * image1.getHeight());
+        }
+        for (int iw = 0; iw < image2.getWidth(); ++iw) {
+            for (int ih = 0; ih < image2.getHeight(); ++ih) {
+                Color color = new Color(image2.getRGB(iw, ih));
+                means2[0] += color.getRed();
+                means2[1] += color.getGreen();
+                means2[2] += color.getBlue();
+            }
+        }
+        for (int i = 0; i < 3; ++i) {
+            means2[i] /= (image2.getWidth() * image2.getHeight());
+        }
+
+        double[] stddev1 = new double[3];
+        double[] stddev2 = new double[3];
+        for (int iw = 0; iw < image1.getWidth(); ++iw) {
+            for (int ih = 0; ih < image1.getHeight(); ++ih) {
+                Color color = new Color(image1.getRGB(iw, ih));
+                stddev1[0] += ((color.getRed() - means1[0]) * (color.getRed() - means1[0]));
+                stddev1[1] += ((color.getGreen() - means1[1]) * (color.getGreen() - means1[1]));
+                stddev1[2] += ((color.getBlue() - means1[2]) * (color.getBlue() - means1[2]));
+            }
+        }
+        for (int i = 0; i < 3; ++i) {
+            stddev1[i] /= (image1.getWidth() * image1.getHeight());
+            stddev1[i] = Math.sqrt(stddev1[i]);
+        }
+        for (int iw = 0; iw < image2.getWidth(); ++iw) {
+            for (int ih = 0; ih < image2.getHeight(); ++ih) {
+                Color color = new Color(image2.getRGB(iw, ih));
+                stddev2[0] += ((color.getRed() - means2[0]) * (color.getRed() - means2[0]));
+                stddev2[1] += ((color.getGreen() - means2[1]) * (color.getGreen() - means2[1]));
+                stddev2[2] += ((color.getBlue() - means2[2]) * (color.getBlue() - means2[2]));
+            }
+        }
+        for (int i = 0; i < 3; ++i) {
+            stddev2[i] /= (image2.getWidth() * image2.getHeight());
+            stddev2[i] = Math.sqrt(stddev2[i]);
+        }
+
+        logger.info("            Color means of image1 for RGB: {}", getResultArrayString(means1, "C::means1", entryColNames, stats));
+        logger.info("            Color means of image2 for RGB: {}", getResultArrayString(means2, "C::means2", entryColNames, stats));
+        logger.info("   Color std deviations of image1 for RGB: {}", getResultArrayString(stddev1, "C::stddev1", entryColNames, stats));
+        logger.info("   Color std deviations of image1 for RGB: {}", getResultArrayString(stddev2, "C::stddev2", entryColNames, stats));
+
+        double[] meansDiff = new double[3];
+        double[] stddevsDiff = new double[3];
+        for (int i = 0; i < 3; ++i) {
+            meansDiff[i] = Math.abs(means1[i] - means2[i]) / EngineConstants.MAX_PIXEL_VALUE;
+            stddevsDiff[i] = Math.abs(stddev1[i] - stddev2[i]) / EngineConstants.MAX_PIXEL_VALUE;
+        }
+        logger.info("  Norm.difference of images means for RGB: {}", getResultArrayString(meansDiff, "C::meanDiff", entryColNames, stats));
+        logger.info("Norm.difference of images stddevs for RGB: {}", getResultArrayString(stddevsDiff, "C::stddecDiff", entryColNames, stats));
+    }
+
+    private static String calculateHistogramMetricValue(
+            List<double[]> imageHistogramsList1, List<double[]> imageHistogramsList2,
+            String name, CompareMetric metric,
+            List<String> entryColNames, List<Double> stats) {
+        for (int i = 0; i < 4; ++i) {
+            double[] array1 = imageHistogramsList1.get(i);
+            double[] array2 = imageHistogramsList2.get(i);
+
+            if (entryColNames != null) {
+                String colName = (i == 3) ? "GS::" + name + metric.getName() : "C::" + name + metric.getName() + "[" + i + "]";
+                entryColNames.add(colName);
+            }
+
+            metric.resetValue();
+            for (int j = 0; j < array1.length; ++j) {
+                metric.addPointDifference(array1[j], array2[j]);
+            }
+            if (stats != null) {
+                stats.add(metric.calculateValue());
+            }
+        }
+        return null;
     }
 
     private static String getResultValueString(double resultValue, String metricName, List<String> entryColNames, List<Double> stats) {

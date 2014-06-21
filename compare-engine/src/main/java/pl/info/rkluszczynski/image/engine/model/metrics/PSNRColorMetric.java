@@ -13,18 +13,18 @@ public class PSNRColorMetric implements CompareMetric {
     private static double pixelMaxValueSquared = MAX_PIXEL_VALUE * MAX_PIXEL_VALUE;
 
     private double mseMetricValue;
-    private double pixelsNumber;
+    private double valuesAmount;
 
     @Override
     public void resetValue() {
         mseMetricValue = 0.;
-        pixelsNumber = 0.;
+        valuesAmount = 0.;
     }
 
     @Override
     public double calculateValue() {
-//        return 20. * Math.log10(pixelMaxValueSquared) - 10. * Math.log10(mseMetricValue / (3. * pixelsNumber));
-        double mse = mseMetricValue / (3. * pixelsNumber);
+//        return 20. * Math.log10(pixelMaxValueSquared) - 10. * Math.log10(mseMetricValue / (3. * valuesAmount));
+        double mse = mseMetricValue / valuesAmount;
         mse = Math.max(mse, 1.); // in case there is 0
         double psnr = 10. * Math.log10(pixelMaxValueSquared / mse);
         return (maxValue() - psnr) / maxValue();
@@ -37,10 +37,15 @@ public class PSNRColorMetric implements CompareMetric {
 
     @Override
     public void addPixelsDifference(Color inputPixel, Color templatePixel) {
-        mseMetricValue += ((inputPixel.getRed() - templatePixel.getRed()) * (inputPixel.getRed() - templatePixel.getRed()));
-        mseMetricValue += ((inputPixel.getGreen() - templatePixel.getGreen()) * (inputPixel.getGreen() - templatePixel.getGreen()));
-        mseMetricValue += ((inputPixel.getBlue() - templatePixel.getBlue()) * (inputPixel.getBlue() - templatePixel.getBlue()));
-        ++pixelsNumber;
+        addPointDifference(inputPixel.getRed(), templatePixel.getRed());
+        addPointDifference(inputPixel.getGreen(), templatePixel.getGreen());
+        addPointDifference(inputPixel.getBlue(), templatePixel.getBlue());
+    }
+
+    @Override
+    public void addPointDifference(double value1, double value2) {
+        mseMetricValue += ((value1 - value2) * (value1 - value2));
+        ++valuesAmount;
     }
 
     @Override
