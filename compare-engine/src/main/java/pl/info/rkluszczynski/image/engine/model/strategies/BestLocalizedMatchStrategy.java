@@ -1,14 +1,13 @@
 package pl.info.rkluszczynski.image.engine.model.strategies;
 
 import com.google.common.collect.Lists;
-import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.info.rkluszczynski.image.core.compare.hash.ImagePHash03;
 import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.tasks.PatternDetectorTask;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
+import pl.info.rkluszczynski.image.engine.tasks.multiscale.QueryImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.DrawHelper;
 
@@ -27,7 +26,7 @@ import static pl.info.rkluszczynski.image.engine.config.EngineConstants.*;
  */
 public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
     protected static final Logger logger = LoggerFactory.getLogger(BestLocalizedMatchStrategy.class);
-    ImagePHash03 imagePHash = new ImagePHash03();
+
     private double offset;
     private int bestResultsWidth;
     private int bestResultsHeight;
@@ -78,28 +77,19 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
         CompareMetric metric = taskInput.getComparator().getMetric();
 
         int bestScoresAmount = Math.min(BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT, results.size());
-        String patternPHash = imagePHash.getHash(patternWrapper.getBufferedImage());
+        saveBestMatchImages(results, bestScoresAmount, taskInput);
 
         for (int i = 0; i < bestScoresAmount; ++i) {
             MatchScore item = results.get(i);
+            if (!isPatternMatchValid(item, taskInput)) {
+                continue;
+            }
 
-            logger.info("Matching {}:", i);
-            BufferedImage subImage = getMatchSubImage(resultImage,
-                    item.getWidthPosition(), item.getHeightPosition(),
-                    patternWrapper.getWidth(), patternWrapper.getHeight(), item.getScaleFactor());
-            BufferedImage exactSubImage = Scalr.resize(subImage,
-                    Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, patternWrapper.getWidth(), patternWrapper.getHeight());
-//            saveImageMatch(exactSubImage, i);
-//            ImageDiffer.calculateDifferStatistics(patternWrapper.getBufferedImage(), exactSubImage, null, null);
-        }
-
-        for (int i = 0; i < bestScoresAmount; ++i) {
-            MatchScore item = results.get(i);
 //            double matchDivisor = MAX_PIXEL_VALUE * patternWrapper.countNonAlphaPixels();
+//            detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(item.getScore() / matchDivisor));
 
             ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s",
                     metric == null ? "SUM" : metric.getName()));
-//            detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(item.getScore() / matchDivisor));
             detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(item.getScore()));
 
             DrawHelper.drawRectangleOnImage(resultImage,
@@ -110,30 +100,43 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
         }
     }
 
-    private void saveImageMatch(BufferedImage image, int suffixNum) {
-        String prefixName = "matchTemplate";
-        prefixName = "bon-pattern1-shelfstoper_col-abs";
-//        prefixName = "zubr-pattern1-poster_col-abs";
-        try {
-            ImageIO.write(image, "PNG", new File(String.format("%s-%03d.png", prefixName, suffixNum)));
-        } catch (IOException e) {
-            logger.error("Problem during saving subImage!", e);
+    private boolean isPatternMatchValid(MatchScore matchScore, DetectorTaskInput taskInput) {
+        QueryImageWrapper queryImageWrapper = taskInput.getQueryImageWrapper();
+        BufferedImageWrapper patternWrapper = taskInput.getPatternWrapper();
+
+        BufferedImage matchSubImage = getMatchSubImage(matchScore, queryImageWrapper, patternWrapper);
+
+        return matchScore != null;
+    }
+
+    private void saveBestMatchImages(List<MatchScore> results, int bestScoresAmount, DetectorTaskInput taskInput) {
+        QueryImageWrapper queryImageWrapper = taskInput.getQueryImageWrapper();
+        BufferedImageWrapper patternWrapper = taskInput.getPatternWrapper();
+
+        for (int suffixNum = 0; suffixNum < bestScoresAmount; ++suffixNum) {
+            MatchScore matchScore = results.get(suffixNum);
+            logger.info("Matching {}:", suffixNum);
+
+            BufferedImage matchSubImage = getMatchSubImage(matchScore, queryImageWrapper, patternWrapper);
+
+            String prefixName = "templateMatchImage";
+//            prefixName = "bon-pattern1-shelfstoper_col-abs";
+//            prefixName = "zubr-pattern1-poster_col-abs";
+            try {
+                String filename = String.format("%s-%03d.png", prefixName, suffixNum);
+                logger.info("Saving file: {}", filename);
+                ImageIO.write(matchSubImage, "PNG", new File(filename));
+            } catch (IOException e) {
+                logger.error("Problem during saving subImage!", e);
+            }
         }
     }
 
-    private String determineSubImagePHash(BufferedImage image, int widthPosition, int heightPosition, int width, int height, double scaleFactor) {
-        BufferedImage subImage = getMatchSubImage(image, widthPosition, heightPosition, width, height, scaleFactor);
-        String hash = imagePHash.getHash(subImage);
-        return hash;
-    }
-
-    private BufferedImage getMatchSubImage(BufferedImage image, int widthPosition, int heightPosition, int width, int height, double scaleFactor) {
-        double invertedScaleFactor = 1. / scaleFactor;
-        int scaledLeftPosition = (int) (invertedScaleFactor * widthPosition);
-        int scaledTopPosition = (int) (invertedScaleFactor * heightPosition);
-        int scaledWidth = (int) (invertedScaleFactor * width);
-        int scaledHeight = (int) (invertedScaleFactor * height);
-
-        return image.getSubimage(scaledLeftPosition, scaledTopPosition, scaledWidth, scaledHeight);
+    private BufferedImage getMatchSubImage(MatchScore matchScore, QueryImageWrapper queryImageWrapper, BufferedImageWrapper patternWrapper) {
+        double scaleFactor = matchScore.getScaleFactor();
+        BufferedImage queryImage = queryImageWrapper.extract(scaleFactor);
+        return queryImage.getSubimage(
+                matchScore.getWidthPosition(), matchScore.getHeightPosition(),
+                patternWrapper.getWidth(), patternWrapper.getHeight());
     }
 }

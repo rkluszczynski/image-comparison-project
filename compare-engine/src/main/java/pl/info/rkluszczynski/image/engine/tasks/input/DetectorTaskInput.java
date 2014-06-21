@@ -2,6 +2,7 @@ package pl.info.rkluszczynski.image.engine.tasks.input;
 
 import pl.info.rkluszczynski.image.engine.model.comparators.PatternMatchComparator;
 import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
+import pl.info.rkluszczynski.image.engine.tasks.multiscale.QueryImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 
 import java.awt.image.BufferedImage;
@@ -15,6 +16,7 @@ public class DetectorTaskInput {
 
     private BufferedImageWrapper patternWrapper;
     private BufferedImage resultImage;
+    private QueryImageWrapper queryImageWrapper;
 
     public DetectorTaskInput(PatternMatchComparator comparator, PatternMatchStrategy strategy) {
         this.comparator = comparator;
@@ -48,5 +50,13 @@ public class DetectorTaskInput {
 
     public void setPatternWrapper(BufferedImageWrapper patternWrapper) {
         this.patternWrapper = patternWrapper;
+    }
+
+    public QueryImageWrapper getQueryImageWrapper() {
+        return queryImageWrapper;
+    }
+
+    public void setQueryImageWrapper(QueryImageWrapper queryImageWrapper) {
+        this.queryImageWrapper = queryImageWrapper;
     }
 }

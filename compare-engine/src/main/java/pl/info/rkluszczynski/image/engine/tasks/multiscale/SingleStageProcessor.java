@@ -25,8 +25,9 @@ public class SingleStageProcessor {
         this.scaleFactor = scaleFactor;
     }
 
-    public static SingleStageProcessor create(BufferedImage inputImage, DetectorTaskInput taskInput, double scaleFactor) {
-        return new SingleStageProcessor(inputImage, taskInput, scaleFactor);
+    public static SingleStageProcessor create(DetectorTaskInput taskInput, double scaleFactor) {
+        BufferedImage image = taskInput.getQueryImageWrapper().extract(scaleFactor);
+        return new SingleStageProcessor(image, taskInput, scaleFactor);
     }
 
     public void process(PatternDetectorTask detectorTask, double fullScaleStepProgress) {

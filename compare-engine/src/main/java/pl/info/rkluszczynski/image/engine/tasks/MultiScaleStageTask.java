@@ -5,6 +5,7 @@ import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
+import pl.info.rkluszczynski.image.engine.tasks.multiscale.QueryImageWrapper;
 import pl.info.rkluszczynski.image.engine.tasks.multiscale.SingleStageProcessor;
 import pl.info.rkluszczynski.image.engine.tasks.multiscale.SizeSupplier;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
@@ -58,6 +59,8 @@ public class MultiScaleStageTask extends AbstractDetectorTask {
 
         logger.info("Number of non alpha pixels: {} (out of {})", patternWrapper.countNonAlphaPixels(),
                 patternImage.getWidth() * patternImage.getHeight());
+        QueryImageWrapper queryImageWrapper = new QueryImageWrapper();
+        getTaskInput().setQueryImageWrapper(queryImageWrapper);
         for (int scaleStep = -multistageScaleDepth; scaleStep <= multistageScaleDepth; ++scaleStep) {
             double scaleFactor = 1. + scaleStep * multistageScaleRatio;
 
@@ -68,10 +71,9 @@ public class MultiScaleStageTask extends AbstractDetectorTask {
                     scaleStep, scaleFactor, pyramidStepDesiredWidth, pyramidStepDesiredHeight);
             BufferedImage scaledInputImage =
                     ImageSizeScaleProcessor.getExactScaledImage(inputImage, pyramidStepDesiredWidth, pyramidStepDesiredHeight);
+            queryImageWrapper.store(scaleFactor, scaledInputImage);
 
-            SingleStageProcessor singleStageProcessor = SingleStageProcessor.create(
-                    scaledInputImage, getTaskInput(), scaleFactor
-            );
+            SingleStageProcessor singleStageProcessor = SingleStageProcessor.create(getTaskInput(), scaleFactor);
             singleStageProcessor.process(this, fullScaleStepProgress);
         }
     }
