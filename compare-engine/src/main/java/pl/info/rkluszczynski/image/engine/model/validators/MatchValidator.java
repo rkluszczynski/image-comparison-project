@@ -10,8 +10,10 @@ import java.awt.image.BufferedImage;
  */
 public interface MatchValidator {
 
-    MatchDecision validate(BufferedImageWrapper patternImage, BufferedImage imageMatch);
+    ValidationDecision validate(BufferedImageWrapper patternImage, BufferedImage imageMatch);
 
-    MatchDecision validate(Color[][] patternArray, Color[][] subImageArray);
+    ValidationDecision validate(Color[][] patternArray, Color[][] subImageArray);
+
+    String getName();
 
 }

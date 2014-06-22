@@ -43,6 +43,28 @@ public class DrawHelper {
     }
 
     static
+    public void makeBrighterRectangleOnImage(BufferedImage image, int leftPosition, int topPosition, int width, int height, double scaleFactor) {
+        double invertedScaleFactor = 1. / scaleFactor;
+        int scaledLeftPosition = (int) (invertedScaleFactor * leftPosition);
+        int scaledTopPosition = (int) (invertedScaleFactor * topPosition);
+        int scaledWidth = (int) (invertedScaleFactor * width);
+        int scaledHeight = (int) (invertedScaleFactor * height);
+
+        for (int iw = scaledLeftPosition; iw < scaledLeftPosition + scaledWidth; ++iw) {
+            for (int ih = scaledTopPosition; ih < scaledTopPosition + scaledHeight; ++ih) {
+                Color color = new Color(image.getRGB(iw, ih));
+                image.setRGB(iw, ih,
+                        new Color(
+                                Math.min(color.getRed() + 64, 255),
+                                Math.min(color.getGreen() + 64, 255),
+                                Math.min(color.getBlue() + 64, 255)
+                        ).getRGB()
+                );
+            }
+        }
+    }
+
+    static
     public BufferedImage createEmptyImage(int width, int height) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();

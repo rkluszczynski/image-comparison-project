@@ -10,10 +10,10 @@ import java.awt.*;
  */
 public class ColorMeansValidator extends AbstractValidator {
     private static double validMatchCosineThreshold = 0.001;
-    private static double possibleMatchCosineThreshold = 0.02;
+    private static double possibleMatchCosineThreshold = 0.002;
 
     @Override
-    public MatchDecision validate(Color[][] patternArray, Color[][] subImageArray) {
+    public ValidationDecision validate(Color[][] patternArray, Color[][] subImageArray) {
         double[] patternMeans = ColorArrayHelper.calculateColorsMeans(patternArray);
         double[] subImageMeans = calculateSubImageMeansForPattern(subImageArray, patternArray);
 
@@ -25,11 +25,16 @@ public class ColorMeansValidator extends AbstractValidator {
 
         double matchValue = 1 - cosine;
         if (matchValue < validMatchCosineThreshold) {
-            return MatchDecision.VALID_MATCH;
-        } else if (matchValue < validMatchCosineThreshold) {
-            return MatchDecision.PROBABLY_MATCH;
+            return new ValidationDecision(ValidationDecision.MatchDecision.VALID_MATCH, matchValue);
+        } else if (matchValue < possibleMatchCosineThreshold) {
+            return new ValidationDecision(ValidationDecision.MatchDecision.PROBABLY_MATCH, matchValue);
         }
-        return MatchDecision.NOT_A_CHANCE;
+        return new ValidationDecision(ValidationDecision.MatchDecision.NOT_A_CHANCE, matchValue);
+    }
+
+    @Override
+    public String getName() {
+        return "ColorMeans";
     }
 
     private double[] calculateSubImageMeansForPattern(Color[][] subImageArray, Color[][] patternArray) {

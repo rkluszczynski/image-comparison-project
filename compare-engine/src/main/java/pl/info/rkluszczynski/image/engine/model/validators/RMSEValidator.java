@@ -14,7 +14,7 @@ public class RMSEValidator extends AbstractValidator {
     private RMSEColorMetric rmseColorMetric = new RMSEColorMetric();
 
     @Override
-    public MatchDecision validate(Color[][] patternArray, Color[][] subImageArray) {
+    public ValidationDecision validate(Color[][] patternArray, Color[][] subImageArray) {
         rmseColorMetric.resetValue();
 
         for (int iw = 0; iw < patternArray.length; ++iw) {
@@ -30,10 +30,15 @@ public class RMSEValidator extends AbstractValidator {
 
         double matchValue = rmseColorMetric.calculateValue();
         if (matchValue < validMatchThreshold) {
-            return MatchDecision.VALID_MATCH;
+            return new ValidationDecision(ValidationDecision.MatchDecision.VALID_MATCH, matchValue);
         } else if (matchValue < possibleMatchThreshold) {
-            return MatchDecision.PROBABLY_MATCH;
+            return new ValidationDecision(ValidationDecision.MatchDecision.PROBABLY_MATCH, matchValue);
         }
-        return MatchDecision.NOT_A_CHANCE;
+        return new ValidationDecision(ValidationDecision.MatchDecision.NOT_A_CHANCE, matchValue);
+    }
+
+    @Override
+    public String getName() {
+        return "RMSE";
     }
 }

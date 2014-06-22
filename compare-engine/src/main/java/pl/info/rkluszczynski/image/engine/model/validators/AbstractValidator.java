@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 abstract class AbstractValidator implements MatchValidator {
 
     @Override
-    public MatchDecision validate(BufferedImageWrapper patternImage, BufferedImage matchSubImage) {
+    public ValidationDecision validate(BufferedImageWrapper patternImage, BufferedImage matchSubImage) {
         Color[][] colorArray1 = BufferedImageConverter.convertBufferedImageToColorArray(patternImage);
         Color[][] colorArray2 = BufferedImageConverter.convertBufferedImageToColorArray(matchSubImage);
         return validate(colorArray1, colorArray2);

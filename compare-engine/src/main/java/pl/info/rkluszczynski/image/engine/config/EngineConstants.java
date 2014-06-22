@@ -12,10 +12,10 @@ public interface EngineConstants {
 
 //    Used by best localized scores strategy:
 
-    int BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT = 27;
+    int BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT = 17;
 
     int BEST_LOCALIZED_SCORES_OFFSET = 0;
-    double BEST_LOCALIZED_SCORES_MIN_SIZE_RATIO = 0.5;
+    double BEST_LOCALIZED_SCORES_MIN_SIZE_RATIO = 0.9;
 
 
 //    Used by Size Supplier:

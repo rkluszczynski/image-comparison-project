@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
 import pl.info.rkluszczynski.image.engine.model.validators.ColorMeansValidator;
-import pl.info.rkluszczynski.image.engine.model.validators.MatchDecision;
 import pl.info.rkluszczynski.image.engine.model.validators.MatchValidator;
 import pl.info.rkluszczynski.image.engine.model.validators.RMSEValidator;
+import pl.info.rkluszczynski.image.engine.model.validators.ValidationDecision;
 import pl.info.rkluszczynski.image.engine.tasks.PatternDetectorTask;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.multiscale.QueryImageWrapper;
@@ -33,6 +33,9 @@ import static pl.info.rkluszczynski.image.engine.config.EngineConstants.*;
 public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
     protected static final Logger logger = LoggerFactory.getLogger(BestLocalizedMatchStrategy.class);
 
+    private static final int maxNumberOfPresentedValidResults = 5;
+    private static final int maxNumberOfPresentedPossibleResults = 3;
+
     private double offset;
     private int bestResultsWidth;
     private int bestResultsHeight;
@@ -40,7 +43,7 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
 
     private MatchValidator[] matchValidators = {
             new RMSEValidator(),
-            new ColorMeansValidator()
+            new ColorMeansValidator()//, new ColorStddevsValidator()
     };
 
     @Override
@@ -90,33 +93,76 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
         int bestScoresAmount = Math.min(BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT, results.size());
 //        saveBestMatchImages(results, bestScoresAmount, taskInput);
 
+
+        List<MatchScore> validResults = Lists.newArrayList();
+        List<MatchScore> possibleResults = Lists.newArrayList();
         for (int i = 0; i < bestScoresAmount; ++i) {
-            MatchScore item = results.get(i);
-            String drawText = String.valueOf(i);
+            MatchScore score = results.get(i);
+            logger.info("Validating matching {}", i);
 
-            MatchDecision matchDecision = isPatternMatchValid(item, taskInput);
-            if (matchDecision == MatchDecision.NOT_A_CHANCE) {
-                continue;
-            } else if (matchDecision == MatchDecision.PROBABLY_MATCH) {
-                drawText = String.format("[%s]", String.valueOf(-i));
+            ValidationDecision validationDecision = isPatternMatchValid(score, taskInput);
+            switch (validationDecision.getMatchDecision()) {
+                case VALID_MATCH:
+                    score.setDescription(String.valueOf(i));
+                    validResults.add(score);
+                    break;
+                case PROBABLY_MATCH:
+                    MatchScore newMatchScore = new MatchScore(
+                            validationDecision.getScoreValue(),
+                            score.getWidthPosition(), score.getHeightPosition(), score.getScaleFactor()
+                    );
+                    newMatchScore.setDescription(String.format("[%d]", i));
+                    possibleResults.add(newMatchScore);
+                    break;
+                default:
+                    logger.info("Rejected score number {} with value {}", i, validationDecision.getScoreValue());
             }
+        }
 
-//            double matchDivisor = MAX_PIXEL_VALUE * patternWrapper.countNonAlphaPixels();
-//            detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(item.getScore() / matchDivisor));
+        if (!validResults.isEmpty()) {
+            Collections.sort(validResults);
+            int validMatchAmount = Math.min(validResults.size(), maxNumberOfPresentedValidResults);
 
-            ImageStatisticNames statisticName = ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s",
-                    metric == null ? "SUM" : metric.getName()));
-            detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(item.getScore()));
+            for (int i = 0; i < validMatchAmount; ++i) {
+                MatchScore score = validResults.get(i);
 
-            DrawHelper.drawRectangleOnImage(resultImage,
-                    item.getWidthPosition(), item.getHeightPosition(),
-                    patternWrapper.getWidth(), patternWrapper.getHeight(),
-                    item.getScaleFactor(),
-                    drawText);
+                ImageStatisticNames statisticName =
+                        ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s",
+                                metric == null ? "SUM" : metric.getName()));
+
+                detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(score.getScore()));
+
+                DrawHelper.drawRectangleOnImage(resultImage,
+                        score.getWidthPosition(), score.getHeightPosition(),
+                        patternWrapper.getWidth(), patternWrapper.getHeight(),
+                        score.getScaleFactor());
+                DrawHelper.makeBrighterRectangleOnImage(resultImage,
+                        score.getWidthPosition(), score.getHeightPosition(),
+                        patternWrapper.getWidth(), patternWrapper.getHeight(),
+                        score.getScaleFactor());
+            }
+        } else if (!possibleResults.isEmpty()) {
+            Collections.sort(possibleResults);
+            int possibleMatchAmount = Math.min(possibleResults.size(), maxNumberOfPresentedPossibleResults);
+
+            for (int i = 0; i < possibleMatchAmount; ++i) {
+                MatchScore score = possibleResults.get(i);
+
+                ImageStatisticNames statisticName =
+                        ImageStatisticNames.valueOf(String.format("METRIC_VALUE_%s",
+                                metric == null ? "SUM" : metric.getName()));
+
+                detectorTask.saveStatisticData(statisticName, BigDecimal.valueOf(score.getScore()));
+
+                DrawHelper.drawRectangleOnImage(resultImage,
+                        score.getWidthPosition(), score.getHeightPosition(),
+                        patternWrapper.getWidth(), patternWrapper.getHeight(),
+                        score.getScaleFactor(), score.getDescription());
+            }
         }
     }
 
-    private MatchDecision isPatternMatchValid(MatchScore matchScore, DetectorTaskInput taskInput) {
+    private ValidationDecision isPatternMatchValid(MatchScore matchScore, DetectorTaskInput taskInput) {
         QueryImageWrapper queryImageWrapper = taskInput.getQueryImageWrapper();
         BufferedImageWrapper patternWrapper = taskInput.getPatternWrapper();
 
@@ -124,16 +170,26 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
 
         Color[][] patternArray = BufferedImageConverter.convertBufferedImageToColorArray(patternWrapper);
         Color[][] subImageArray = BufferedImageConverter.convertBufferedImageToColorArray(matchSubImage);
-        MatchDecision resultDecision = MatchDecision.VALID_MATCH;
+
+        ValidationDecision.MatchDecision matchDecision = ValidationDecision.MatchDecision.VALID_MATCH;
+        double originalScoreWeight = 2.;
+        double newScore = originalScoreWeight * matchScore.getScore();
         for (MatchValidator matchValidator : matchValidators) {
-            MatchDecision decision = matchValidator.validate(patternArray, subImageArray);
-            if (decision == MatchDecision.NOT_A_CHANCE) {
-                return MatchDecision.NOT_A_CHANCE;
-            } else if (decision == MatchDecision.PROBABLY_MATCH) {
-                resultDecision = MatchDecision.PROBABLY_MATCH;
+            ValidationDecision validationDecision = matchValidator.validate(patternArray, subImageArray);
+            String validatorName = matchValidator.getName();
+
+            newScore += validationDecision.getScoreValue();
+            ValidationDecision.MatchDecision decision = validationDecision.getMatchDecision();
+            if (decision == ValidationDecision.MatchDecision.NOT_A_CHANCE) {
+                logger.info("Matching rejected by {} validator", validatorName);
+                return new ValidationDecision(ValidationDecision.MatchDecision.NOT_A_CHANCE, matchScore.getScore());
+            } else if (decision == ValidationDecision.MatchDecision.PROBABLY_MATCH) {
+                logger.info("Matching set as POSSIBLE by {} validator", validatorName);
+                matchDecision = ValidationDecision.MatchDecision.PROBABLY_MATCH;
             }
         }
-        return resultDecision;
+        newScore /= (matchValidators.length + originalScoreWeight);
+        return new ValidationDecision(matchDecision, newScore);
     }
 
     private void saveBestMatchImages(List<MatchScore> results, int bestScoresAmount, DetectorTaskInput taskInput) {

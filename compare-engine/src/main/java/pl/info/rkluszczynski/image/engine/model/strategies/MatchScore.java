@@ -6,6 +6,8 @@ public class MatchScore implements Comparable {
     private final int heightPosition;
     private final double scaleFactor;
 
+    private String description = "";
+
     public MatchScore(double score, int widthPosition, int heightPosition, double scaleFactor) {
         this.score = score;
         this.widthPosition = widthPosition;
@@ -38,5 +40,13 @@ public class MatchScore implements Comparable {
 
     public double getScaleFactor() {
         return scaleFactor;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
