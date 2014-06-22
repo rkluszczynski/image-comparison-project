@@ -62,6 +62,12 @@ public class DrawHelper {
                 );
             }
         }
+
+        Graphics2D graph = image.createGraphics();
+        graph.setColor(Color.BLACK);
+        graph.draw(new Rectangle(scaledLeftPosition + 1, scaledTopPosition + 1,
+                scaledWidth - 1, scaledHeight - 1));
+        graph.dispose();
     }
 
     static
