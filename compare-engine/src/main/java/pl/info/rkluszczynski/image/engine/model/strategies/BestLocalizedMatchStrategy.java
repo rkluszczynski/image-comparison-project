@@ -5,13 +5,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
+import pl.info.rkluszczynski.image.engine.model.validators.ColorMeansValidator;
+import pl.info.rkluszczynski.image.engine.model.validators.MatchDecision;
+import pl.info.rkluszczynski.image.engine.model.validators.MatchValidator;
+import pl.info.rkluszczynski.image.engine.model.validators.RMSEValidator;
 import pl.info.rkluszczynski.image.engine.tasks.PatternDetectorTask;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.multiscale.QueryImageWrapper;
+import pl.info.rkluszczynski.image.engine.utils.BufferedImageConverter;
 import pl.info.rkluszczynski.image.engine.utils.BufferedImageWrapper;
 import pl.info.rkluszczynski.image.engine.utils.DrawHelper;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +37,11 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
     private int bestResultsWidth;
     private int bestResultsHeight;
     private MatchScore[][] bestResultsTable;
+
+    private MatchValidator[] matchValidators = {
+            new RMSEValidator(),
+            new ColorMeansValidator()
+    };
 
     @Override
     public void initialize(DetectorTaskInput taskInput) {
@@ -81,8 +92,13 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
 
         for (int i = 0; i < bestScoresAmount; ++i) {
             MatchScore item = results.get(i);
-            if (!isPatternMatchValid(item, taskInput)) {
+            String drawText = String.valueOf(i);
+
+            MatchDecision matchDecision = isPatternMatchValid(item, taskInput);
+            if (matchDecision == MatchDecision.NOT_A_CHANCE) {
                 continue;
+            } else if (matchDecision == MatchDecision.PROBABLY_MATCH) {
+                drawText = String.format("[%s]", String.valueOf(-i));
             }
 
 //            double matchDivisor = MAX_PIXEL_VALUE * patternWrapper.countNonAlphaPixels();
@@ -96,17 +112,28 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
                     item.getWidthPosition(), item.getHeightPosition(),
                     patternWrapper.getWidth(), patternWrapper.getHeight(),
                     item.getScaleFactor(),
-                    String.valueOf(i));
+                    drawText);
         }
     }
 
-    private boolean isPatternMatchValid(MatchScore matchScore, DetectorTaskInput taskInput) {
+    private MatchDecision isPatternMatchValid(MatchScore matchScore, DetectorTaskInput taskInput) {
         QueryImageWrapper queryImageWrapper = taskInput.getQueryImageWrapper();
         BufferedImageWrapper patternWrapper = taskInput.getPatternWrapper();
 
         BufferedImage matchSubImage = getMatchSubImage(matchScore, queryImageWrapper, patternWrapper);
 
-        return matchSubImage != null;
+        Color[][] patternArray = BufferedImageConverter.convertBufferedImageToColorArray(patternWrapper);
+        Color[][] subImageArray = BufferedImageConverter.convertBufferedImageToColorArray(matchSubImage);
+        MatchDecision resultDecision = MatchDecision.VALID_MATCH;
+        for (MatchValidator matchValidator : matchValidators) {
+            MatchDecision decision = matchValidator.validate(patternArray, subImageArray);
+            if (decision == MatchDecision.NOT_A_CHANCE) {
+                return MatchDecision.NOT_A_CHANCE;
+            } else if (decision == MatchDecision.PROBABLY_MATCH) {
+                resultDecision = MatchDecision.PROBABLY_MATCH;
+            }
+        }
+        return resultDecision;
     }
 
     private void saveBestMatchImages(List<MatchScore> results, int bestScoresAmount, DetectorTaskInput taskInput) {
