@@ -3,6 +3,9 @@ image-comparison-project
 
 Project with Simple Image Web Application.
 
+Build automatically tested on Travis CI: 
+[![Build Status](https://travis-ci.org/rkluszczynski/image-comparison-project.svg?branch=master)](https://travis-ci.org/rkluszczynski/image-comparison-project)
+
 
 Features worth being remembered
 -------------------------------
