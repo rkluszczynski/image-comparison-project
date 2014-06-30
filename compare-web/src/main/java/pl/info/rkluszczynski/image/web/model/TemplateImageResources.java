@@ -35,6 +35,9 @@ public class TemplateImageResources {
             Resource[] resources = applicationContext.getResources("classpath:image-data/patterns/*");
             for (Resource resource : resources) {
                 String resourceFilename = resource.getFilename();
+                if (resourceFilename.startsWith("_")) {
+                    continue;
+                }
                 String resourceName = resource.getFilename();
 
                 logger.info("RESOURCE: {}", resource.getURL().toString());
