@@ -1,44 +1,21 @@
 apply plugin: 'grunt'
 apply plugin: 'node'
 
-//import org.gradle.api.tasks.Exec
-//
-//// Get the path for the locally installed binaries
-//task npmBin << {
-//    new ByteArrayOutputStream().withStream { os ->
-//        def result = exec {
-//            executable = 'npm'
-//            args = ['bin']
-//            standardOutput = os
-//        }
-//        ext.binPath = os.toString().trim() + "/"
-//    }
-//}
-//
-//// Install packages from package.json
-//task npm(type: Exec) {
-//    description = "Grab NodeJS dependencies (from package.json)"
-//    commandLine = ["npm", "install"]
-//    inputs.file "package.json"
-//    outputs.dir "node_modules"
-//
-//    tasks.npmBin.execute()
-//
-//}
-//
-//// Install the bower components for front-end library management
-//task bower(dependsOn: 'npm', type: Exec){
-//    commandLine "${npmBin.binPath}bower", 'install'
-//}
-
 // makes sure on each build that grunt is installed
 grunt_build.dependsOn 'installGrunt'
 
 // processes your package.json before running grunt build
 grunt_build.dependsOn 'npmInstall'
 
+//
+task installBower(type: NodeTask) {
+    script = rootProject.file('testing-backbone/node_modules/bower/bin/bower')
+    args = ['install']
+}
+installBower.dependsOn grunt_build
+
 // runs "grunt build" as part of your gradle build
-build.dependsOn grunt_build
+build.dependsOn installBower
 
 
 node {
