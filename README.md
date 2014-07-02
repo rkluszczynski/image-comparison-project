@@ -6,6 +6,7 @@ Project with Simple Image Web Application.
 Build automatically tested on Travis CI 
 [![Build Status](https://travis-ci.org/rkluszczynski/image-comparison-project.svg?branch=master)](https://travis-ci.org/rkluszczynski/image-comparison-project)
 
+[![Coverage Status](https://coveralls.io/repos/rkluszczynski/image-comparison-project/badge.png)](https://coveralls.io/r/rkluszczynski/image-comparison-project)
 
 Features worth being remembered
 -------------------------------

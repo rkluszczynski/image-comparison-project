@@ -1,0 +1,16 @@
+{
+  "name": "testing-backbone",
+  "version": "0.0.1",
+  "description": "tsting",
+  "main": "main",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "backbone-amd": "~1",
+    "jquery": "~2",
+    "lodash": "~1",
+    "curl": "~0.8"
+  }
+}
