@@ -1,12 +1,12 @@
 {
-  "name": "testing-backbone",
-  "version": "0.0.1",
-  "description": "tsting",
+  "name": "testing-backbone-js",
+  "version": "0.1.0",
+  "description": "Testing Backbone JavaScript",
   "main": "main",
   "moduleType": [
     "node"
   ],
-  "license": "MIT",
+  "license": "BSD",
   "dependencies": {
     "backbone-amd": "~1",
     "jquery": "~2",

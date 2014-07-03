@@ -1,8 +1,7 @@
-apply plugin: 'grunt'
-apply plugin: 'node'
 apply plugin: 'war'
 apply plugin: 'spring-boot'
 
+apply from: rootProject.file('gradle-commons/bower.gradle')
 apply from: rootProject.file('gradle-commons/jetty.gradle')
 
 
@@ -18,38 +17,6 @@ dependencies {
     }
 }
 
-// makes sure on each build that grunt is installed
-grunt_build.dependsOn 'installGrunt'
-
-// processes your package.json before running grunt build
-grunt_build.dependsOn 'npmInstall'
-
-//
-task installBower(type: NodeTask) {
-    script = rootProject.file('testing-backbone-js/node_modules/bower/bin/bower')
-    args = ['install']
-}
-installBower.dependsOn grunt_build
-
-// runs "grunt build" as part of your gradle build
-build.dependsOn installBower
-
-
-node {
-    // Version of node to use.
-    version = '0.11.10'
-
-    // Base URL for fetching node distributions (change if you have a mirror).
-    distBaseUrl = 'http://nodejs.org/dist'
-
-    // If true, it will download node using above parameters.
-    // If false, it will try to use globally installed node.
-    download = true
-
-    // Set the work directory for unpacking node
-    workDir = file("${project.buildDir}/nodejs")
-}
-
 
 repositories {
     mavenCentral()
@@ -57,6 +24,7 @@ repositories {
         url "http://repo.spring.io/libs-release"
     }
 }
+
 
 buildscript {
     repositories {
