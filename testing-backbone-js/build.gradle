@@ -1,0 +1,76 @@
+apply plugin: 'grunt'
+apply plugin: 'node'
+apply plugin: 'war'
+apply plugin: 'spring-boot'
+
+apply from: rootProject.file('gradle-commons/jetty.gradle')
+
+
+dependencies {
+    compile 'javax.servlet:javax.servlet-api:3.0.1'
+    compile 'org.springframework:spring-webmvc:4.0.2.RELEASE'
+
+    compile("org.springframework.boot:spring-boot-starter-web")
+
+    compile("com.fasterxml.jackson.core:jackson-databind")
+    compile("com.mangofactory:swagger-springmvc:0.6.5") {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
+}
+
+// makes sure on each build that grunt is installed
+grunt_build.dependsOn 'installGrunt'
+
+// processes your package.json before running grunt build
+grunt_build.dependsOn 'npmInstall'
+
+//
+task installBower(type: NodeTask) {
+    script = rootProject.file('testing-backbone-js/node_modules/bower/bin/bower')
+    args = ['install']
+}
+installBower.dependsOn grunt_build
+
+// runs "grunt build" as part of your gradle build
+build.dependsOn installBower
+
+
+node {
+    // Version of node to use.
+    version = '0.11.10'
+
+    // Base URL for fetching node distributions (change if you have a mirror).
+    distBaseUrl = 'http://nodejs.org/dist'
+
+    // If true, it will download node using above parameters.
+    // If false, it will try to use globally installed node.
+    download = true
+
+    // Set the work directory for unpacking node
+    workDir = file("${project.buildDir}/nodejs")
+}
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://repo.spring.io/libs-release"
+    }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "http://repo.spring.io/libs-release" }
+    }
+
+    dependencies {
+        classpath group: 'com.moowork.gradle', name: 'gradle-grunt-plugin', version: '0.5'
+        classpath group: 'com.moowork.gradle', name: 'gradle-node-plugin', version: '0.5'
+
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.3.RELEASE'
+
+        // Jetty 9.x local runner:
+        classpath group: 'com.sahlbach.gradle', name: 'gradle-jetty-eclipse-plugin', version: '1.9.0'
+    }
+}
