@@ -3,10 +3,11 @@ image-comparison-project
 
 Project with Simple Image Web Application.
 
-Build automatically tested on Travis CI 
-[![Build Status](https://travis-ci.org/rkluszczynski/image-comparison-project.svg?branch=master)](https://travis-ci.org/rkluszczynski/image-comparison-project)
+Build automatically tested on Travis CI:
+[![Build Status](https://travis-ci.org/rkluszczynski/image-detection-project.svg?branch=master)](https://travis-ci.org/rkluszczynski/image-detection-project).
 
-[![Coverage Status](https://coveralls.io/repos/rkluszczynski/image-comparison-project/badge.png)](https://coveralls.io/r/rkluszczynski/image-comparison-project)
+TODO: Configure some day coverage @ coveralls.io :)
+
 
 Features worth being remembered
 -------------------------------

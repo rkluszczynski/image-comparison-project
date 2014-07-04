@@ -94,7 +94,7 @@ public class MainController {
 
     @RequestMapping(value = {""}, method = RequestMethod.GET)
     public String redirectToMain() {
-        return "redirect:compare/";
+        return "redirect:detect/";
     }
 
 

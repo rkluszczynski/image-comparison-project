@@ -60,14 +60,14 @@
     </p>
 
     <p th:if="${isResultImageProcessed}">
-
-    <h3>Result values:</h3>
-    <ul>
-        <li th:each="statisticData : ${resultStatistics}"
-            th:text="${statisticData.name + ': ' + statisticData.value}">statistic
-        </li>
-    </ul>
-
+        <!--
+            <h3>Result values:</h3>
+            <ul>
+                <li th:each="statisticData : ${resultStatistics}"
+                    th:text="${statisticData.name + ': ' + statisticData.value}">statistic
+                </li>
+            </ul>
+        -->
     <h3>Result image:</h3>
     <center>
         <img src="userSessionResultImage" alt="result image"/>
@@ -77,16 +77,17 @@
 
     <h3>Results:</h3>
     <center>
+        <!--
         <i th:text="${'still processing [' + progressValue  + '%]... (please refresh page for a moment)'}"></i>
+        -->
+        <i>still processing: <span class="status-info"></span></i>
     </center>
     </p>
 </div>
 
-<div class="status-info">
-</div>
-<script type="text/javascript">
+<script th:if="${isInputImageUploaded} and not ${isResultImageProcessed}"
+        type="text/javascript">
         statusIntervalRefId = setInterval(askProcessingStatusFunction, 3000);
-
 </script>
 
 <div id="body-footer" th:include="common/footer :: footer"/>

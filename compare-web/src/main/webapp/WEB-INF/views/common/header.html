@@ -1,34 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:fragment="head">
+    <!--
     <meta th:if="${isInputImageUploaded} and not ${isResultImageProcessed}"
           http-equiv="refresh" content="60"/>
-
+    -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script language="javascript" type="text/javascript">
+    <script th:if="${isInputImageUploaded} and not ${isResultImageProcessed}"
+            language="javascript"
+            type="text/javascript">
         var statusIntervalRefId;
 
         function askProcessingStatusFunction() {
             $.getJSON('processingStatus')
                 .done( function(json) {
                     console.log(json.percent + ' / ' + json.resultCode);
-                    if(json.code != -1) {
-                        $('.status-info').html(json.resultCode);
-                    }
-                    else {
-                        $('.status-info').html(json.percent);
-                    }
 
+                    $('.status-info').html(' ' + json.percent + ' %');
+
+                    if (json.percent == 99) {
+                        $('.status-info').html('post-processing');
+                    }
                     if (json.percent == 100) {
                         console.log('processing done')
                         clearInterval(statusIntervalRefId);
+                        location.reload();
                     }
                 })
                 .fail( function(jqxhr, textStatus, error) {
                     $('.status-info').html("something exploded");
                 });
         };
-
     </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -49,7 +51,7 @@
 <body>
 
 <div th:fragment="header">
-    <h1 th:text="${headerText}">Image Comparison</h1>
+    <h1 th:text="${headerText}">Image Pattern Detection</h1>
 </div>
 
 </body>

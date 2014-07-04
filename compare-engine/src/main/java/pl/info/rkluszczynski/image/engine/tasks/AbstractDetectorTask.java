@@ -43,6 +43,7 @@ abstract class AbstractDetectorTask extends Thread implements PatternDetectorTas
             logger.error("Error occurred during execution task: " + getClass().getName(), e);
         }
         taskProgressValue = 1.;
+        sessionData.setProgress(100L);
         long processMillis = System.currentTimeMillis() - startMillis;
 
         saveStatisticData(CALCULATION_TIME, BigDecimal.valueOf(processMillis));
