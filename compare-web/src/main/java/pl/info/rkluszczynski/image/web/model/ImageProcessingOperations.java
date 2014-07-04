@@ -50,6 +50,9 @@ public class ImageProcessingOperations {
     }
 
     public Runnable getProcessingTask(String operation, SessionData sessionData) {
+        if (operation == null) {
+            return createMultiScaleTask(sessionData, new AbsColorMetric());
+        }
         switch (operation) {
             case "imagePatternMatchingColorABS":
                 return createMultiScaleTask(sessionData, new AbsColorMetric());
@@ -88,7 +91,6 @@ public class ImageProcessingOperations {
     private Runnable createMultiScaleTask(SessionData sessionData, CompareMetric metric) {
         PatternMatchStrategy matchStrategy = new BestLocalizedMatchStrategy();
         PatternMatchComparator matchComparator = new SequenceComparator(
-//                new ImagePHashComparator(null),
                 new PixelDifferenceComparator(metric)
         );
         DetectorTaskInput detectorTaskInput = new DetectorTaskInput(matchComparator, matchStrategy);

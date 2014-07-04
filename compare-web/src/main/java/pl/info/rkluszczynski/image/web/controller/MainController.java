@@ -8,9 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticData;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.web.model.ImageProcessingOperations;
+import pl.info.rkluszczynski.image.web.model.ProcessingStatus;
 import pl.info.rkluszczynski.image.web.model.TemplateImageResources;
 import pl.info.rkluszczynski.image.web.model.view.ImageStatisticItem;
 
@@ -66,6 +68,28 @@ public class MainController {
         model.addAttribute("imageOperationItems", imageProcessingOperations.getOperationDescriptions());
         FooterHelper.setWebApplicationBuildDate(model);
         return "index";
+    }
+
+    @RequestMapping("/processingStatus")
+    @ResponseBody
+    public String processingStatus(HttpSession session) {
+        Object sessionDataObject = session.getAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA);
+        ProcessingStatus processingStatusResponse = null;
+        if (sessionDataObject != null) {
+            try {
+                SessionData sessionData = (SessionData) sessionDataObject;
+                long progress = sessionData.getProgress();
+                processingStatusResponse = new ProcessingStatus(progress, 1);
+            } catch (ClassCastException e) {
+                sessionDataObject = null;
+            }
+        }
+
+        if (sessionDataObject == null || processingStatusResponse == null) {
+            processingStatusResponse = new ProcessingStatus(0L, -1);
+        }
+        System.out.println(processingStatusResponse);
+        return processingStatusResponse.toString();
     }
 
     @RequestMapping(value = {""}, method = RequestMethod.GET)

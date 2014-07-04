@@ -12,13 +12,15 @@
         <br/>
 
         <br/>
-        <b>Select processing operation</b>:
-        <select name="processingOperation">
-            <option th:each="operationItem : ${imageOperationItems}"
-                    th:attr="value=${operationItem.value}"
-                    th:text="${operationItem.description}">operation
-            </option>
-        </select>
+        <!--
+            <b>Select processing operation</b>:
+            <select name="processingOperation">
+                <option th:each="operationItem : ${imageOperationItems}"
+                        th:attr="value=${operationItem.value}"
+                        th:text="${operationItem.description}">operation
+                </option>
+            </select>
+        -->
         <br/>
 
         <br/>
@@ -30,8 +32,8 @@
     <div style="float: right; width: 50%; text-align: left">
         <b>Choose template image</b>:
         <br/>
-        <select name="templateFile" size="5">
-            <option th:each="imageItem : ${templateImageItems}"
+        <select name="templateFile" size="4">
+        <option th:each="imageItem : ${templateImageItems}"
                     th:attr="value=${imageItem.value}"
                     th:text="${imageItem.name}">template image
             </option>
@@ -79,6 +81,13 @@
     </center>
     </p>
 </div>
+
+<div class="status-info">
+</div>
+<script type="text/javascript">
+        statusIntervalRefId = setInterval(askProcessingStatusFunction, 3000);
+
+</script>
 
 <div id="body-footer" th:include="common/footer :: footer"/>
 

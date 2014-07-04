@@ -108,11 +108,11 @@ class UploadController {
             errorsList.add("Template resource with key '" + templateFilename + "' not exists!");
         }
 
-        if (operation == null) {
-            errorsList.add("Processing operation not selected!");
-        } else if (imageProcessingOperations.isOperationNameNotValid(operation)) {
-            errorsList.add("Processing operation '" + operation + "' not supported!");
-        }
+//        if (operation == null) {
+//            errorsList.add("Processing operation not selected!");
+//        } else if (imageProcessingOperations.isOperationNameNotValid(operation)) {
+//            errorsList.add("Processing operation '" + operation + "' not supported!");
+//        }
         return errorsList;
     }
 }
