@@ -1,4 +1,4 @@
-image-comparison-project
+image-detection-project
 ========================
 
 Project with Simple Image Web Application.
