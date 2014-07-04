@@ -107,11 +107,9 @@ public class MainController {
                 sessionDataObject = null;
             }
         }
-
         if (sessionDataObject == null || processingStatusResponse == null) {
             processingStatusResponse = new ProcessingStatus(0L, -1);
         }
-        System.out.println(processingStatusResponse);
         return processingStatusResponse.toString();
     }
 
