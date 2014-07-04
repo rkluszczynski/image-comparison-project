@@ -33,7 +33,7 @@
         <b>Choose template image</b>:
         <br/>
         <select name="templateFile" size="4">
-        <option th:each="imageItem : ${templateImageItems}"
+            <option th:each="imageItem : ${templateImageItems}"
                     th:attr="value=${imageItem.value}"
                     th:text="${imageItem.name}">template image
             </option>
@@ -68,6 +68,7 @@
                 </li>
             </ul>
         -->
+
     <h3>Result image:</h3>
     <center>
         <img src="userSessionResultImage" alt="result image"/>
@@ -88,6 +89,7 @@
 <script th:if="${isInputImageUploaded} and not ${isResultImageProcessed}"
         type="text/javascript">
         statusIntervalRefId = setInterval(askProcessingStatusFunction, 3000);
+
 </script>
 
 <div id="body-footer" th:include="common/footer :: footer"/>
