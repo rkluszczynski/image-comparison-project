@@ -5,7 +5,7 @@
 /tmp/
 
 # Ignore files with container's deploy credentials:
-/compare-web/gradle.properties
+/*-web/gradle.properties
 
 # Ignoring tmp-result-* files in testing-* modules:
 /testing-*/src/main/resources/tmp-result-*.*
