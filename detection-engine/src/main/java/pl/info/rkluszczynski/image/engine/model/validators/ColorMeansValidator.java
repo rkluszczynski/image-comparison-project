@@ -2,6 +2,7 @@ package pl.info.rkluszczynski.image.engine.model.validators;
 
 import pl.info.rkluszczynski.image.core.utils.VectorCalc;
 import pl.info.rkluszczynski.image.engine.utils.ColorArrayHelper;
+import pl.info.rkluszczynski.image.engine.utils.ColorPredicate;
 
 import java.awt.*;
 
@@ -13,9 +14,17 @@ public class ColorMeansValidator extends AbstractValidator {
     private static double possibleMatchCosineThreshold = 0.002;
 
     @Override
-    public ValidationDecision validate(Color[][] patternArray, Color[][] subImageArray) {
+    public ValidationDecision validate(final Color[][] patternArray, Color[][] subImageArray) {
         double[] patternMeans = ColorArrayHelper.calculateColorsMeans(patternArray);
-        double[] subImageMeans = calculateSubImageMeansForPattern(subImageArray, patternArray);
+        double[] subImageMeans = ColorArrayHelper.calculateColorsMeans(subImageArray,
+                new ColorPredicate<Color>() {
+                    @Override
+                    public boolean apply(Color input, int iw, int ih) {
+                        assert input != null;
+                        return patternArray[iw][ih] != null;
+                    }
+                }
+        );
 
         double dotProduct = VectorCalc.calculateDotProduct(patternMeans, subImageMeans);
         double patternMeansLength = VectorCalc.calculateLength(patternMeans);
@@ -23,7 +32,7 @@ public class ColorMeansValidator extends AbstractValidator {
 
         double cosine = dotProduct / (patternMeansLength * subImageMeansLength);
 
-        double matchValue = 1 - cosine;
+        double matchValue = 1. - cosine;
         if (matchValue < validMatchCosineThreshold) {
             return new ValidationDecision(ValidationDecision.MatchDecision.VALID_MATCH, matchValue);
         } else if (matchValue < possibleMatchCosineThreshold) {
@@ -35,29 +44,5 @@ public class ColorMeansValidator extends AbstractValidator {
     @Override
     public String getName() {
         return "ColorMeans";
-    }
-
-    private double[] calculateSubImageMeansForPattern(Color[][] subImageArray, Color[][] patternArray) {
-        double redSum = 0.;
-        double greenSum = 0.;
-        double blueSum = 0.;
-        double validColorPointsAmount = 0.;
-
-        for (int iw = 0; iw < subImageArray.length; ++iw) {
-            for (int ih = 0; ih < subImageArray[0].length; ++ih) {
-                if (patternArray[iw][ih] != null) {
-                    Color color = subImageArray[iw][ih];
-                    redSum += color.getRed();
-                    greenSum += color.getGreen();
-                    blueSum += color.getBlue();
-                    ++validColorPointsAmount;
-                }
-            }
-        }
-        double[] colorMeans = new double[3];
-        colorMeans[0] = redSum / validColorPointsAmount;
-        colorMeans[1] = greenSum / validColorPointsAmount;
-        colorMeans[2] = blueSum / validColorPointsAmount;
-        return colorMeans;
     }
 }

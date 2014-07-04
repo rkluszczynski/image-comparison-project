@@ -8,6 +8,15 @@ import java.awt.*;
 final
 public class ColorArrayHelper {
     public static double[] calculateColorsMeans(Color[][] colorArray) {
+        return calculateColorsMeans(colorArray, new ColorPredicate<Color>() {
+            @Override
+            public boolean apply(Color input, int iw, int ih) {
+                return input != null;
+            }
+        });
+    }
+
+    public static double[] calculateColorsMeans(Color[][] colorArray, ColorPredicate<? super Color> predicate) {
         double redSum = 0.;
         double greenSum = 0.;
         double blueSum = 0.;
@@ -16,7 +25,7 @@ public class ColorArrayHelper {
         for (int iw = 0; iw < colorArray.length; ++iw) {
             for (int ih = 0; ih < colorArray[0].length; ++ih) {
                 Color color = colorArray[iw][ih];
-                if (color != null) {
+                if (predicate.apply(color, iw, ih)) {
                     redSum += color.getRed();
                     greenSum += color.getGreen();
                     blueSum += color.getBlue();
