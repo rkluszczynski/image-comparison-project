@@ -4,7 +4,7 @@ define(function(require) {
 	return Backbone.Model.extend({
 		urlRoot: 'http://localhost:8080/webapp/processing',
 		url: function() {
-			return this.urlRoot + '?name=' + this.id;
+			return this.urlRoot;
 		}
 	});
 });

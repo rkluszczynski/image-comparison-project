@@ -4,6 +4,7 @@
     <title>Hello jQuery</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="hello.js"></script>
+    <script src="status.js"></script>
 </head>
 
 <body>
@@ -16,5 +17,15 @@
 
 <div class="response-headers">
 </div>
+
+<hr/>
+
+<div class="status-info">
+</div>
+<script type="text/javascript">
+        statusIntervalRefId = setInterval(askProcessingStatusFunction, 3000);
+
+</script>
+
 </body>
 </html>
