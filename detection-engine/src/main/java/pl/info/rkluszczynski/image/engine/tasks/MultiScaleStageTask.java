@@ -3,6 +3,7 @@ package pl.info.rkluszczynski.image.engine.tasks;
 import pl.info.rkluszczynski.image.core.utils.ImageHelper;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
+import pl.info.rkluszczynski.image.engine.model.validators.ValidationDecision;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 import pl.info.rkluszczynski.image.engine.tasks.multiscale.QueryImageWrapper;
@@ -86,5 +87,10 @@ public class MultiScaleStageTask extends AbstractDetectorTask {
         matchStrategy.applyBestScores(this, taskInput);
 
         saveResultImage(taskInput.getResultImage());
+    }
+
+    @Override
+    public void saveMatchDecision(ValidationDecision.MatchDecision matchDecision) {
+        getSessionData().setMatchDecision(matchDecision);
     }
 }

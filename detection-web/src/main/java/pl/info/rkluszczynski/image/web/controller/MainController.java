@@ -47,6 +47,9 @@ public class MainController {
                 model.addAttribute("isInputImageUploaded", isInputImageUploaded);
                 model.addAttribute("isTemplateImageChosen", isTemplateImageChosen);
                 model.addAttribute("isResultImageProcessed", isResultImageProcessed);
+                if (isResultImageProcessed) {
+                    setProperMatchResult(model, sessionData);
+                }
 
                 model.addAttribute("progressValue", sessionData.getProgress());
                 model.addAttribute("resultStatistics", transformImageStatistics(sessionData));
@@ -68,6 +71,26 @@ public class MainController {
         model.addAttribute("imageOperationItems", imageProcessingOperations.getOperationDescriptions());
         FooterHelper.setWebApplicationBuildDate(model);
         return "index";
+    }
+
+    private void setProperMatchResult(Model model, SessionData sessionData) {
+        String message;
+        String styleName;
+        switch (sessionData.getMatchDecision()) {
+            case VALID_MATCH:
+                message = "Found valid match(es)!";
+                styleName = "matchValid";
+                break;
+            case POSSIBLE_MATCH:
+                message = "Found possible match(es)";
+                styleName = "matchPossible";
+                break;
+            default:
+                message = "No match detected!";
+                styleName = "matchNone";
+        }
+        model.addAttribute("resultMessageString", message);
+        model.addAttribute("resultMessageStyle", styleName);
     }
 
     @RequestMapping("/processingStatus")

@@ -32,9 +32,9 @@ public class RMSEValidator extends AbstractValidator {
         if (matchValue < validMatchThreshold) {
             return new ValidationDecision(ValidationDecision.MatchDecision.VALID_MATCH, matchValue);
         } else if (matchValue < possibleMatchThreshold) {
-            return new ValidationDecision(ValidationDecision.MatchDecision.PROBABLY_MATCH, matchValue);
+            return new ValidationDecision(ValidationDecision.MatchDecision.POSSIBLE_MATCH, matchValue);
         }
-        return new ValidationDecision(ValidationDecision.MatchDecision.NOT_A_CHANCE, matchValue);
+        return new ValidationDecision(ValidationDecision.MatchDecision.NO_CLEAR_MATCH, matchValue);
     }
 
     @Override

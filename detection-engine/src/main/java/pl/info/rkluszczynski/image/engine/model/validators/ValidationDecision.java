@@ -22,7 +22,7 @@ public class ValidationDecision {
 
     public enum MatchDecision {
         VALID_MATCH,
-        PROBABLY_MATCH,
-        NOT_A_CHANCE
+        POSSIBLE_MATCH,
+        NO_CLEAR_MATCH
     }
 }

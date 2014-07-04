@@ -1,6 +1,7 @@
 package pl.info.rkluszczynski.image.engine.model;
 
 import com.google.common.collect.Lists;
+import pl.info.rkluszczynski.image.engine.model.validators.ValidationDecision;
 
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
@@ -14,6 +15,8 @@ public class SessionData implements Serializable {
     private BufferedImage inputImage;
     private BufferedImage templateImage;
     private BufferedImage resultImage;
+
+    private ValidationDecision.MatchDecision matchDecision;
     private long progress;
 
 
@@ -60,5 +63,13 @@ public class SessionData implements Serializable {
 
     public void setProgress(long progress) {
         this.progress = progress;
+    }
+
+    public ValidationDecision.MatchDecision getMatchDecision() {
+        return matchDecision;
+    }
+
+    public void setMatchDecision(ValidationDecision.MatchDecision matchDecision) {
+        this.matchDecision = matchDecision;
     }
 }

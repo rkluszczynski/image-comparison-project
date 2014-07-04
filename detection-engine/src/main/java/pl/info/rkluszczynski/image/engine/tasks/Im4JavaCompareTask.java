@@ -5,6 +5,7 @@ import org.im4java.core.IMOperation;
 import org.im4java.core.Stream2BufferedImage;
 import org.im4java.process.StandardStream;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.model.validators.ValidationDecision;
 import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 
 import java.awt.image.BufferedImage;
@@ -59,5 +60,10 @@ public class Im4JavaCompareTask extends AbstractDetectorTask {
     public void storeResults() {
         saveResultImage(resultImage);
         saveStatisticData(DUMMY_RESULT, BigDecimal.ZERO);
+    }
+
+    @Override
+    public void saveMatchDecision(ValidationDecision.MatchDecision matchDecision) {
+        getSessionData().setMatchDecision(ValidationDecision.MatchDecision.VALID_MATCH);
     }
 }

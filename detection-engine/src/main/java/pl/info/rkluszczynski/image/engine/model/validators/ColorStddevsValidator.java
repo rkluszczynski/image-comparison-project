@@ -27,9 +27,9 @@ public class ColorStddevsValidator extends AbstractValidator {
         if (matchValue < validMatchCosineThreshold) {
             return new ValidationDecision(ValidationDecision.MatchDecision.VALID_MATCH, matchValue);
         } else if (matchValue < possibleMatchCosineThreshold) {
-            return new ValidationDecision(ValidationDecision.MatchDecision.PROBABLY_MATCH, matchValue);
+            return new ValidationDecision(ValidationDecision.MatchDecision.POSSIBLE_MATCH, matchValue);
         }
-        return new ValidationDecision(ValidationDecision.MatchDecision.NOT_A_CHANCE, matchValue);
+        return new ValidationDecision(ValidationDecision.MatchDecision.NO_CLEAR_MATCH, matchValue);
     }
 
     private double[] calculateSubImageStddevsForPattern(Color[][] subImageArray, Color[][] patternArray) {

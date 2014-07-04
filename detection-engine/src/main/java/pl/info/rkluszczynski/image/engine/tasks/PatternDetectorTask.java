@@ -1,6 +1,7 @@
 package pl.info.rkluszczynski.image.engine.tasks;
 
 import pl.info.rkluszczynski.image.engine.model.ImageStatisticNames;
+import pl.info.rkluszczynski.image.engine.model.validators.ValidationDecision;
 import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 
 import java.awt.image.BufferedImage;
@@ -19,6 +20,8 @@ public interface PatternDetectorTask {
 
     void storeResults();
 
+
+    void saveMatchDecision(ValidationDecision.MatchDecision matchDecision);
 
     void addProgress(double progress);
 

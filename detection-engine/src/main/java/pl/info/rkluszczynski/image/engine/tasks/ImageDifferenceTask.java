@@ -1,6 +1,7 @@
 package pl.info.rkluszczynski.image.engine.tasks;
 
 import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.model.validators.ValidationDecision;
 import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 import pl.info.rkluszczynski.image.engine.utils.ImageSizeScaleProcessor;
 
@@ -62,6 +63,11 @@ public class ImageDifferenceTask extends AbstractDetectorTask {
     public void storeResults() {
         saveResultImage(resultImage);
         saveStatisticData(DIFFERENCE_COEFFICIENT, calculateDifferenceCoefficient(resultImage));
+    }
+
+    @Override
+    public void saveMatchDecision(ValidationDecision.MatchDecision matchDecision) {
+        getSessionData().setMatchDecision(ValidationDecision.MatchDecision.VALID_MATCH);
     }
 
     private BigDecimal calculateDifferenceCoefficient(BufferedImage resultImage) {

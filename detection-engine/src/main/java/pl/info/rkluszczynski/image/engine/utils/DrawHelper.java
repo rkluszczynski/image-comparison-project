@@ -1,6 +1,7 @@
 package pl.info.rkluszczynski.image.engine.utils;
 
 import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -26,9 +27,17 @@ public class DrawHelper {
         int scaledHeight = (int) (invertedScaleFactor * height);
 
         Graphics2D graph = image.createGraphics();
-        graph.setColor(Color.WHITE);
+        float borderThickness = 2;
+
+        Stroke oldStroke = graph.getStroke();
+        graph.setStroke(new BasicStroke(borderThickness));
+
+//        graph.setColor(Color.WHITE);
+        graph.setColor(new Color(240, 240, 0));
+
 //        graph.fill(new Rectangle(scaledLeftPosition, scaledTopPosition, scaledWidth, scaledHeight));
         graph.draw(new Rectangle(scaledLeftPosition, scaledTopPosition, scaledWidth, scaledHeight));
+        graph.setStroke(oldStroke);
 
         if (text != null && !"".equals(text)) {
             graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -64,9 +73,20 @@ public class DrawHelper {
         }
 
         Graphics2D graph = image.createGraphics();
-        graph.setColor(Color.BLACK);
-        graph.draw(new Rectangle(scaledLeftPosition + 1, scaledTopPosition + 1,
-                scaledWidth - 1, scaledHeight - 1));
+        float borderThickness = 3;
+
+        Stroke oldStroke = graph.getStroke();
+        graph.setStroke(new BasicStroke(borderThickness));
+
+//        graph.setColor(Color.BLACK);
+        graph.setColor(new Color(0, 240, 0));
+        Shape shape = new RoundRectangle2D.Double(
+                scaledLeftPosition, scaledTopPosition,
+                scaledWidth, scaledHeight,
+                Math.min(scaledWidth / 3., 5.), Math.min(scaledHeight / 3., 5.));
+        graph.draw(shape);
+
+        graph.setStroke(oldStroke);
         graph.dispose();
     }
 

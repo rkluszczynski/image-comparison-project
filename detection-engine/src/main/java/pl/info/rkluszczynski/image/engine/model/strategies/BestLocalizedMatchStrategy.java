@@ -106,7 +106,7 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
                     score.setDescription(String.valueOf(i));
                     validResults.add(score);
                     break;
-                case PROBABLY_MATCH:
+                case POSSIBLE_MATCH:
                     MatchScore newMatchScore = new MatchScore(
                             validationDecision.getScoreValue(),
                             score.getWidthPosition(), score.getHeightPosition(), score.getScaleFactor()
@@ -120,6 +120,8 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
         }
 
         if (!validResults.isEmpty()) {
+            detectorTask.saveMatchDecision(ValidationDecision.MatchDecision.VALID_MATCH);
+
             Collections.sort(validResults);
             int validMatchAmount = Math.min(validResults.size(), maxNumberOfPresentedValidResults);
 
@@ -142,6 +144,8 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
                         score.getScaleFactor());
             }
         } else if (!possibleResults.isEmpty()) {
+            detectorTask.saveMatchDecision(ValidationDecision.MatchDecision.POSSIBLE_MATCH);
+
             Collections.sort(possibleResults);
             int possibleMatchAmount = Math.min(possibleResults.size(), maxNumberOfPresentedPossibleResults);
 
@@ -159,6 +163,8 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
                         patternWrapper.getWidth(), patternWrapper.getHeight(),
                         score.getScaleFactor(), score.getDescription());
             }
+        } else {
+            detectorTask.saveMatchDecision(ValidationDecision.MatchDecision.NO_CLEAR_MATCH);
         }
     }
 
@@ -180,12 +186,12 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
 
             newScore += validationDecision.getScoreValue();
             ValidationDecision.MatchDecision decision = validationDecision.getMatchDecision();
-            if (decision == ValidationDecision.MatchDecision.NOT_A_CHANCE) {
+            if (decision == ValidationDecision.MatchDecision.NO_CLEAR_MATCH) {
                 logger.info("Matching rejected by {} validator", validatorName);
-                return new ValidationDecision(ValidationDecision.MatchDecision.NOT_A_CHANCE, matchScore.getScore());
-            } else if (decision == ValidationDecision.MatchDecision.PROBABLY_MATCH) {
+                return new ValidationDecision(ValidationDecision.MatchDecision.NO_CLEAR_MATCH, matchScore.getScore());
+            } else if (decision == ValidationDecision.MatchDecision.POSSIBLE_MATCH) {
                 logger.info("Matching set as POSSIBLE by {} validator", validatorName);
-                matchDecision = ValidationDecision.MatchDecision.PROBABLY_MATCH;
+                matchDecision = ValidationDecision.MatchDecision.POSSIBLE_MATCH;
             }
         }
         newScore /= (matchValidators.length + originalScoreWeight);

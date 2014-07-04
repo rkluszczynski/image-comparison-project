@@ -69,19 +69,29 @@
             </ul>
         -->
 
-    <h3>Result image:</h3>
+    <h3>Result:</h3>
+
+    <div th:attr="class=${resultMessageStyle}"
+         th:text="${resultMessageString}"
+         style="color:#ffffff; font-weight:bold; text-align:center; width:600px; margin:0 auto;">?
+    </div>
+    <br/>
+
+    <p>
     <center>
         <img src="userSessionResultImage" alt="result image"/>
     </center>
     </p>
+    </p>
+
     <p th:if="${isInputImageUploaded} and not ${isResultImageProcessed}">
 
-    <h3>Results:</h3>
+    <h3>Result:</h3>
     <center>
         <!--
         <i th:text="${'still processing [' + progressValue  + '%]... (please refresh page for a moment)'}"></i>
         -->
-        <i>still processing: <span class="status-info"></span></i>
+        <i>still processing: <span class="status-info">0 %</span></i>
     </center>
     </p>
 </div>
@@ -89,6 +99,7 @@
 <script th:if="${isInputImageUploaded} and not ${isResultImageProcessed}"
         type="text/javascript">
         statusIntervalRefId = setInterval(askProcessingStatusFunction, 3000);
+
 
 </script>
 

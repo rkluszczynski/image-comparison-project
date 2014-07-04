@@ -14,15 +14,12 @@
         function askProcessingStatusFunction() {
             $.getJSON('processingStatus')
                 .done( function(json) {
-                    console.log(json.percent + ' / ' + json.resultCode);
-
                     $('.status-info').html(' ' + json.percent + ' %');
 
                     if (json.percent == 99) {
                         $('.status-info').html('post-processing');
                     }
                     if (json.percent == 100) {
-                        console.log('processing done')
                         clearInterval(statusIntervalRefId);
                         location.reload();
                     }
@@ -32,14 +29,24 @@
                 });
         };
 
+
     </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
+        .matchValid {
+        background-color: #00C800;
+        }
+        .matchPossible {
+        background-color: #C8C800;
+        }
+        .matchNone {
+        background-color: #C80000;
+        }
+
         .error {
         color: #ff0000;
         }
-
         .errorBlock {
         color: #000;
         background-color: #ffEEEE;
