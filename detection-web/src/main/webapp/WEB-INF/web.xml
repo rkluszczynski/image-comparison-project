@@ -7,7 +7,7 @@
 
     <session-config>
         <!-- Set timeout in minutes -->
-        <session-timeout>17</session-timeout>
+        <session-timeout>11</session-timeout>
     </session-config>
 
 </web-app>

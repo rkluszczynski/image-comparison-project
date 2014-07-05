@@ -19,11 +19,11 @@ import pl.info.rkluszczynski.image.web.model.view.ImageStatisticItem;
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
 
-import static pl.info.rkluszczynski.image.web.config.WebConstants.COMPARE_CONTEXT_PATH__ROOT;
+import static pl.info.rkluszczynski.image.web.config.WebConstants.DETECT_CONTEXT_PATH__ROOT;
 import static pl.info.rkluszczynski.image.web.config.WebConstants.USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA;
 
 @Controller
-@RequestMapping(value = COMPARE_CONTEXT_PATH__ROOT)
+@RequestMapping(value = DETECT_CONTEXT_PATH__ROOT)
 public class MainController {
 
     private static final String PAGE_HEADER_TEXT = "Image Pattern Detection Test Page";

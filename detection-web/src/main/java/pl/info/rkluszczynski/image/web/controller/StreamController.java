@@ -20,7 +20,7 @@ import static pl.info.rkluszczynski.image.web.config.WebConstants.*;
 
 
 @Controller
-@RequestMapping(value = COMPARE_CONTEXT_PATH__ROOT)
+@RequestMapping(value = DETECT_CONTEXT_PATH__ROOT)
 class StreamController {
 
     private static final Logger logger = LoggerFactory.getLogger(StreamController.class);
@@ -33,12 +33,12 @@ class StreamController {
 
 
     @RequestMapping(
-            value = COMPARE_CONTEXT_PATH__USER_SESSION_TEMPLATE_IMAGE,
+            value = DETECT_CONTEXT_PATH__USER_SESSION_TEMPLATE_IMAGE,
             method = RequestMethod.GET,
             produces = MediaType.IMAGE_PNG_VALUE
     )
     public void streamUserSessionTemplateImage(HttpServletResponse response, HttpSession session) {
-        SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_TEMPLATE_IMAGE);
+        SessionData imageData = getSessionImageDataObject(session, DETECT_CONTEXT_PATH__USER_SESSION_TEMPLATE_IMAGE);
         if (imageData != null) {
             streamUserSessionImage(response,
                     imageSizeScaleProcessor.getImageScaledToWidthOnlyIfLarger(
@@ -50,12 +50,12 @@ class StreamController {
 
 
     @RequestMapping(
-            value = COMPARE_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE,
+            value = DETECT_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE,
             method = RequestMethod.GET,
             produces = MediaType.IMAGE_PNG_VALUE
     )
     public void streamUserSessionInputImage(HttpServletResponse response, HttpSession session) {
-        SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE);
+        SessionData imageData = getSessionImageDataObject(session, DETECT_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE);
         if (imageData != null) {
             streamUserSessionImage(response,
                     imageSizeScaleProcessor.getImageScaledToWidthOnlyIfLarger(
@@ -67,12 +67,12 @@ class StreamController {
 
 
     @RequestMapping(
-            value = COMPARE_CONTEXT_PATH__USER_SESSION_RESULT_IMAGE,
+            value = DETECT_CONTEXT_PATH__USER_SESSION_RESULT_IMAGE,
             method = RequestMethod.GET,
             produces = MediaType.IMAGE_PNG_VALUE
     )
     public void streamUserSessionResultImage(HttpServletResponse response, HttpSession session) {
-        SessionData imageData = getSessionImageDataObject(session, COMPARE_CONTEXT_PATH__USER_SESSION_RESULT_IMAGE);
+        SessionData imageData = getSessionImageDataObject(session, DETECT_CONTEXT_PATH__USER_SESSION_RESULT_IMAGE);
         if (imageData != null) {
             streamUserSessionImage(response,
                     imageSizeScaleProcessor.getImageScaledToWidthOnlyIfLarger(

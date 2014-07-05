@@ -18,6 +18,7 @@ import pl.info.rkluszczynski.image.web.model.TemplateImageResources;
 import pl.info.rkluszczynski.image.web.validator.InputImageFileValidator;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -26,7 +27,7 @@ import java.util.List;
 import static pl.info.rkluszczynski.image.web.config.WebConstants.*;
 
 @Controller
-@RequestMapping(value = COMPARE_CONTEXT_PATH__ROOT)
+@RequestMapping(value = DETECT_CONTEXT_PATH__ROOT)
 class UploadController {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
@@ -49,7 +50,7 @@ class UploadController {
     }
 
     @RequestMapping(
-            value = COMPARE_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE,
+            value = DETECT_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE,
             method = RequestMethod.POST
     )
     public String handleImageFileUploadAndStoreInSession(Model model,
@@ -57,8 +58,12 @@ class UploadController {
                                                          @RequestParam(value = "templateFile", required = false) String templateFilename,
                                                          @RequestParam(value = "processingOperation", required = false) String operation,
 //            BindingResult result,
+                                                         HttpServletRequest request,
                                                          HttpSession session
     ) {
+        session.invalidate();
+        HttpSession newSession = request.getSession();
+
         List<String> requestParamsErrors = getRequestParamsErrors(file, templateFilename, operation);
         if (!requestParamsErrors.isEmpty()) {
             model.addAttribute("errors", requestParamsErrors);
@@ -66,7 +71,7 @@ class UploadController {
             return "errors";
         }
 
-        logger.info("Processing image file upload during POST {}", COMPARE_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE);
+        logger.info("Processing image file upload during POST {}", DETECT_CONTEXT_PATH__USER_SESSION_INPUT_IMAGE);
         logger.info(" -  content type: {}", file.getContentType());
         logger.info(" -          name: {}", file.getName());
         logger.info(" - original name: {}", file.getOriginalFilename());
@@ -81,10 +86,10 @@ class UploadController {
             BufferedImage imgBuff = ImageIO.read(file.getInputStream());
             logger.info("Successfully read image: " + file.getOriginalFilename());
 
-            SessionData sessionData = new SessionData(session);
+            SessionData sessionData = new SessionData(newSession);
             sessionData.setInputImage(imgBuff);
             sessionData.setTemplateImage(templateImageResources.getTemplateImage(templateFilename));
-            session.setAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, sessionData);
+            newSession.setAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, sessionData);
 
             detectorTasksManager.submitDetectorTask(
                     imageProcessingOperations.getProcessingTask(operation, sessionData)
