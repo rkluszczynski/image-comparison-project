@@ -3,6 +3,8 @@ package pl.info.rkluszczynski.image.web.controller;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +27,7 @@ import static pl.info.rkluszczynski.image.web.config.WebConstants.USER_SESSION_A
 @Controller
 @RequestMapping(value = DETECT_CONTEXT_PATH__ROOT)
 public class MainController {
+    private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
 
     private static final String PAGE_HEADER_TEXT = "Image Pattern Detection Test Page";
 
@@ -110,6 +113,7 @@ public class MainController {
         if (sessionDataObject == null || processingStatusResponse == null) {
             processingStatusResponse = new ProcessingStatus(0L, -1);
         }
+        logger.debug("Processing status of session '{}': {}", session.getId(), processingStatusResponse.toString());
         return processingStatusResponse.toString();
     }
 

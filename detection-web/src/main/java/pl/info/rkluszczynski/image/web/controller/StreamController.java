@@ -86,10 +86,10 @@ class StreamController {
     private SessionData getSessionImageDataObject(HttpSession session, String contextPath) {
         Object sessionAttributeObject = session.getAttribute(USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA);
         if (sessionAttributeObject != null) {
-            logger.debug("Attribute {} exists in session during GET {}", USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, contextPath);
+            logger.debug("Attribute {} exists in session '{}' during GET {}", USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, session.getId(), contextPath);
             return (SessionData) sessionAttributeObject;
         } else {
-            logger.debug("No attribute {} in session during GET {}", USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, contextPath);
+            logger.debug("No attribute {} in session '{}' during GET {}", USER_SESSION_ATTRIBUTE_NAME__IMAGE_DATA, session.getId(), contextPath);
             return null;
         }
     }

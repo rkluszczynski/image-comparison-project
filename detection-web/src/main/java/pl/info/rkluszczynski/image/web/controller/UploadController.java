@@ -61,8 +61,10 @@ class UploadController {
                                                          HttpServletRequest request,
                                                          HttpSession session
     ) {
+        logger.debug("Invalidating session {}", session.getId());
         session.invalidate();
         HttpSession newSession = request.getSession();
+        logger.debug("Created new session: {}", newSession.getId());
 
         List<String> requestParamsErrors = getRequestParamsErrors(file, templateFilename, operation);
         if (!requestParamsErrors.isEmpty()) {
