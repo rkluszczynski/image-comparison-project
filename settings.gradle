@@ -1,4 +1,4 @@
-rootProject.name = 'image-comparison-project'
+rootProject.name = 'image-detection-project'
 
 def subDirs = rootDir.listFiles(new FileFilter() {
     public boolean accept(File file) {
