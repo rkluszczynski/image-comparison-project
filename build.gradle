@@ -1,5 +1,11 @@
 apply plugin: 'base'
 
+apply plugin: pl.info.rkluszczynski.gradle.ScpPlugin
+scp {
+    username = 'klusi'
+    password = '?'
+}
+
 subprojects {
     apply from: rootProject.file('gradle-commons/common.gradle')
 }

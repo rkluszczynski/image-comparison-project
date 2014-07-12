@@ -1,0 +1,21 @@
+apply plugin: 'groovy'
+
+group = 'pl.info.rkluszczynski'
+version = '1.0-SNAPSHOT'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+
+    compile 'com.jcraft:jsch:0.1.51'
+//    compile 'org.codehaus.groovy:groovy-all:2.2.1'
+
+    testCompile 'junit:junit:4.11'
+//    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+}
+
+repositories {
+    mavenCentral()
+}
