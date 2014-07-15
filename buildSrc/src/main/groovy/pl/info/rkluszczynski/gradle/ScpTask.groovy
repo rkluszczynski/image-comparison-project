@@ -9,6 +9,6 @@ class ScpTask extends DefaultTask {
     @TaskAction
     def executeScp() {
         println greeting
-        println "${project.scp.username} with ${project.scp.password}"
+        println "${project.scp.username}@${project.scp.host}:${project.scp.port} with ${project.scp.password}"
     }
 }
