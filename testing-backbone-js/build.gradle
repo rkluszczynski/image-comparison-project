@@ -1,8 +1,8 @@
 apply plugin: 'war'
 apply plugin: 'spring-boot'
 
-apply from: rootProject.file('gradle-commons/bower.gradle')
-apply from: rootProject.file('gradle-commons/jetty.gradle')
+apply from: rootProject.file('gradle/bower.gradle')
+apply from: rootProject.file('gradle/jetty.gradle')
 
 
 dependencies {

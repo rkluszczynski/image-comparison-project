@@ -1,7 +1,7 @@
 apply plugin: 'cargo'
 apply plugin: 'war'
 
-apply from: rootProject.file('gradle-commons/jetty.gradle')
+apply from: rootProject.file('gradle/jetty.gradle')
 
 def webApplicationContextPath =
         hasProperty('webAppContextPath') ? webAppContextPath : '/webapp'
