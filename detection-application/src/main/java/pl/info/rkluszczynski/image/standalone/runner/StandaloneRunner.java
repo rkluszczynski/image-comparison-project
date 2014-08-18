@@ -37,7 +37,7 @@ public class StandaloneRunner {
                 statisticsCollector.process(baseFile, compareFile);
             }
         }
-        statisticsCollector.saveAsCSV("tmp/statistics.csv");
+        statisticsCollector.saveAsCSV("statistics.csv");
     }
 
     private FilenameFilter createFilenameFilter(final String... basenames) {

@@ -10,7 +10,7 @@ import static pl.info.rkluszczynski.image.standalone.config.ApplicationConstants
 
 @Configuration
 @ComponentScan(basePackages = COMPARE_APPLICATION_BASE_PACKAGE)
-@PropertySource(value = "classpath:compare-application.properties")
+@PropertySource(value = "classpath:detection-application.properties")
 public class ApplicationJavaConfig {
 
     @Autowired

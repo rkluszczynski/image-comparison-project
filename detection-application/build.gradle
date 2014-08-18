@@ -1,6 +1,27 @@
+apply plugin: 'application'
+
+mainClassName = 'pl.info.rkluszczynski.image.standalone.Main'
+//applicationDefaultJvmArgs = ["-Dgreeting.language=en"]
+
 dependencies {
     compile project(':detection-engine')
 
 //    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.3.2'
 }
+
+//
+//Including other resources in the distribution
+//
+//task createDocs {
+//    def docs = file("$buildDir/docs")
+//    outputs.dir docs
+//    doLast {
+//        docs.mkdirs()
+//        new File(docs, "readme.txt").write("Read me!")
+//    }
+//}
+//
+//applicationDistribution.from(createDocs) {
+//    into "docs"
+//}
