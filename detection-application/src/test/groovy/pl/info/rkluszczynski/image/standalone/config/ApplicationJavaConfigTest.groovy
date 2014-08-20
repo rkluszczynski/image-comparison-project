@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import javax.sql.DataSource
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ApplicationTestConfig.class)
+@ContextConfiguration(classes = EmbeddedDataSourceConfig.class)
 //@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ApplicationJavaConfigTest extends GroovyTestCase {
 

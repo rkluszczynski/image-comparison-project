@@ -6,12 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 @Configuration
-public class ApplicationTestConfig extends ApplicationJavaConfig {
+public class EmbeddedDataSourceConfig {
 
-    @Override
     @Bean(destroyMethod = "shutdown")
     public DataSource dataSource() {
-//        return super.dataSource();
         return new EmbeddedMysqlDatabaseBuilder()
                 .addSqlScript("mysql-test-scripts/create-tables.sql")
 //                .addSqlScript("tag_schema.sql")
