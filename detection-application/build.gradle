@@ -20,6 +20,15 @@ dependencies {
 //
 //Including other resources in the distribution
 //
+task copyApplicationFiles(type: Copy) {
+    from 'src/conf'
+    into file("$buildDir/conf")
+}
+
+applicationDistribution.from('src/conf') {
+    into 'conf'
+}
+
 //task createDocs {
 //    def docs = file("$buildDir/docs")
 //    outputs.dir docs
