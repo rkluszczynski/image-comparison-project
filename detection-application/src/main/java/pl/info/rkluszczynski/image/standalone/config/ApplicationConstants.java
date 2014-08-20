@@ -5,7 +5,11 @@ package pl.info.rkluszczynski.image.standalone.config;
  */
 public interface ApplicationConstants {
 
-    String COMPARE_APPLICATION_BASE_PACKAGE = "pl.info.rkluszczynski.image.standalone";
+    String DETECTION_APPLICATION_BASE_PACKAGE = "pl.info.rkluszczynski.image.standalone";
+
+    String DATABASE_BASE_PACKAGE = "pl.info.rkluszczynski.ingredients.db";
+    String DATABASE_BASE_REPOSITORIES_PACKAGE = DATABASE_BASE_PACKAGE + ".repositories";
+
 
     //    String RESOURCE_DIRECTORY = "detection-application/src/main/resources/";
     String RESOURCE_DIRECTORY = "src/main/resources/";
