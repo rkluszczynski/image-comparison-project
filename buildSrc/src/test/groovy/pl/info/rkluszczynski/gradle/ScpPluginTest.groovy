@@ -10,7 +10,7 @@ class ScpPluginTest {
     @Test
     public void greeterPluginAddsGreetingTaskToProject() {
         Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'scp'
+        project.apply plugin: pl.info.rkluszczynski.gradle.ScpPlugin
 
         assertTrue(project.tasks.scp instanceof ScpTask)
     }
