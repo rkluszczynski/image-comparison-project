@@ -1,9 +1,11 @@
 package pl.info.rkluszczynski.image.standalone.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
+@Configuration
 public class ApplicationTestConfig extends ApplicationJavaConfig {
 
     @Override

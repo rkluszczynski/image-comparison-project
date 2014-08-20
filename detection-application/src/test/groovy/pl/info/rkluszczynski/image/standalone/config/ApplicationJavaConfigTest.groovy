@@ -5,21 +5,19 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.test.context.support.AnnotationConfigContextLoader
-import spock.lang.Specification
 
 import javax.sql.DataSource
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ApplicationTestConfig.class, loader = AnnotationConfigContextLoader.class)
-//@ActiveProfiles(profiles = "dev")
-class ApplicationJavaConfigTest extends Specification {
+@ContextConfiguration(classes = ApplicationTestConfig.class)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+class ApplicationJavaConfigTest extends GroovyTestCase {
 
     @Autowired
-    DataSource dataSource
+    private DataSource dataSource
 
     @Test
-    void 'should autowire dataSource'() {
+    void shouldAutowireDataSource() {
         dataSource != null
     }
 }
