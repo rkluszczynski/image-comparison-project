@@ -7,7 +7,7 @@ public interface ApplicationConstants {
 
     String DETECTION_APPLICATION_BASE_PACKAGE = "pl.info.rkluszczynski.image.standalone";
 
-    String DATABASE_BASE_PACKAGE = "pl.info.rkluszczynski.ingredients.db";
+    String DATABASE_BASE_PACKAGE = DETECTION_APPLICATION_BASE_PACKAGE + ".db";
     String DATABASE_BASE_REPOSITORIES_PACKAGE = DATABASE_BASE_PACKAGE + ".repositories";
 
 
