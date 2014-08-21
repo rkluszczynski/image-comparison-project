@@ -21,8 +21,7 @@ public class EmbeddedDataSourceConfig {
     public DataSource dataSource() {
         return new EmbeddedMysqlDatabaseBuilder()
                 .addSqlScript("mysql-test-scripts/create-tables.sql")
-//                .addSqlScript("tag_schema.sql")
-//                .addSqlScript("tag_init.sql")
+                .addSqlScript("mysql-test-scripts/insert-data.sql")
                 .build();
     }
 }
