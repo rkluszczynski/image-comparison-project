@@ -6,6 +6,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import pl.info.rkluszczynski.image.engine.config.EngineJavaConfig;
 import pl.info.rkluszczynski.image.standalone.config.ApplicationJavaConfig;
 import pl.info.rkluszczynski.image.standalone.runner.StandaloneRunner;
+import pl.info.rkluszczynski.image.standalone.runner.StatisticsCalculatorRunner;
 
 import java.io.IOException;
 
@@ -18,9 +19,11 @@ public class Main {
         context.register(EngineJavaConfig.class);
         context.refresh();
 
-        StandaloneRunner mainRunner = (StandaloneRunner) context.getBean("mainRunner");
+        StatisticsCalculatorRunner statisticsRunner = (StatisticsCalculatorRunner) context.getBean("statisticsRunner");
+        StandaloneRunner standaloneRunner = (StandaloneRunner) context.getBean("mainRunner");
         try {
-            mainRunner.run();
+//            statisticsRunner.run();
+            standaloneRunner.run();
         } catch (IOException e) {
             logger.error("Problem during execution", e);
         }

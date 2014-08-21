@@ -4,61 +4,63 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.info.rkluszczynski.image.standalone.config.ApplicationConstants;
+import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
+import pl.info.rkluszczynski.image.engine.model.SessionData;
+import pl.info.rkluszczynski.image.engine.model.comparators.PatternMatchComparator;
+import pl.info.rkluszczynski.image.engine.model.comparators.PixelDifferenceComparator;
+import pl.info.rkluszczynski.image.engine.model.comparators.SequenceComparator;
+import pl.info.rkluszczynski.image.engine.model.strategies.BestLocalizedMatchStrategy;
+import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
+import pl.info.rkluszczynski.image.engine.tasks.MultiScaleStageTask;
+import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
+import pl.info.rkluszczynski.image.standalone.db.entities.PlanogramEntity;
+import pl.info.rkluszczynski.image.standalone.db.entities.ProcessedImageEntity;
+import pl.info.rkluszczynski.image.standalone.db.repositories.PlanogramRepository;
+import pl.info.rkluszczynski.image.standalone.db.repositories.ProcessedImageRepository;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.List;
 
 @Component(value = "mainRunner")
 public class StandaloneRunner {
     private static final Logger logger = LoggerFactory.getLogger(StandaloneRunner.class);
 
+    private static final int NEW_IMAGE_STATUS = 0;
+
     @Autowired
-    StatisticsCollector statisticsCollector;
+    private ProcessedImageRepository processedImageRepository;
+    @Autowired
+    private PlanogramRepository planogramRepository;
+
 
     public void run() throws IOException {
-        File baseSetDir = checkAndGetDirectoryFile(ApplicationConstants.BASE_SET_FILES);
-        File compareSetDir = checkAndGetDirectoryFile(ApplicationConstants.COMPARE_SET_FILES);
-        for (File baseFile : baseSetDir.listFiles()) {
-            logger.info("Processing file: " + baseFile.getAbsolutePath());
+        List<ProcessedImageEntity> imageEntities = processedImageRepository.findByStatus(NEW_IMAGE_STATUS);
+        for (ProcessedImageEntity entity : imageEntities) {
+            logger.debug("Processing entity {}", entity);
 
-            String filename = baseFile.getName();
-            String basename = filename.substring(0, filename.lastIndexOf("."));
-
-            FilenameFilter filenameFilter = createFilenameFilter(
-                    String.format("%s-", basename),
-                    String.format("%s_", basename)
+            PlanogramEntity planogramEntity = planogramRepository.findOne(
+                    Long.valueOf(entity.getPlanogramId())
             );
-            for (File compareFile : compareSetDir.listFiles(filenameFilter)) {
-                String compareFilename = compareFile.getName();
-                logger.info(" -> comparing files {} with {}", filename, compareFilename);
 
-                statisticsCollector.process(baseFile, compareFile);
-            }
+            String planogramPath = planogramEntity.getPath();
+            String entitySourcePath = entity.getSourcepath();
+            String entityResultPath = entity.getProcessedpath();
+
         }
-        statisticsCollector.saveAsCSV("statistics.csv");
     }
 
-    private FilenameFilter createFilenameFilter(final String... basenames) {
-        return new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                for (String basename : basenames) {
-                    if (name.startsWith(basename))
-                        return true;
-                }
-                return false;
-            }
-        };
+
+    private SessionData createSessionData() {
+        SessionData sessionData = new SessionData(null);
+        return sessionData;
     }
 
-    private File checkAndGetDirectoryFile(String dirPath) throws IOException {
-        File directoryFile = new File(dirPath);
-        if (directoryFile.exists() && directoryFile.isDirectory()) {
-            return directoryFile;
-        }
-        logger.warn(String.format("Current working directory: %s", System.getProperty("user.dir")));
-        throw new IOException("Path " + dirPath + " not exists or is not directory");
+    private Runnable createMultiScaleTask(SessionData sessionData, CompareMetric metric) {
+        PatternMatchStrategy matchStrategy = new BestLocalizedMatchStrategy();
+        PatternMatchComparator matchComparator = new SequenceComparator(
+                new PixelDifferenceComparator(metric)
+        );
+        DetectorTaskInput detectorTaskInput = new DetectorTaskInput(matchComparator, matchStrategy);
+        return new MultiScaleStageTask(sessionData, detectorTaskInput);
     }
 }

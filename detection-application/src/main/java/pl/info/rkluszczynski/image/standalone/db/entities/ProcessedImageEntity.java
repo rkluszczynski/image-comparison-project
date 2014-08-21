@@ -1,9 +1,6 @@
 package pl.info.rkluszczynski.image.standalone.db.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "processedimage")
@@ -11,6 +8,8 @@ public class ProcessedImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(name = "planogram_id")
+    private Integer planogramId;
 
     private String sourcepath;
     private String processedpath;
@@ -33,6 +32,14 @@ public class ProcessedImageEntity {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Integer getPlanogramId() {
+        return planogramId;
+    }
+
+    public void setPlanogramId(Integer planogramId) {
+        this.planogramId = planogramId;
     }
 
     public String getSourcepath() {
@@ -83,11 +90,11 @@ public class ProcessedImageEntity {
         this.status = status;
     }
 
-    public int getResult() {
+    public Integer getResult() {
         return result;
     }
 
-    public void setResult(int result) {
+    public void setResult(Integer result) {
         this.result = result;
     }
 
@@ -101,8 +108,10 @@ public class ProcessedImageEntity {
 
     @Override
     public String toString() {
-        return String.format("ProcessedImageEntity{id=%d, sourcepath='%s', processedpath='%s', " +
-                        "adddate=%s, startdate=%s, enddate=%s, status=%d, result=%d, fullstatus='%s'}",
-                id, sourcepath, processedpath, adddate, startdate, enddate, status, result, fullstatus);
+        return String.format("ProcessedImageEntity{id=%d, planogramId=%d," +
+                        " sourcepath='%s', processedpath='%s'," +
+                        " adddate=%s, startdate=%s, enddate=%s," +
+                        " status=%d, result=%d, fullstatus='%s'}",
+                id, planogramId, sourcepath, processedpath, adddate, startdate, enddate, status, result, fullstatus);
     }
 }

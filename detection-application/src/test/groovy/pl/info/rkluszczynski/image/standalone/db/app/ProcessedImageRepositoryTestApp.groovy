@@ -7,7 +7,7 @@ import pl.info.rkluszczynski.image.standalone.db.repositories.ProcessedImageRepo
 
 class ProcessedImageRepositoryTestApp {
 
-    public static void main(String[] args) {
+    public static main(String[] args) {
         def context = new AnnotationConfigApplicationContext(ApplicationJavaConfig.class)
         def planogramRepository = context.getBean(PlanogramRepository.class)
         def processedImageRepository = context.getBean(ProcessedImageRepository.class)
