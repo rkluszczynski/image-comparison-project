@@ -1,6 +1,6 @@
 
 1. Database local setup
-=======================
+-----------------------
 
 - Download ZIP file from:
 
@@ -14,7 +14,7 @@ There will be run additional virtual console for mysql commands.
 
 
 2. Setup database
-=================
+-----------------
 
 - To enter MySQL database, please enter command:
 ```
@@ -32,7 +32,7 @@ Query OK, 0 rows affected (0.00 sec)
 
 
 3. Initialize tables and data
-=============================
+-----------------------------
 
 - First set environment variable for directory with SQL files:
 ```
