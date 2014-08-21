@@ -12,7 +12,6 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /*
     Based on awesome post:
@@ -23,8 +22,12 @@ public class EmbeddedMysqlDatabaseBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedMysqlDatabaseBuilder.class);
 
     private final String baseDatabaseDir = System.getProperty("java.io.tmpdir");
-    private String databaseName = "test_db_" + System.nanoTime();
-    private final int port = new Random().nextInt(10000) + 3306;
+    private String databaseName =
+            "test_db";
+    //            "test_db_" + System.nanoTime();
+    private final int port =
+            23306;
+    //            new Random().nextInt(10000) + 3306;
     private final String username = "root";
     private final String password = "";
     private boolean foreignKeyCheck;

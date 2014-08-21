@@ -1,5 +1,6 @@
 package pl.info.rkluszczynski.image.standalone.config
 
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +12,7 @@ import javax.sql.DataSource
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = EmbeddedDataSourceConfig.class)
 //@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Ignore
 class ApplicationJavaConfigTest extends GroovyTestCase {
 
     @Autowired
