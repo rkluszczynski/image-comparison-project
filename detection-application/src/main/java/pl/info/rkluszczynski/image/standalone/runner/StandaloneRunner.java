@@ -36,7 +36,7 @@ public class StandaloneRunner {
     public void run() throws IOException {
         List<ProcessedImageEntity> imageEntities = processedImageRepository.findByStatus(NEW_IMAGE_STATUS);
         for (ProcessedImageEntity entity : imageEntities) {
-            logger.debug("Processing entity {}", entity);
+            logger.info("Processing entity {}", entity);
 
             PlanogramEntity planogramEntity = planogramRepository.findOne(
                     Long.valueOf(entity.getPlanogramId())
@@ -46,6 +46,9 @@ public class StandaloneRunner {
             String entitySourcePath = entity.getSourcepath();
             String entityResultPath = entity.getProcessedpath();
 
+            logger.info("    planogramPath : {}", planogramPath);
+            logger.info(" entitySourcePath : {}", entitySourcePath);
+            logger.info(" entityResultPath : {}", entityResultPath);
         }
     }
 
