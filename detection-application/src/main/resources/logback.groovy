@@ -9,7 +9,7 @@ appender("CONSOLE", ConsoleAppender) {
     }
 }
 
-logger("pl.info.rkluszczynski.image", INFO)
+logger("pl.info.rkluszczynski.image", DEBUG)
 logger("org.springframework", INFO)
 
 root(INFO, ["CONSOLE"])

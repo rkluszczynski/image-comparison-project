@@ -3,38 +3,63 @@ package pl.info.rkluszczynski.image.standalone.runner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import pl.info.rkluszczynski.image.core.compare.metric.CompareMetric;
 import pl.info.rkluszczynski.image.engine.model.SessionData;
 import pl.info.rkluszczynski.image.engine.model.comparators.PatternMatchComparator;
 import pl.info.rkluszczynski.image.engine.model.comparators.PixelDifferenceComparator;
 import pl.info.rkluszczynski.image.engine.model.comparators.SequenceComparator;
+import pl.info.rkluszczynski.image.engine.model.metrics.AbsColorMetric;
 import pl.info.rkluszczynski.image.engine.model.strategies.BestLocalizedMatchStrategy;
 import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
 import pl.info.rkluszczynski.image.engine.tasks.MultiScaleStageTask;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
+import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
+import pl.info.rkluszczynski.image.standalone.db.ProcessedImageStatus;
 import pl.info.rkluszczynski.image.standalone.db.entities.PlanogramEntity;
 import pl.info.rkluszczynski.image.standalone.db.entities.ProcessedImageEntity;
 import pl.info.rkluszczynski.image.standalone.db.repositories.PlanogramRepository;
 import pl.info.rkluszczynski.image.standalone.db.repositories.ProcessedImageRepository;
+import pl.info.rkluszczynski.image.standalone.exception.CouldNotReadImageFileException;
+import pl.info.rkluszczynski.image.standalone.exception.CouldNotWriteImageFileException;
+import pl.info.rkluszczynski.image.standalone.exception.ImageDetectionException;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+import static pl.info.rkluszczynski.image.standalone.db.ProcessedImageStatus.*;
 
 @Component(value = "mainRunner")
 public class StandaloneRunner {
     private static final Logger logger = LoggerFactory.getLogger(StandaloneRunner.class);
 
-    private static final int NEW_IMAGE_STATUS = 0;
-
     @Autowired
     private ProcessedImageRepository processedImageRepository;
     @Autowired
     private PlanogramRepository planogramRepository;
+    @Autowired
+    private Environment env;
+    @Autowired
+    private TasksProperties tasksProperties;
 
+    private final String fileSeparator = System.getProperty("file.separator");
+    private final String RESULT_IMAGE_FORMAT = "PNG";
 
     public void run() throws IOException {
-        List<ProcessedImageEntity> imageEntities = processedImageRepository.findByStatus(NEW_IMAGE_STATUS);
+        String templateImagesDirectory = env.getProperty("template.images.directory", ".") + fileSeparator;
+        String sourceImagesDirectory = env.getProperty("source.images.directory", ".") + fileSeparator;
+        String outputImagesDirectory = env.getProperty("output.images.directory", ".") + fileSeparator;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String dateString = sdf.format(new Date());
+
+        List<ProcessedImageEntity> imageEntities = processedImageRepository.findByStatus(NEW.getCode());
         for (ProcessedImageEntity entity : imageEntities) {
             logger.info("Processing entity {}", entity);
 
@@ -42,13 +67,77 @@ public class StandaloneRunner {
                     Long.valueOf(entity.getPlanogramId())
             );
 
-            String planogramPath = planogramEntity.getPath();
-            String entitySourcePath = entity.getSourcepath();
-            String entityResultPath = entity.getProcessedpath();
+            String planogramPath = templateImagesDirectory + planogramEntity.getPath();
+            String entitySourcePath = sourceImagesDirectory + entity.getSourcepath();
 
             logger.info("    planogramPath : {}", planogramPath);
             logger.info(" entitySourcePath : {}", entitySourcePath);
-            logger.info(" entityResultPath : {}", entityResultPath);
+
+            try {
+                BufferedImage inputImage = readImageFromFile(entitySourcePath);
+                BufferedImage templateImage = readImageFromFile(planogramPath);
+
+                SessionData sessionData = createSessionData();
+                sessionData.setInputImage(inputImage);
+                sessionData.setTemplateImage(templateImage);
+
+                MultiScaleStageTask task = createMultiScaleTask(sessionData, new AbsColorMetric());
+                setImageEntityStatus(STARTED, entity);
+                task.initialize(tasksProperties);
+                task.run();
+
+                String entityResultPath = createEntityOutputPath(outputImagesDirectory, dateString, entity);
+                logger.info(" entityResultPath : {}", entityResultPath);
+                BufferedImage resultImage = sessionData.getResultImage();
+                saveBufferedImageAsFile(resultImage, entityResultPath);
+
+                setImageEntityStatus(DONE, entity);
+            } catch (ImageDetectionException e) {
+                logger.error("Error during processing entity: {}", entity, e);
+                setImageEntityStatus(FAILED, entity);
+            }
+            break;
+        }
+    }
+
+    private void setImageEntityStatus(ProcessedImageStatus status, ProcessedImageEntity entity) {
+        logger.info("Setting status code {} ({}) for entity with id={}",
+                status.getCode(), status.getDescription(), entity.getId());
+        entity.setStatus(status.getCode());
+        processedImageRepository.save(entity);
+    }
+
+    private void saveBufferedImageAsFile(BufferedImage image, String path) throws CouldNotWriteImageFileException {
+        try {
+            ImageIO.write(image, RESULT_IMAGE_FORMAT, new File(path));
+        } catch (IOException e) {
+            String message = "Could not write result image to file: " + path;
+            throw new CouldNotWriteImageFileException(message, e);
+        }
+    }
+
+    private String createEntityOutputPath(String directory, String dateString, ProcessedImageEntity entity) {
+        String outputPath = entity.getProcessedpath();
+        if (outputPath == null) {
+            File outputFile = new File(entity.getSourcepath());
+            String fileDirPath = outputFile.getParentFile().getPath();
+            String fileBaseName = outputFile.getName();
+
+            outputPath = fileDirPath + fileSeparator + "output-" + dateString + "-" + fileBaseName;
+
+            logger.info("No result path value! Saving '{}'", outputPath);
+            entity.setProcessedpath(outputPath);
+            processedImageRepository.save(entity);
+        }
+        return directory + outputPath;
+    }
+
+    private BufferedImage readImageFromFile(String imageFilePath) throws CouldNotReadImageFileException {
+        try {
+            return ImageIO.read(new File(imageFilePath));
+        } catch (IOException e) {
+            String message = "Could not read file: " + imageFilePath;
+            throw new CouldNotReadImageFileException(message, e);
         }
     }
 
@@ -58,7 +147,7 @@ public class StandaloneRunner {
         return sessionData;
     }
 
-    private Runnable createMultiScaleTask(SessionData sessionData, CompareMetric metric) {
+    private MultiScaleStageTask createMultiScaleTask(SessionData sessionData, CompareMetric metric) {
         PatternMatchStrategy matchStrategy = new BestLocalizedMatchStrategy();
         PatternMatchComparator matchComparator = new SequenceComparator(
                 new PixelDifferenceComparator(metric)
