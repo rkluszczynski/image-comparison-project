@@ -5,28 +5,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import pl.info.rkluszczynski.image.engine.config.EngineJavaConfig;
 import pl.info.rkluszczynski.image.standalone.config.ApplicationJavaConfig;
+import pl.info.rkluszczynski.image.standalone.runner.ImagePatternDetector;
 import pl.info.rkluszczynski.image.standalone.runner.StandaloneRunner;
-import pl.info.rkluszczynski.image.standalone.runner.StatisticsCalculatorRunner;
-
-import java.io.IOException;
 
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.register(ApplicationJavaConfig.class);
         context.register(EngineJavaConfig.class);
+        context.register(ApplicationJavaConfig.class);
         context.refresh();
 
-        StatisticsCalculatorRunner statisticsRunner = (StatisticsCalculatorRunner) context.getBean("statisticsRunner");
-        StandaloneRunner standaloneRunner = (StandaloneRunner) context.getBean("mainRunner");
         try {
-//            statisticsRunner.run();
-            standaloneRunner.run();
-        } catch (IOException e) {
-            logger.error("Problem during execution", e);
+            StandaloneRunner runner = (ImagePatternDetector) context.getBean("imagePatternDetector");
+            runner.run();
+        } catch (Exception e) {
+            logger.error("Error during StandaloneRunner execution!", e);
+            e.printStackTrace(System.err);
+        } finally {
+            context.close();
         }
-        context.close();
     }
 }

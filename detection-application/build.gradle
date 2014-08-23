@@ -1,7 +1,9 @@
 apply plugin: 'application'
 
 mainClassName = 'pl.info.rkluszczynski.image.standalone.Main'
-//applicationDefaultJvmArgs = ["-Dgreeting.language=en"]
+applicationDefaultJvmArgs = []
+
+def applicationDistJvmArgs = ['-Dprops.head=file', '-Dprops.path=${APP_HOME}/conf/application.properties']
 
 dependencies {
     compile project(':detection-engine')
@@ -24,6 +26,13 @@ dependencies {
     testCompile fileTree(dir: 'libs-testCompile/', include: '*.jar')
 //    testCompile group: 'mysql', name: 'mysql-connector-mxj', version: '5.0.12'
 }
+
+task prepareDistributionJvmArgs {
+    doLast {
+        applicationDefaultJvmArgs += applicationDistJvmArgs
+    }
+}
+startScripts.dependsOn prepareDistributionJvmArgs
 
 applicationDistribution.from('src/conf') {
     into 'conf'

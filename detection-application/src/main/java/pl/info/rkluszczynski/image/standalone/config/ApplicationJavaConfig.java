@@ -22,7 +22,7 @@ import static pl.info.rkluszczynski.image.standalone.config.ApplicationConstants
 @Configuration
 @ComponentScan(basePackages = DETECTION_APPLICATION_BASE_PACKAGE)
 @EnableJpaRepositories(basePackages = DATABASE_BASE_REPOSITORIES_PACKAGE)
-@PropertySource(value = "classpath:detection-application.properties")
+@PropertySource(value = "${props.head:classpath}:${props.path:detection-application.properties}")
 public class ApplicationJavaConfig {
 
     @Autowired
