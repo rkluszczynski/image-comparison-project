@@ -15,6 +15,9 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.sql.DataSource;
 
 import static pl.info.rkluszczynski.image.standalone.config.ApplicationConstants.*;
@@ -24,6 +27,7 @@ import static pl.info.rkluszczynski.image.standalone.config.ApplicationConstants
 @EnableJpaRepositories(basePackages = DATABASE_BASE_REPOSITORIES_PACKAGE)
 @PropertySource(value = "${props.head:classpath}:${props.path:detection-application.properties}")
 public class ApplicationJavaConfig {
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationJavaConfig.class);
 
     @Autowired
     private Environment env;
@@ -31,6 +35,10 @@ public class ApplicationJavaConfig {
 
     @Bean
     public DataSource dataSource() {
+	logger.debug("Creating MySQL connection with address: {}, database: {}, user: {}, password: {}",
+		env.getProperty("mysql.address"),  env.getProperty("mysql.database"),
+		env.getProperty("mysql.user"), env.getProperty("mysql.password") );
+
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://"
