@@ -23,12 +23,18 @@ Z:\bin> mysql --user=root --password=root
 
 - Create database and a user for that database:
 ```
-mysql> CREATE DATABASE picardio_db;
+mysql> CREATE DATABASE picadio_db;
 Query OK, 1 row affected (0.00 sec)
 
-mysql> GRANT ALL PRIVILEGES ON picardio_db.* TO 'pica'@'localhost' IDENTIFIED BY 'rdi0';
+mysql> GRANT ALL PRIVILEGES ON picadio_db.* TO 'pica'@'localhost' IDENTIFIED BY 'picApicA' WITH GRANT OPTION;
 Query OK, 0 rows affected (0.00 sec)
 ```
+
+CREATE USER 'pica'@'localhost' IDENTIFIED BY 'picApicA';
+GRANT ALL PRIVILEGES ON picadio_db.* TO 'pica'@'localhost' WITH GRANT OPTION;
+CREATE USER 'pica'@'%' IDENTIFIED BY 'picApicA';
+GRANT ALL PRIVILEGES ON picadio_db.* TO 'pica'@'%' IDENTIFIED BY 'picApicA';
+FLUSH PRIVILEGES;
 
 
 3. Initialize tables and data
@@ -41,7 +47,7 @@ Z:\bin> set SQLSDIR=D:\WorkPlace\image-detection-project\detection-application\s
 
 - Then for every file enter command to crate tables and insert example data:
 ```
-Z:\bin> mysql --user=pica --password=rdi0 picardio_db < %SQLSDIR%\create-tables.sql
-Z:\bin> mysql --user=pica --password=rdi0 picardio_db < %SQLSDIR%\insert-data.sql
+Z:\bin> mysql --user=pica --password=picApicA picadio_db < %SQLSDIR%\create-tables.sql
+Z:\bin> mysql --user=pica --password=picApicA picadio_db < %SQLSDIR%\insert-data.sql
 ```
 

@@ -3,7 +3,8 @@ apply plugin: 'application'
 mainClassName = 'pl.info.rkluszczynski.image.standalone.Main'
 applicationDefaultJvmArgs = []
 
-def applicationDistJvmArgs = ['-Dprops.head=file', '-Dprops.path=${APP_HOME}/conf/application.properties']
+def applicationWindowsDistJvmArgs = '"-Dprops.head=file" "-Dprops.path=${APP_HOME}/conf/application.properties"'
+def applicationUnixDistJvmArgs = '"-Dprops.head=file" "-Dprops.path=$(dirname $0)/../conf/application.properties"'
 
 dependencies {
     compile project(':detection-engine')
@@ -27,12 +28,12 @@ dependencies {
 //    testCompile group: 'mysql', name: 'mysql-connector-mxj', version: '5.0.12'
 }
 
-task prepareDistributionJvmArgs {
+startScripts {
     doLast {
-        applicationDefaultJvmArgs += applicationDistJvmArgs
+        unixScript.text = unixScript.text.replace('DEFAULT_JVM_OPTS=""', "DEFAULT_JVM_OPTS='" + applicationUnixDistJvmArgs + "'")
+        windowsScript.text = windowsScript.text.replace('DEFAULT_JVM_OPTS=', "DEFAULT_JVM_OPTS=" + applicationWindowsDistJvmArgs)
     }
 }
-startScripts.dependsOn prepareDistributionJvmArgs
 
 applicationDistribution.from('src/conf') {
     into 'conf'

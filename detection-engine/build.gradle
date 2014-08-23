@@ -1,5 +1,4 @@
 apply from: rootProject.file('gradle/publish.gradle')
-version = '1.0.0-SNAPSHOT'
 
 dependencies {
     compile project(':image-core')

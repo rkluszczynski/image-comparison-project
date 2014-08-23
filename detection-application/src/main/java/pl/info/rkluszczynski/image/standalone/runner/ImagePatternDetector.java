@@ -108,12 +108,26 @@ public class ImagePatternDetector implements StandaloneRunner {
         logger.info("Setting status code {} ({}) for entity with id={}",
                 status.getCode(), status.getDescription(), entity.getId());
         entity.setStatus(status.getCode());
+        Date now = new Date();
+        switch (status) {
+            case STARTED:
+                entity.setStartdate(now);
+                break;
+            case DONE:
+            case FAILED:
+                entity.setEnddate(now);
+                break;
+            default:
+                logger.warn("Unknown status {}, skipping setting dates", status);
+        }
         processedImageRepository.save(entity);
     }
 
     private void saveBufferedImageAsFile(BufferedImage image, String path) throws CouldNotWriteImageFileException {
         try {
-            ImageIO.write(image, RESULT_IMAGE_FORMAT, new File(path));
+            File targetImageFile = new File(path);
+            targetImageFile.getParentFile().mkdirs();
+            ImageIO.write(image, RESULT_IMAGE_FORMAT, targetImageFile);
         } catch (IOException e) {
             String message = "Could not write result image to file: " + path;
             throw new CouldNotWriteImageFileException(message, e);
