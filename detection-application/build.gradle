@@ -31,6 +31,7 @@ dependencies {
 startScripts {
     doLast {
         unixScript.text = unixScript.text.replace('DEFAULT_JVM_OPTS=""', "DEFAULT_JVM_OPTS='" + applicationUnixDistJvmArgs + "'")
+        unixScript.text = unixScript.text.replace('APP_HOME="`pwd -P`"', 'export APP_HOME="`pwd -P`"')
         windowsScript.text = windowsScript.text.replace('DEFAULT_JVM_OPTS=', "DEFAULT_JVM_OPTS=" + applicationWindowsDistJvmArgs)
     }
 }
