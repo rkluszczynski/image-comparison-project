@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.info.rkluszczynski.image.standalone.db.entities.EvaluationEntity;
+import pl.info.rkluszczynski.image.standalone.db.entities.EvaluationImageEntity;
+import pl.info.rkluszczynski.image.standalone.db.entities.EvaluationMarkerEntity;
 import pl.info.rkluszczynski.image.standalone.db.repositories.EvaluationImageRepository;
 import pl.info.rkluszczynski.image.standalone.db.repositories.EvaluationMarkerRepository;
 import pl.info.rkluszczynski.image.standalone.db.repositories.EvaluationRepository;
@@ -33,11 +35,19 @@ public class ScenePatternEvaluator implements StandaloneRunner {
             return;
         }
 
-
         for (EvaluationEntity entity : evaluationEntities) {
+            long evaluationId = entity.getId();
 
+            List<EvaluationMarkerEntity> markerList = markerRepository.findByEvaluationId(evaluationId);
+
+            List<EvaluationImageEntity> imageList = imageRepository.findByEvaluationId(evaluationId);
+            for (EvaluationImageEntity imageEntity : imageList) {
+                processOneImageScene(imageEntity, markerList);
+            }
         }
+    }
 
+    private void processOneImageScene(EvaluationImageEntity imageEntity, List<EvaluationMarkerEntity> markerList) {
 
     }
 }
