@@ -16,4 +16,25 @@ public class EvaluationEntity {
 
     private int status;
     private Integer result;
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

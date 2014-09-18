@@ -12,7 +12,7 @@ public class EvaluationMarkerEntity {
     private Long evaluationId;
     private String path;
     @Column(name = "tobefound")
-    private Long tobeFound;
+    private Long toBeFound;
 
     private Long found;
     private String color;
