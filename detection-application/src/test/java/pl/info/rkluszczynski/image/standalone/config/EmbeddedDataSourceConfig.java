@@ -3,8 +3,10 @@ package pl.info.rkluszczynski.image.standalone.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import pl.info.rkluszczynski.image.engine.config.EngineJavaConfig;
 
 import javax.sql.DataSource;
 
@@ -15,6 +17,7 @@ import static pl.info.rkluszczynski.image.standalone.config.ApplicationConstants
 @ComponentScan(basePackages = DETECTION_APPLICATION_BASE_PACKAGE)
 @EnableJpaRepositories(basePackages = DATABASE_BASE_REPOSITORIES_PACKAGE)
 @PropertySource(value = "classpath:detection-application.properties")
+@Import(EngineJavaConfig.class)
 public class EmbeddedDataSourceConfig {
 
     @Bean(destroyMethod = "shutdown")
