@@ -16,7 +16,7 @@ import pl.info.rkluszczynski.image.engine.model.strategies.PatternMatchStrategy;
 import pl.info.rkluszczynski.image.engine.tasks.MultiScaleStageTask;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
-import pl.info.rkluszczynski.image.standalone.db.ProcessedImageStatus;
+import pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus;
 import pl.info.rkluszczynski.image.standalone.db.entities.PlanogramEntity;
 import pl.info.rkluszczynski.image.standalone.db.entities.ProcessedImageEntity;
 import pl.info.rkluszczynski.image.standalone.db.repositories.PlanogramRepository;
@@ -33,13 +33,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static pl.info.rkluszczynski.image.standalone.db.ProcessedImageStatus.*;
+import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.DONE;
+import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.FAILED;
+import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.NEW;
+import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.STARTED;
 
 @Component(value = "imagePatternDetector")
 public class ImagePatternDetector implements StandaloneRunner {
     private static final Logger logger = LoggerFactory.getLogger(ImagePatternDetector.class);
 
-    private static final CompareMetric ABS_COLOR_METRIC = new AbsColorMetric();
+    static final CompareMetric ABS_COLOR_METRIC = new AbsColorMetric();
     private static final String RESULT_IMAGE_FORMAT = "PNG";
 
     private final String fileSeparator = System.getProperty("file.separator");
@@ -104,7 +107,7 @@ public class ImagePatternDetector implements StandaloneRunner {
         }
     }
 
-    private void setImageEntityStatus(ProcessedImageStatus status, ProcessedImageEntity entity) {
+    private void setImageEntityStatus(ImageProcessingStatus status, ProcessedImageEntity entity) {
         logger.info("Setting status code {} ({}) for entity with id={}",
                 status.getCode(), status.getDescription(), entity.getId());
         entity.setStatus(status.getCode());
@@ -153,7 +156,7 @@ public class ImagePatternDetector implements StandaloneRunner {
         return directory + outputPath;
     }
 
-    private BufferedImage readImageFromFile(String imageFilePath) throws CouldNotReadImageFileException {
+    static BufferedImage readImageFromFile(String imageFilePath) throws CouldNotReadImageFileException {
         try {
             return ImageIO.read(new File(imageFilePath));
         } catch (IOException e) {
@@ -163,12 +166,12 @@ public class ImagePatternDetector implements StandaloneRunner {
     }
 
 
-    private SessionData createSessionData() {
+    static SessionData createSessionData() {
         SessionData sessionData = new SessionData(null);
         return sessionData;
     }
 
-    private MultiScaleStageTask createMultiScaleTask(SessionData sessionData, CompareMetric metric) {
+    static MultiScaleStageTask createMultiScaleTask(SessionData sessionData, CompareMetric metric) {
         PatternMatchStrategy matchStrategy = new BestLocalizedMatchStrategy();
         PatternMatchComparator matchComparator = new SequenceComparator(
                 new PixelDifferenceComparator(metric)

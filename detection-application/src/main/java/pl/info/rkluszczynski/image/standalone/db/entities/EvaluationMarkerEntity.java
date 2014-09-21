@@ -1,6 +1,10 @@
 package pl.info.rkluszczynski.image.standalone.db.entities;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity(name = "evaluationmarker")
 public class EvaluationMarkerEntity {
@@ -15,5 +19,19 @@ public class EvaluationMarkerEntity {
     private Long toBeFound;
 
     private Long found;
-    private String color;
+    private Integer color;
+
+    public String getPath() {
+        return path;
+    }
+
+    public Long getToBeFound() {
+        return toBeFound;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("EvaluationMarker{id=%d, evaluationId=%d, path='%s', toBeFound=%d, found=%d, color=%d}",
+                id, evaluationId, path, toBeFound, found, color);
+    }
 }

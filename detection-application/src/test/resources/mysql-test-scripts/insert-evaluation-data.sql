@@ -9,21 +9,27 @@
 INSERT INTO `evaluation` (`id`, `adddate`, `startdate`, `enddate`, `status`, `result`)
 VALUES (1, NOW(), NULL, NULL, 0, NULL);
 
+INSERT INTO `evaluation` (`id`, `adddate`, `startdate`, `enddate`, `status`, `result`)
+VALUES (2, NOW(), NULL, NULL, 0, NULL);
+
+INSERT INTO `evaluation` (`id`, `adddate`, `startdate`, `enddate`, `status`, `result`)
+VALUES (3, NOW(), NULL, NULL, 0, NULL);
+
 
 --
 -- Markers data
 --
 INSERT INTO `evaluationmarker` (`id`, `evaluation_id`, `tobefound`, `found`, `color`, `path`)
-VALUES (100, 1, 1, NULL, "000000", "image-data/patterns/bon-pattern1-shelfstoper.png")
+VALUES (101, 1, 1, NULL, 0, "image-data/patterns/bon-pattern1-shelfstoper.png");
 
 INSERT INTO `evaluationmarker` (`id`, `evaluation_id`, `tobefound`, `found`, `color`, `path`)
-VALUES (100, 1, 2, NULL, "000000", "image-data/patterns/bon-pattern2-woobler.png")
+VALUES (102, 2, 1, NULL, 0, "image-data/patterns/bon-pattern2-woobler.png");
 
 INSERT INTO `evaluationmarker` (`id`, `evaluation_id`, `tobefound`, `found`, `color`, `path`)
-VALUES (100, 1, 3, NULL, "000000", "image-data/patterns/zubr-pattern1-poster.png")
+VALUES (103, 3, 1, NULL, 0, "image-data/patterns/zubr-pattern1-poster.png");
 
 INSERT INTO `evaluationmarker` (`id`, `evaluation_id`, `tobefound`, `found`, `color`, `path`)
-VALUES (100, 1, 3, NULL, "000000", "image-data/patterns/zubr-pattern2-shelfstoper.png")
+VALUES (104, 3, 2, NULL, 0, "image-data/patterns/zubr-pattern2-shelfstoper.png");
 
 
 --

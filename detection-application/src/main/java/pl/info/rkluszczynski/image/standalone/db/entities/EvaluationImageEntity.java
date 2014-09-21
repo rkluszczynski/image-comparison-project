@@ -1,6 +1,10 @@
 package pl.info.rkluszczynski.image.standalone.db.entities;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity(name = "evaluationimage")
 public class EvaluationImageEntity {
@@ -14,4 +18,14 @@ public class EvaluationImageEntity {
     private String sourcePath;
     @Column(name = "processedpath")
     private String processedPath;
+
+    public String getSourcePath() {
+        return sourcePath;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("EvaluationImage{id=%d, evaluationId=%d, sourcePath='%s', processedPath='%s'}",
+                id, evaluationId, sourcePath, processedPath);
+    }
 }

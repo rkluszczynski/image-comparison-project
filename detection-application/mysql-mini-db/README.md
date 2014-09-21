@@ -47,7 +47,7 @@ Z:\bin> set SQLSDIR=D:\WorkPlace\image-detection-project\detection-application\s
 
 - Then for every file enter command to crate tables and insert example data:
 ```
-Z:\bin> mysql --user=pica --password=picApicA picadio_db < %SQLSDIR%\create-tables.sql
-Z:\bin> mysql --user=pica --password=picApicA picadio_db < %SQLSDIR%\insert-data.sql
+Z:\bin> mysql --user=pica --password=picApicA picadio_db < %SQLSDIR%\create-evaluation-tables.sql
+Z:\bin> mysql --user=pica --password=picApicA picadio_db < %SQLSDIR%\insert-evaluation-data.sql
 ```
 

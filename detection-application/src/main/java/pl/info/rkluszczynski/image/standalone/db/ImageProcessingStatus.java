@@ -3,7 +3,7 @@ package pl.info.rkluszczynski.image.standalone.db;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum ProcessedImageStatus {
+public enum ImageProcessingStatus {
 
     NEW(0, "New source image."),
     STARTED(1, "Image processing started..."),
@@ -16,14 +16,14 @@ public enum ProcessedImageStatus {
     /**
      * A mapping between the integer code and its corresponding status to facilitate lookup by code.
      */
-    private static Map<Integer, ProcessedImageStatus> codeToStatusMapping;
+    private static Map<Integer, ImageProcessingStatus> codeToStatusMapping;
 
-    private ProcessedImageStatus(int code, String description) {
+    private ImageProcessingStatus(int code, String description) {
         this.code = code;
         this.description = description;
     }
 
-    public static ProcessedImageStatus getStatus(int i) {
+    public static ImageProcessingStatus getStatus(int i) {
         if (codeToStatusMapping == null) {
             initMapping();
         }
@@ -31,8 +31,8 @@ public enum ProcessedImageStatus {
     }
 
     private static void initMapping() {
-        codeToStatusMapping = new HashMap<Integer, ProcessedImageStatus>();
-        for (ProcessedImageStatus s : values()) {
+        codeToStatusMapping = new HashMap<Integer, ImageProcessingStatus>();
+        for (ImageProcessingStatus s : values()) {
             codeToStatusMapping.put(s.code, s);
         }
     }
