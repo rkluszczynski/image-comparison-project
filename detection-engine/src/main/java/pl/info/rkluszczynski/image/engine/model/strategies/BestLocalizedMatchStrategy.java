@@ -25,7 +25,9 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import static pl.info.rkluszczynski.image.engine.config.EngineConstants.*;
+import static pl.info.rkluszczynski.image.engine.config.EngineConstants.BEST_LOCALIZED_SCORES_MIN_SIZE_RATIO;
+import static pl.info.rkluszczynski.image.engine.config.EngineConstants.BEST_LOCALIZED_SCORES_OFFSET;
+import static pl.info.rkluszczynski.image.engine.config.EngineConstants.BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT;
 
 /**
  * Created by Rafal on 2014-05-27.
@@ -75,49 +77,14 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
 
     @Override
     public void applyBestScores(PatternDetectorTask detectorTask, DetectorTaskInput taskInput) {
-        List<MatchScore> results = Lists.newArrayList();
-        for (int iw = 0; iw < bestResultsWidth; ++iw) {
-            for (int ih = 0; ih < bestResultsHeight; ++ih) {
-                MatchScore item = bestResultsTable[iw][ih];
-                if (item != null) {
-                    results.add(item);
-                }
-            }
-        }
-        Collections.sort(results);
+        List<MatchScore> validResults = Lists.newArrayList();
+        List<MatchScore> possibleResults = Lists.newArrayList();
+
+        determineValidAndPossibleResults(taskInput, validResults, possibleResults);
 
         BufferedImageWrapper patternWrapper = taskInput.getPatternWrapper();
         BufferedImage resultImage = taskInput.getResultImage();
         CompareMetric metric = taskInput.getComparator().getMetric();
-
-        int bestScoresAmount = Math.min(BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT, results.size());
-//        saveBestMatchImages(results, bestScoresAmount, taskInput);
-
-
-        List<MatchScore> validResults = Lists.newArrayList();
-        List<MatchScore> possibleResults = Lists.newArrayList();
-        for (int i = 0; i < bestScoresAmount; ++i) {
-            MatchScore score = results.get(i);
-            logger.info("Validating matching {}", i);
-
-            ValidationDecision validationDecision = isPatternMatchValid(score, taskInput);
-            switch (validationDecision.getMatchDecision()) {
-                case VALID_MATCH:
-                    score.setDescription(String.valueOf(i));
-                    validResults.add(score);
-                    break;
-                case POSSIBLE_MATCH:
-                    MatchScore newMatchScore = new MatchScore(
-                            validationDecision.getScoreValue(),
-                            score.getWidthPosition(), score.getHeightPosition(), score.getScaleFactor()
-                    );
-                    newMatchScore.setDescription(String.format("[%d]", i));
-                    possibleResults.add(newMatchScore);
-                    break;
-                default:
-                    logger.info("Rejected score number {} with value {}", i, validationDecision.getScoreValue());
-            }
-        }
 
         if (!validResults.isEmpty()) {
             detectorTask.saveMatchDecision(ValidationDecision.MatchDecision.VALID_MATCH);
@@ -141,7 +108,8 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
                 DrawHelper.makeBrighterRectangleOnImage(resultImage,
                         score.getWidthPosition(), score.getHeightPosition(),
                         patternWrapper.getWidth(), patternWrapper.getHeight(),
-                        score.getScaleFactor());
+                        score.getScaleFactor(),
+                        new Color(0, 240, 0), new BasicStroke(3));
             }
         } else if (!possibleResults.isEmpty()) {
             detectorTask.saveMatchDecision(ValidationDecision.MatchDecision.POSSIBLE_MATCH);
@@ -165,6 +133,45 @@ public class BestLocalizedMatchStrategy implements PatternMatchStrategy {
             }
         } else {
             detectorTask.saveMatchDecision(ValidationDecision.MatchDecision.NO_CLEAR_MATCH);
+        }
+    }
+
+    public void determineValidAndPossibleResults(DetectorTaskInput taskInput, List<MatchScore> validResults, List<MatchScore> possibleResults) {
+        List<MatchScore> results = Lists.newArrayList();
+        for (int iw = 0; iw < bestResultsWidth; ++iw) {
+            for (int ih = 0; ih < bestResultsHeight; ++ih) {
+                MatchScore item = bestResultsTable[iw][ih];
+                if (item != null) {
+                    results.add(item);
+                }
+            }
+        }
+        Collections.sort(results);
+
+        int bestScoresAmount = Math.min(BEST_LOCALIZED_SCORES_STRATEGY_AMOUNT, results.size());
+//        saveBestMatchImages(results, bestScoresAmount, taskInput);
+
+        for (int i = 0; i < bestScoresAmount; ++i) {
+            MatchScore score = results.get(i);
+            logger.info("Validating matching {}", i);
+
+            ValidationDecision validationDecision = isPatternMatchValid(score, taskInput);
+            switch (validationDecision.getMatchDecision()) {
+                case VALID_MATCH:
+                    score.setDescription(String.valueOf(i));
+                    validResults.add(score);
+                    break;
+                case POSSIBLE_MATCH:
+                    MatchScore newMatchScore = new MatchScore(
+                            validationDecision.getScoreValue(),
+                            score.getWidthPosition(), score.getHeightPosition(), score.getScaleFactor()
+                    );
+                    newMatchScore.setDescription(String.format("[%d]", i));
+                    possibleResults.add(newMatchScore);
+                    break;
+                default:
+                    logger.info("Rejected score number {} with value {}", i, validationDecision.getScoreValue());
+            }
         }
     }
 

@@ -32,18 +32,22 @@ public class MultiScaleStageTask extends AbstractDetectorTask {
 
     @Override
     public void prepareImageData(BufferedImage inputImage, BufferedImage patternImage) {
-        int[] suggestedProcessingSizes = SizeSupplier.getSuggestedProcessingSizes(inputImage);
-        int compromiseWidth = suggestedProcessingSizes[0];
-        int compromiseHeight = suggestedProcessingSizes[1];
-        logger.info("Determined image scaling to width={} and height={}", compromiseWidth, compromiseHeight);
-
-        resultImage = ImageHelper.scaleImagePixelsValue(
-                ImageSizeScaleProcessor.getExactScaledImage(inputImage, compromiseWidth, compromiseHeight), 0.7);
+        resultImage = createScaledResultImage(inputImage);
+        logger.info("Determined image scaling to width={} and height={}", resultImage.getWidth(), resultImage.getHeight());
         patternWrapper = new BufferedImageWrapper(patternImage);
 
         DetectorTaskInput taskInput = getTaskInput();
         taskInput.setPatternWrapper(patternWrapper);
         taskInput.setResultImage(resultImage);
+    }
+
+    public static BufferedImage createScaledResultImage(BufferedImage inputImage) {
+        int[] suggestedProcessingSizes = SizeSupplier.getSuggestedProcessingSizes(inputImage);
+        int compromiseWidth = suggestedProcessingSizes[0];
+        int compromiseHeight = suggestedProcessingSizes[1];
+
+        return ImageHelper.scaleImagePixelsValue(
+                ImageSizeScaleProcessor.getExactScaledImage(inputImage, compromiseWidth, compromiseHeight), 0.7);
     }
 
     @Override
@@ -92,5 +96,10 @@ public class MultiScaleStageTask extends AbstractDetectorTask {
     @Override
     public void saveMatchDecision(ValidationDecision.MatchDecision matchDecision) {
         getSessionData().setMatchDecision(matchDecision);
+    }
+
+    @Override
+    public DetectorTaskInput getTaskInput() {
+        return super.getTaskInput();
     }
 }

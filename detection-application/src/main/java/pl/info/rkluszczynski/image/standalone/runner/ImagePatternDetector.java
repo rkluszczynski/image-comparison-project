@@ -126,7 +126,7 @@ public class ImagePatternDetector implements StandaloneRunner {
         processedImageRepository.save(entity);
     }
 
-    private void saveBufferedImageAsFile(BufferedImage image, String path) throws CouldNotWriteImageFileException {
+    static void saveBufferedImageAsFile(BufferedImage image, String path) throws CouldNotWriteImageFileException {
         try {
             File targetImageFile = new File(path);
             targetImageFile.getParentFile().mkdirs();

@@ -23,6 +23,14 @@ public class EvaluationImageEntity {
         return sourcePath;
     }
 
+    public String getProcessedPath() {
+        return processedPath;
+    }
+
+    public void setProcessedPath(String processedPath) {
+        this.processedPath = processedPath;
+    }
+
     @Override
     public String toString() {
         return String.format("EvaluationImage{id=%d, evaluationId=%d, sourcePath='%s', processedPath='%s'}",

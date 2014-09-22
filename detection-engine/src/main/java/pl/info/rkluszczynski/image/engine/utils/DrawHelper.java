@@ -52,7 +52,9 @@ public class DrawHelper {
     }
 
     static
-    public void makeBrighterRectangleOnImage(BufferedImage image, int leftPosition, int topPosition, int width, int height, double scaleFactor) {
+    public void makeBrighterRectangleOnImage(BufferedImage image, int leftPosition, int topPosition,
+                                             int width, int height, double scaleFactor,
+                                             Color borderColor, Stroke borderStroke) {
         double invertedScaleFactor = 1. / scaleFactor;
         int scaledLeftPosition = (int) (invertedScaleFactor * leftPosition);
         int scaledTopPosition = (int) (invertedScaleFactor * topPosition);
@@ -73,13 +75,12 @@ public class DrawHelper {
         }
 
         Graphics2D graph = image.createGraphics();
-        float borderThickness = 3;
-
         Stroke oldStroke = graph.getStroke();
-        graph.setStroke(new BasicStroke(borderThickness));
+        graph.setStroke(borderStroke);
 
 //        graph.setColor(Color.BLACK);
-        graph.setColor(new Color(0, 240, 0));
+//        graph.setColor(new Color(0, 240, 0));
+        graph.setColor(borderColor);
         Shape shape = new RoundRectangle2D.Double(
                 scaledLeftPosition, scaledTopPosition,
                 scaledWidth, scaledHeight,

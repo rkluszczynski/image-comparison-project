@@ -49,4 +49,11 @@ public class MatchScore implements Comparable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return String.format("MatchScore{score=%s, widthPosition=%d, heightPosition=%d, scaleFactor=%s, "
+                        + "description='%s'}",
+                score, widthPosition, heightPosition, scaleFactor, description);
+    }
 }
