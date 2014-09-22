@@ -1,7 +1,6 @@
-package pl.info.rkluszczynski.image.standalone.db.repositories;
+package pl.info.rkluszczynski.image.standalone.db.old;
 
 import org.springframework.data.repository.CrudRepository;
-import pl.info.rkluszczynski.image.standalone.db.entities.PlanogramEntity;
 
 public interface PlanogramRepository extends CrudRepository<PlanogramEntity, Long> {
 }

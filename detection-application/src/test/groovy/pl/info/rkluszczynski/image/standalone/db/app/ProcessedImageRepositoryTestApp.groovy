@@ -2,8 +2,8 @@ package pl.info.rkluszczynski.image.standalone.db.app
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import pl.info.rkluszczynski.image.standalone.config.ApplicationJavaConfig
-import pl.info.rkluszczynski.image.standalone.db.repositories.PlanogramRepository
-import pl.info.rkluszczynski.image.standalone.db.repositories.ProcessedImageRepository
+import pl.info.rkluszczynski.image.standalone.db.old.PlanogramRepository
+import pl.info.rkluszczynski.image.standalone.db.old.ProcessedImageRepository
 
 class ProcessedImageRepositoryTestApp {
 

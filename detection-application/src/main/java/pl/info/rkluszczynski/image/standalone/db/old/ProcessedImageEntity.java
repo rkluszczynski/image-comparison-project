@@ -1,4 +1,4 @@
-package pl.info.rkluszczynski.image.standalone.db.entities;
+package pl.info.rkluszczynski.image.standalone.db.old;
 
 import javax.persistence.*;
 import java.util.Date;

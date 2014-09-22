@@ -17,10 +17,10 @@ import pl.info.rkluszczynski.image.engine.tasks.MultiScaleStageTask;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 import pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus;
-import pl.info.rkluszczynski.image.standalone.db.entities.PlanogramEntity;
-import pl.info.rkluszczynski.image.standalone.db.entities.ProcessedImageEntity;
-import pl.info.rkluszczynski.image.standalone.db.repositories.PlanogramRepository;
-import pl.info.rkluszczynski.image.standalone.db.repositories.ProcessedImageRepository;
+import pl.info.rkluszczynski.image.standalone.db.old.PlanogramEntity;
+import pl.info.rkluszczynski.image.standalone.db.old.PlanogramRepository;
+import pl.info.rkluszczynski.image.standalone.db.old.ProcessedImageEntity;
+import pl.info.rkluszczynski.image.standalone.db.old.ProcessedImageRepository;
 import pl.info.rkluszczynski.image.standalone.exception.CouldNotReadImageFileException;
 import pl.info.rkluszczynski.image.standalone.exception.CouldNotWriteImageFileException;
 import pl.info.rkluszczynski.image.standalone.exception.StandaloneApplicationException;
@@ -33,10 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.DONE;
-import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.FAILED;
-import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.NEW;
-import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.STARTED;
+import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.*;
 
 @Component(value = "imagePatternDetector")
 public class ImagePatternDetector implements StandaloneRunner {
