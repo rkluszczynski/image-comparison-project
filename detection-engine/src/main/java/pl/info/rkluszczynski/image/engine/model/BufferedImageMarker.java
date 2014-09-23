@@ -5,11 +5,10 @@ import java.awt.image.BufferedImage;
 
 public class BufferedImageMarker {
     private final BufferedImage imageMarker;
-    private final int occurrencesCount;
+    private final long occurrencesCount;
     private Color markerColor = Color.BLACK;
-    private String description = "";
 
-    public BufferedImageMarker(BufferedImage imageMarker, int occurrencesCount) {
+    public BufferedImageMarker(BufferedImage imageMarker, long occurrencesCount) {
         this.imageMarker = imageMarker;
         this.occurrencesCount = occurrencesCount;
     }
@@ -18,7 +17,7 @@ public class BufferedImageMarker {
         return imageMarker;
     }
 
-    public int getOccurrencesCount() {
+    public long getOccurrencesCount() {
         return occurrencesCount;
     }
 
@@ -29,14 +28,4 @@ public class BufferedImageMarker {
     public void setMarkerColor(Color markerColor) {
         this.markerColor = markerColor;
     }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
 }

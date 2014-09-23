@@ -44,7 +44,7 @@ public class EvaluationEntity {
 
     @Override
     public String toString() {
-        return String.format("EvaluationEntity{id=%d, startDate=%s, endDate=%s, status=%d, result=%d}",
+        return String.format("Evaluation{id=%d, startDate=%s, endDate=%s, status=%d, result=%d}",
                 id, startDate, endDate, status, result);
     }
 

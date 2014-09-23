@@ -20,7 +20,7 @@ public class EvaluationMarkerEntity {
     private Long toBeFound;
 
     private Long found;
-    private Integer color;
+    private String color;
 
     public String getPath() {
         return path;
@@ -30,13 +30,17 @@ public class EvaluationMarkerEntity {
         return toBeFound;
     }
 
-    public Integer getColor() {
+    public String getColor() {
         return color;
+    }
+
+    public void setFound(Long found) {
+        this.found = found;
     }
 
     @Override
     public String toString() {
-        return String.format("EvaluationMarker{id=%d, evaluationId=%d, path='%s', toBeFound=%d, found=%d, color=%d}",
+        return String.format("EvaluationMarker{id=%d, evaluationId=%d, path='%s', toBeFound=%d, found=%d, color='%s'}",
                 id, evaluationId, path, toBeFound, found, color);
     }
 

@@ -1,5 +1,6 @@
 package pl.info.rkluszczynski.image.standalone.runner;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import pl.info.rkluszczynski.image.engine.tasks.MultiScaleStageTask;
 import pl.info.rkluszczynski.image.engine.tasks.input.DetectorTaskInput;
 import pl.info.rkluszczynski.image.engine.tasks.input.TasksProperties;
 import pl.info.rkluszczynski.image.engine.utils.DrawHelper;
+import pl.info.rkluszczynski.image.standalone.db.ProcessingStatus;
 import pl.info.rkluszczynski.image.standalone.db.entities.EvaluationEntity;
 import pl.info.rkluszczynski.image.standalone.db.entities.EvaluationImageEntity;
 import pl.info.rkluszczynski.image.standalone.db.entities.EvaluationMarkerEntity;
@@ -33,12 +35,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.FAILED;
-import static pl.info.rkluszczynski.image.standalone.db.ImageProcessingStatus.NEW;
+import static pl.info.rkluszczynski.image.standalone.db.ProcessingStatus.DONE;
+import static pl.info.rkluszczynski.image.standalone.db.ProcessingStatus.FAILED;
+import static pl.info.rkluszczynski.image.standalone.db.ProcessingStatus.NEW;
+import static pl.info.rkluszczynski.image.standalone.db.ProcessingStatus.STARTED;
 
 @Component(value = "scenePatternEvaluator")
 public class ScenePatternEvaluator implements StandaloneRunner {
     private static final Logger logger = LoggerFactory.getLogger(ScenePatternEvaluator.class);
+
+    private static final Color DEFAULT_MARKER_COLOR = Color.BLACK;
 
     private final String fileSeparator = System.getProperty("file.separator");
 
@@ -61,7 +67,7 @@ public class ScenePatternEvaluator implements StandaloneRunner {
 
         List<EvaluationEntity> evaluationEntities = evaluationRepository.findByStatus(NEW.getCode());
         if (evaluationEntities.size() == 0) {
-            logger.info("No entities with NEW status.");
+            logger.info("No entities with status {}.", NEW.name());
             return;
         }
 
@@ -70,41 +76,77 @@ public class ScenePatternEvaluator implements StandaloneRunner {
             logger.info("Processing evaluation: {}", entity);
 
             List<EvaluationMarkerEntity> markerList = markerRepository.findByEvaluationId(evaluationId);
-
             if (markerList.size() > 0) {
                 logger.info("Found {} markers for evaluation (id={})", markerList.size(), evaluationId);
 
                 List<EvaluationImageEntity> imageList = imageRepository.findByEvaluationId(evaluationId);
                 logger.info("Found {} images for evaluation (id={})", imageList.size(), evaluationId);
-                for (EvaluationImageEntity imageEntity : imageList) {
-                    BufferedImage imageScene = ImagePatternDetector.readImageFromFile(
-                            sourceImagesDirectory + fileSeparator + imageEntity.getSourcePath());
-                    Map<EvaluationMarkerEntity, BufferedImageMarker> markers = prepareImageMarkers(markerList, markerImagesDirectory);
 
-                    BufferedImage resultImage = processOneImageScene(imageScene, markers);
+                setEvaluationStatus(STARTED, entity);
+                try {
+                    for (EvaluationImageEntity imageEntity : imageList) {
+                        logger.info("Evaluating scene {}", imageEntity);
 
-                    String entityResultPath = createEntityOutputPath(outputImagesDirectory, imageEntity);
-                    logger.info(" entityResultPath : {}", entityResultPath);
-                    ImagePatternDetector.saveBufferedImageAsFile(resultImage, entityResultPath);
+                        BufferedImage imageScene = ImagePatternDetector.readImageFromFile(
+                                sourceImagesDirectory + fileSeparator + imageEntity.getSourcePath());
+                        Map<EvaluationMarkerEntity, BufferedImageMarker> markers = prepareImageMarkers(markerList, markerImagesDirectory);
+
+                        List<Double> matchScores = Lists.newArrayList();
+                        BufferedImage resultImage = processOneImageScene(imageScene, markers, matchScores);
+                        int resultScore = determineResultScore(matchScores);
+                        logger.info("Result value for scene: {}", resultScore);
+
+                        String entityResultPath = createEntityOutputPath(outputImagesDirectory, imageEntity);
+                        logger.info(" entityResultPath : {}", entityResultPath);
+                        ImagePatternDetector.saveBufferedImageAsFile(resultImage, entityResultPath);
+                    }
+                    setEvaluationStatus(DONE, entity);
+                } catch (Exception e) {
+                    logger.error("Error during processing entity: {}", entity, e);
+                    setEvaluationStatus(FAILED, entity);
+
+                    String message = String.format("Error with processing evaluation %s", entity);
+                    throw new StandaloneApplicationException(message, e);
                 }
             } else {
                 logger.warn("No markers for evaluation (id {})!", evaluationId);
                 Date startDate = entity.getStartDate();
                 entity.setStartDate(new Date());
                 if (startDate != null) {
-                    entity.setStatus(FAILED.getCode());
-                    entity.setEndDate(new Date());
-
-                    logger.warn("Evaluation (id {}) FAILED", evaluationId);
+                    setEvaluationStatus(FAILED, entity);
                 } else {
                     logger.warn("Set startDate for evaluation (id {}). "
                             + "If next time markers will be missing, evaluation will be set as FAILED."
                             , evaluationId);
+                    evaluationRepository.save(entity);
                 }
-                evaluationRepository.save(entity);
             }
-            break;
+//            break;
         }
+    }
+
+    private int determineResultScore(List<Double> matchScores) {
+        Double min = Collections.min(matchScores);
+        return new Double(min * 100.f).intValue();
+    }
+
+    private void setEvaluationStatus(ProcessingStatus status, EvaluationEntity entity) {
+        logger.info("Setting status code {} ({}) for entity with id={}",
+                status.getCode(), status.getDescription(), entity.getId());
+        entity.setStatus(status.getCode());
+        Date now = new Date();
+        switch (status) {
+            case STARTED:
+                entity.setStartDate(now);
+                break;
+            case DONE:
+            case FAILED:
+                entity.setEndDate(now);
+                break;
+            default:
+                logger.warn("Unknown status {}, skipping setting dates", status);
+        }
+        evaluationRepository.save(entity);
     }
 
     private String createEntityOutputPath(String directory, EvaluationImageEntity entity) {
@@ -126,12 +168,17 @@ public class ScenePatternEvaluator implements StandaloneRunner {
         return directory + outputPath;
     }
 
-    private BufferedImage processOneImageScene(BufferedImage imageScene, Map<EvaluationMarkerEntity, BufferedImageMarker> markers) {
+    private BufferedImage processOneImageScene(BufferedImage imageScene,
+                                               Map<EvaluationMarkerEntity, BufferedImageMarker> markers,
+                                               List<Double> markersScores
+    ) {
         BufferedImage resultImage = MultiScaleStageTask.createScaledResultImage(imageScene);
 
         for (Map.Entry<EvaluationMarkerEntity, BufferedImageMarker> entry : markers.entrySet()) {
             EvaluationMarkerEntity entity = entry.getKey();
             BufferedImageMarker marker = entry.getValue();
+
+            logger.info("Matching scene against marker {}", entity);
 
             SessionData sessionData = ImagePatternDetector.createSessionData();
             sessionData.setInputImage(imageScene);
@@ -139,7 +186,6 @@ public class ScenePatternEvaluator implements StandaloneRunner {
 
             MultiScaleStageTask task = ImagePatternDetector.createMultiScaleTask(
                     sessionData, ImagePatternDetector.ABS_COLOR_METRIC);
-//            setImageEntityStatus(STARTED, entity);
             task.initialize(tasksProperties);
             task.run();
 
@@ -152,8 +198,9 @@ public class ScenePatternEvaluator implements StandaloneRunner {
 
 
 //            BufferedImage resultImage = sessionData.getResultImage();
-            int maxOccurrencesCount = marker.getOccurrencesCount();
-            int count = 0;
+            long maxOccurrencesCount = marker.getOccurrencesCount();
+            long count = 0;
+            double resultScore = Double.MAX_VALUE;
 
             Collections.sort(validResults);
             logger.info("   validResults: {}", validResults);
@@ -162,6 +209,7 @@ public class ScenePatternEvaluator implements StandaloneRunner {
                 if (count == maxOccurrencesCount) {
                     break;
                 }
+                resultScore = Math.min(resultScore, score.getScore());
 
                 DrawHelper.drawRectangleOnImage(resultImage,
                         score.getWidthPosition(), score.getHeightPosition(),
@@ -181,6 +229,7 @@ public class ScenePatternEvaluator implements StandaloneRunner {
                 if (count == maxOccurrencesCount) {
                     break;
                 }
+                resultScore = Math.min(resultScore, score.getScore());
 
                 DrawHelper.makeBrighterRectangleOnImage(resultImage,
                         score.getWidthPosition(), score.getHeightPosition(),
@@ -190,18 +239,11 @@ public class ScenePatternEvaluator implements StandaloneRunner {
             }
 
             logger.info("Detected {} match(es) for marker {}. Expected {}.",
-                    count, marker.getDescription(), entity.getToBeFound());
-
-
-//            setImageEntityStatus(DONE, entity);
+                    count, entity, extractOccurrencesCount(entity));
+            entity.setFound(Long.valueOf(count));
+            markerRepository.save(entity);
         }
         return resultImage;
-
-//        try {
-//        } catch (StandaloneApplicationException e) {
-//            logger.error("Error during processing entity: {}", entity, e);
-//            setImageEntityStatus(FAILED, entity);
-//        }
     }
 
     private Map<EvaluationMarkerEntity, BufferedImageMarker> prepareImageMarkers(
@@ -212,8 +254,8 @@ public class ScenePatternEvaluator implements StandaloneRunner {
             String markerAbsolutePath = directory + fileSeparator + entity.getPath();
             try {
                 BufferedImage image = ImagePatternDetector.readImageFromFile(markerAbsolutePath);
-                BufferedImageMarker marker = new BufferedImageMarker(image, entity.getToBeFound().intValue());
-                marker.setMarkerColor(new Color(entity.getColor()));
+                BufferedImageMarker marker = new BufferedImageMarker(image, extractOccurrencesCount(entity));
+                marker.setMarkerColor(convertColorString(entity.getColor()));
 
                 imageMarkersMap.put(entity, marker);
             } catch (CouldNotReadImageFileException e) {
@@ -222,5 +264,28 @@ public class ScenePatternEvaluator implements StandaloneRunner {
             }
         }
         return imageMarkersMap;
+    }
+
+    private long extractOccurrencesCount(EvaluationMarkerEntity entity) {
+        Long toBeFound = entity.getToBeFound();
+        if (toBeFound == null || toBeFound < 1L) {
+            logger.warn("Occurrences count for marker {} is null or less than 1. Assuming 1!", entity);
+            return 1L;
+        }
+        return toBeFound.longValue();
+    }
+
+    private Color convertColorString(String colorString) {
+        if (Strings.isNullOrEmpty(colorString)) {
+            logger.warn("String was null or empty. Assigning color: {}.", DEFAULT_MARKER_COLOR.toString());
+            return DEFAULT_MARKER_COLOR;
+        }
+        try {
+            return new Color(Integer.parseInt(colorString, 16));
+        } catch (NumberFormatException e) {
+            logger.warn("Problem with converting string '{}' to color. "
+                    + "Please use hex format without '0x' prefix (example: '0000FF' is blue)", colorString);
+            return DEFAULT_MARKER_COLOR;
+        }
     }
 }

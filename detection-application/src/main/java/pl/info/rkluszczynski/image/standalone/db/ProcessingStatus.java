@@ -3,12 +3,12 @@ package pl.info.rkluszczynski.image.standalone.db;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum ImageProcessingStatus {
+public enum ProcessingStatus {
 
-    NEW(0, "New source image."),
-    STARTED(1, "Image processing started..."),
-    DONE(2, "Processing done."),
-    FAILED(3, "Processing FAILED!");
+    NEW(0, "new source image"),
+    STARTED(1, "processing started..."),
+    DONE(2, "processing done"),
+    FAILED(3, "processing FAILED");
 
     private int code;
     private String description;
@@ -16,14 +16,14 @@ public enum ImageProcessingStatus {
     /**
      * A mapping between the integer code and its corresponding status to facilitate lookup by code.
      */
-    private static Map<Integer, ImageProcessingStatus> codeToStatusMapping;
+    private static Map<Integer, ProcessingStatus> codeToStatusMapping;
 
-    private ImageProcessingStatus(int code, String description) {
+    private ProcessingStatus(int code, String description) {
         this.code = code;
         this.description = description;
     }
 
-    public static ImageProcessingStatus getStatus(int i) {
+    public static ProcessingStatus getStatus(int i) {
         if (codeToStatusMapping == null) {
             initMapping();
         }
@@ -31,8 +31,8 @@ public enum ImageProcessingStatus {
     }
 
     private static void initMapping() {
-        codeToStatusMapping = new HashMap<Integer, ImageProcessingStatus>();
-        for (ImageProcessingStatus s : values()) {
+        codeToStatusMapping = new HashMap<Integer, ProcessingStatus>();
+        for (ProcessingStatus s : values()) {
             codeToStatusMapping.put(s.code, s);
         }
     }
@@ -47,6 +47,6 @@ public enum ImageProcessingStatus {
 
     @Override
     public String toString() {
-        return String.format("ProcessedImageStatus{code=%d, description='%s'}", code, description);
+        return String.format("ProcessingStatus{code=%d, description='%s'}", code, description);
     }
 }
