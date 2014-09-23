@@ -93,8 +93,8 @@ public class ScenePatternEvaluator implements StandaloneRunner {
 
                         List<Double> matchScores = Lists.newArrayList();
                         BufferedImage resultImage = processOneImageScene(imageScene, markers, matchScores);
-                        int resultScore = determineResultScore(matchScores);
-                        logger.info("Result value for scene: {}", resultScore);
+//                        int resultScore = determineResultScore(matchScores);
+//                        logger.info("Result value for scene: {}", resultScore);
 
                         String entityResultPath = createEntityOutputPath(outputImagesDirectory, imageEntity);
                         logger.info(" entityResultPath : {}", entityResultPath);
@@ -200,7 +200,7 @@ public class ScenePatternEvaluator implements StandaloneRunner {
 //            BufferedImage resultImage = sessionData.getResultImage();
             long maxOccurrencesCount = marker.getOccurrencesCount();
             long count = 0;
-            double resultScore = Double.MAX_VALUE;
+            double resultScore = Double.MIN_VALUE;
 
             Collections.sort(validResults);
             logger.info("   validResults: {}", validResults);
@@ -209,7 +209,7 @@ public class ScenePatternEvaluator implements StandaloneRunner {
                 if (count == maxOccurrencesCount) {
                     break;
                 }
-                resultScore = Math.min(resultScore, score.getScore());
+                resultScore = Math.max(resultScore, score.getScore());
 
                 DrawHelper.drawRectangleOnImage(resultImage,
                         score.getWidthPosition(), score.getHeightPosition(),
@@ -229,7 +229,7 @@ public class ScenePatternEvaluator implements StandaloneRunner {
                 if (count == maxOccurrencesCount) {
                     break;
                 }
-                resultScore = Math.min(resultScore, score.getScore());
+                resultScore = Math.max(resultScore, score.getScore());
 
                 DrawHelper.makeBrighterRectangleOnImage(resultImage,
                         score.getWidthPosition(), score.getHeightPosition(),
@@ -237,6 +237,9 @@ public class ScenePatternEvaluator implements StandaloneRunner {
                         score.getScaleFactor(), marker.getMarkerColor(), dashedStroke);
                 ++count;
             }
+
+            markersScores.add(resultScore);
+            logger.info("Minimal score for scene is {}", resultScore);
 
             logger.info("Detected {} match(es) for marker {}. Expected {}.",
                     count, entity, extractOccurrencesCount(entity));
