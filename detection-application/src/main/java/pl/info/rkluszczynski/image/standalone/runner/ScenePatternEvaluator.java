@@ -91,6 +91,7 @@ public class ScenePatternEvaluator implements StandaloneRunner {
 
                         List<Double> matchScores = Lists.newArrayList();
                         BufferedImage resultImage = processOneImageScene(imageScene, markers, matchScores);
+                        logger.debug("Markers result scores: {}", matchScores);
 
                         int resultScore = determineResultScore(matchScores);
                         logger.info("Result value for scene: {}", resultScore);
@@ -252,7 +253,7 @@ public class ScenePatternEvaluator implements StandaloneRunner {
             markersScores.add(resultScore);
             logger.info("Minimal score for scene is {}", resultScore);
 
-            String detectedMessage = String.format("Detected {} match(es) for marker {}. Expected {}.",
+            String detectedMessage = String.format("Detected %d match(es) for marker %s. Expected %d.",
                     count, entity, extractOccurrencesCount(entity));
             if (count == 0) {
                 logger.warn(detectedMessage);
