@@ -1,10 +1,6 @@
 package pl.info.rkluszczynski.image.standalone.db.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "evaluation")
@@ -40,6 +36,10 @@ public class EvaluationEntity {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public void setResult(Integer result) {
+        this.result = result;
     }
 
     @Override

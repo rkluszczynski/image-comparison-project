@@ -80,6 +80,7 @@ public class ScenePatternEvaluator implements StandaloneRunner {
                 logger.info("Found {} images for evaluation (id={})", imageList.size(), evaluationId);
 
                 setEvaluationStatus(STARTED, entity);
+                List<Integer> resultScores = Lists.newArrayList();
                 try {
                     for (EvaluationImageEntity imageEntity : imageList) {
                         logger.info("Evaluating scene {}", imageEntity);
@@ -90,13 +91,16 @@ public class ScenePatternEvaluator implements StandaloneRunner {
 
                         List<Double> matchScores = Lists.newArrayList();
                         BufferedImage resultImage = processOneImageScene(imageScene, markers, matchScores);
-//                        int resultScore = determineResultScore(matchScores);
-//                        logger.info("Result value for scene: {}", resultScore);
+
+                        int resultScore = determineResultScore(matchScores);
+                        logger.info("Result value for scene: {}", resultScore);
+                        resultScores.add(resultScore);
 
                         String entityResultPath = createEntityOutputPath(outputImagesDirectory, imageEntity);
                         logger.info(" entityResultPath : {}", entityResultPath);
                         ImagePatternDetector.saveBufferedImageAsFile(resultImage, entityResultPath);
                     }
+                    setEvaluationResult(resultScores, entity);
                     setEvaluationStatus(DONE, entity);
                 } catch (Exception e) {
                     logger.error("Error during processing entity: {}", entity, e);
@@ -120,6 +124,16 @@ public class ScenePatternEvaluator implements StandaloneRunner {
             }
 //            break;
         }
+    }
+
+    private void setEvaluationResult(List<Integer> scores, EvaluationEntity entity) {
+        Integer averageResultScore = 0;
+        for (Integer score : scores) {
+            averageResultScore += score;
+        }
+        averageResultScore /= scores.size();
+
+        entity.setResult(averageResultScore);
     }
 
     private int determineResultScore(List<Double> matchScores) {
