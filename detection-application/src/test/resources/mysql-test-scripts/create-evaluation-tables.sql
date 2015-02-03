@@ -1,8 +1,14 @@
 --
--- Table structure for table `evaluation`
+-- Drop tables structure if already exists
 --
+DROP TABLE IF EXISTS `evaluationmarker`;
+DROP TABLE IF EXISTS `evaluationimage`;
 DROP TABLE IF EXISTS `evaluation`;
 
+
+--
+-- Table structure for table `evaluation`
+--
 CREATE TABLE `evaluation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `adddate` datetime DEFAULT NULL,      -- data dodania
@@ -18,8 +24,6 @@ CREATE TABLE `evaluation` (
 --
 -- Table structure for table `evaluationimage`
 --
-DROP TABLE IF EXISTS `evaluationimage`;
-
 CREATE TABLE `evaluationimage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `evaluation_id` int(11) DEFAULT NULL,
@@ -34,8 +38,6 @@ CREATE TABLE `evaluationimage` (
 --
 -- Table structure for table `evaluationmarker`
 --
-DROP TABLE IF EXISTS `evaluationmarker`;
-
 CREATE TABLE `evaluationmarker` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `evaluation_id` int(11) DEFAULT NULL,
