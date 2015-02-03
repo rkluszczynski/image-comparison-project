@@ -35,10 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static pl.info.rkluszczynski.image.standalone.db.ProcessingStatus.DONE;
-import static pl.info.rkluszczynski.image.standalone.db.ProcessingStatus.FAILED;
-import static pl.info.rkluszczynski.image.standalone.db.ProcessingStatus.NEW;
-import static pl.info.rkluszczynski.image.standalone.db.ProcessingStatus.STARTED;
+import static pl.info.rkluszczynski.image.standalone.db.ProcessingStatus.*;
 
 @Component(value = "scenePatternEvaluator")
 public class ScenePatternEvaluator implements StandaloneRunner {
@@ -241,8 +238,13 @@ public class ScenePatternEvaluator implements StandaloneRunner {
             markersScores.add(resultScore);
             logger.info("Minimal score for scene is {}", resultScore);
 
-            logger.info("Detected {} match(es) for marker {}. Expected {}.",
+            String detectedMessage = String.format("Detected {} match(es) for marker {}. Expected {}.",
                     count, entity, extractOccurrencesCount(entity));
+            if (count == 0) {
+                logger.warn(detectedMessage);
+            } else {
+                logger.info(detectedMessage);
+            }
             entity.setFound(Long.valueOf(count));
             markerRepository.save(entity);
         }
