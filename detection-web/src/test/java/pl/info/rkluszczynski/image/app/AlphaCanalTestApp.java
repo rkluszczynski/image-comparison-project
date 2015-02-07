@@ -15,7 +15,7 @@ public class AlphaCanalTestApp {
         System.out.println(System.getProperty("user.dir"));
         BufferedImage image;
 
-        image = ImageIO.read(new File("compare-web/src/main/resources/image-data/bon-pattern2-woobler.png"));
+        image = ImageIO.read(new File("compare-web/src/main/resources/image-data/bon-pattern2-wobler.png"));
         image = ImageIO.read(new File("compare-web/src/main/resources/image-data/zubr-pattern2-shelfstoper.png"));
 
         System.out.println("isAlphaPremultiplied: " + image.isAlphaPremultiplied());
