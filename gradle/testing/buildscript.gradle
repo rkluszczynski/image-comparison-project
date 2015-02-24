@@ -1,0 +1,13 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        // Cargo deployer plugin:
+        classpath group: 'org.gradle.api.plugins', name: 'gradle-cargo-plugin', version: '0.6.1'
+        // Jetty 9.x local runner:
+        classpath group: 'com.sahlbach.gradle', name: 'gradle-jetty-eclipse-plugin', version: '1.9.0'
+    }
+}

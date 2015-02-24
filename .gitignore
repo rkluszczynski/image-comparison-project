@@ -1,0 +1,21 @@
+/.idea/
+/.gradle/
+/buildSrc/.gradle/
+/*/build/
+/classes/
+/tmp/
+
+# Ignore files with container's deploy credentials:
+/*-web/gradle.properties
+
+# Ignoring tmp-result-* files in testing-* modules:
+/testing-*/src/main/resources/tmp-result-*.*
+/testing-*/tmp-result-*.*
+
+*.class
+*.iml
+
+# Package Files #
+*.jar
+*.war
+*.ear

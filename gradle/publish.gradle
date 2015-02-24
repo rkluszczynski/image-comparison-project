@@ -1,0 +1,28 @@
+apply plugin: 'maven-publish'
+//apply plugin: 'maven'
+
+group = 'pl.info.rkluszczynski.image'
+
+publishing {
+    repositories.maven {
+        url 'file://D:/WorkPlace/maven-repository/'
+    }
+
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            // You may overwrite java package parameters:
+//            groupId 'my-maven-group'
+//            artifactId 'my-artifact-id'
+//            version '1.0.0'
+//            pom.packaging 'war'
+        }
+    }
+}
+
+//uploadArchives {
+//    repositories.mavenDeployer {
+//        repository(url: "file://D:/WorkPlace/maven-repository/")
+//    }
+//}

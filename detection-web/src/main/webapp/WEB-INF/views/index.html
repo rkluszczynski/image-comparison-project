@@ -1,0 +1,109 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="common/header :: head"/>
+
+<body>
+<div id="body-header" th:include="common/header :: header"/>
+
+<form method="post" action="userSessionInputImage" enctype="multipart/form-data">
+    <div style="float: left; width: 50%">
+        <br/>
+        <b>Choose image to upload</b>: <input type="file" name="imageFile"/>
+        <br/>
+
+        <br/>
+        <!--
+            <b>Select processing operation</b>:
+            <select name="processingOperation">
+                <option th:each="operationItem : ${imageOperationItems}"
+                        th:attr="value=${operationItem.value}"
+                        th:text="${operationItem.description}">operation
+                </option>
+            </select>
+        -->
+        <br/>
+
+        <br/>
+        <br/>
+        <input type="submit" value="Press"/> to upload the file and process!
+        <br/>
+    </div>
+
+    <div style="float: right; width: 50%; text-align: left">
+        <b>Choose template image</b>:
+        <br/>
+        <select name="templateFile" size="4">
+            <option th:each="imageItem : ${templateImageItems}"
+                    th:attr="value=${imageItem.value}"
+                    th:text="${imageItem.name}">template image
+            </option>
+        </select>
+    </div>
+</form>
+
+
+<div style="clear:both">
+    <p th:if="${isInputImageUploaded}">
+    <hr/>
+    <h3>User uploaded image:</h3>
+    <center>
+        <img src="userSessionInputImage" alt="user image"/>
+    </center>
+    </p>
+
+    <p th:if="${isTemplateImageChosen}">
+
+    <h3>Template image:</h3>
+    <center>
+        <img src="userSessionTemplateImage" alt="template image"/>
+    </center>
+    </p>
+
+    <p th:if="${isResultImageProcessed}">
+        <!--
+            <h3>Result values:</h3>
+            <ul>
+                <li th:each="statisticData : ${resultStatistics}"
+                    th:text="${statisticData.name + ': ' + statisticData.value}">statistic
+                </li>
+            </ul>
+        -->
+
+    <h3>Result:</h3>
+
+    <div th:attr="class=${resultMessageStyle}"
+         th:text="${resultMessageString}"
+         style="color:#ffffff; font-weight:bold; text-align:center; width:600px; margin:0 auto;">?
+    </div>
+    <br/>
+
+    <p>
+    <center>
+        <img src="userSessionResultImage" alt="result image"/>
+    </center>
+    </p>
+    </p>
+
+    <p th:if="${isInputImageUploaded} and not ${isResultImageProcessed}">
+
+    <h3>Result:</h3>
+    <center>
+        <!--
+        <i th:text="${'still processing [' + progressValue  + '%]... (please refresh page for a moment)'}"></i>
+        -->
+        <i>still processing: <span class="status-info">0 %</span></i>
+    </center>
+    </p>
+</div>
+
+<script th:if="${isInputImageUploaded} and not ${isResultImageProcessed}"
+        type="text/javascript">
+        statusIntervalRefId = setInterval(askProcessingStatusFunction, 3000);
+
+
+</script>
+
+<div id="body-footer" th:include="common/footer :: footer"/>
+
+</body>
+</html>
