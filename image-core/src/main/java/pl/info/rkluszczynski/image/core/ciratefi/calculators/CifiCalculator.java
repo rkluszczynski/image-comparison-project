@@ -6,12 +6,15 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CifiCalculator {
     public static void cifi() {
     }
 
-    public static void cifi(GsImageWrapper a, GsImageWrapper[] t) {
+    public static void cifi(GsImageWrapper a, GsImageWrapper[] t, double[] scales) {
         double[] radii = {1.5, 3, 4.5, 6, 7.5, 9};
 
         double[][][] ca = new double[a.getWidth()][a.getHeight()][radii.length];
@@ -32,29 +35,33 @@ public class CifiCalculator {
             }
         }
 
-        int[][] scales = new int[a.getWidth()][a.getHeight()];
-        double threshold1 = 0.95;
+        int[][] scaleCorr = new int[a.getWidth()][a.getHeight()];
+        double threshold1 = 0.97;
 
         for (int iw = 0; iw < a.getWidth(); ++iw) {
             for (int ih = 0; ih < a.getHeight(); ++ih) {
                 double cisCorr = SampleCorrelation.calculate(ct[0], ca[iw][ih]);
-                scales[iw][ih] = (cisCorr > threshold1) ? 0 : -1;
+                scaleCorr[iw][ih] = (cisCorr > threshold1) ? 0 : -1;
 
                 for (int i = 1; i < t.length; ++i) {
                     double corr = SampleCorrelation.calculate(ct[i], ca[iw][ih]);
                     if (corr > cisCorr && corr > threshold1) {
                         cisCorr = corr;
-                        scales[iw][ih] = i;
+                        scaleCorr[iw][ih] = i;
                     }
                 }
             }
         }
 
         System.out.println("THRESHOLD = " + threshold1);
+        List<MyMatchResult> firstGradeCandidatePixel = new ArrayList<>();
         for (int iw = 0; iw < a.getWidth(); ++iw) {
             for (int ih = 0; ih < a.getHeight(); ++ih) {
-                if (scales[iw][ih] >= 0) {
-                    System.out.println("found at (" + iw + ", " + ih + ") with scale " + scales[iw][ih]);
+                if (scaleCorr[iw][ih] >= 0) {
+                    System.out.println("found at (" + iw + ", " + ih + ") with scale " + scaleCorr[iw][ih]);
+                    firstGradeCandidatePixel.add(
+                            new MyMatchResult(iw, ih, scaleCorr[iw][ih])
+                    );
                 }
             }
         }
@@ -65,13 +72,17 @@ public class CifiCalculator {
             angles[dt] = dt * (2. * Math.PI / angles.length);
         }
 
-        double[][][] ra = new double[a.getWidth()][a.getHeight()][radii.length];
+        double[][][] ra = new double[a.getWidth()][a.getHeight()][angles.length];
         for (int iw = 0; iw < a.getWidth(); ++iw) {
             for (int ih = 0; ih < a.getHeight(); ++ih) {
-                for (int j = 0; j < angles.length; ++j) {
-                    // FIXME: add scale ratio
-                    double lambda = radii[radii.length - 1];
+                // TODO: check if scale ratio is correctly applied
+                if (scaleCorr[iw][ih] < 0) {
+                    Arrays.fill(ra[iw][ih], -1);
+                    continue;
+                }
+                double lambda = radii[radii.length - 1] * scales[scaleCorr[iw][ih]];
 
+                for (int j = 0; j < angles.length; ++j) {
                     double sum = 0.;
                     for (int dl = 0; dl < lambda; ++dl) {
                         int x = (int) (iw + dl * Math.cos(angles[j]));
@@ -93,6 +104,49 @@ public class CifiCalculator {
                     }
                     ra[iw][ih][j] = sum / lambda;
                 }
+            }
+        }
+
+        double[] rt = new double[angles.length];
+        for (int i = 0; i < t.length; ++i) {
+            int wCenter = t[i].getWidth() / 2;
+            int hCenter = t[i].getHeight() / 2;
+
+            double lambda = radii[radii.length - 1];
+            for (int j = 0; j < angles.length; ++j) {
+                double sum = 0.;
+                for (int dl = 0; dl < lambda; ++dl) {
+                    int x = (int) (wCenter + dl * Math.cos(angles[j]));
+                    int y = (int) (hCenter + dl * Math.sin(angles[j]));
+
+                    if (x < 0) {
+                        x = 0;
+                    }
+                    if (x >= a.getWidth()) {
+                        x = a.getWidth() - 1;
+                    }
+                    if (y < 0) {
+                        y = 0;
+                    }
+                    if (y >= a.getHeight()) {
+                        y = a.getHeight() - 1;
+                    }
+                    sum += a.getValue(x, y);
+                }
+                rt[j] = sum / lambda;
+            }
+        }
+
+
+        List<MyMatchResult> secondGradeCandidatePixel = new ArrayList<>();
+        double threshold2 = 0.95;
+        for (MyMatchResult matchResult : firstGradeCandidatePixel) {
+            int iw = matchResult.getIw();
+            int ih = matchResult.getIh();
+
+//            double rasCorr = SampleCorrelation.calculate(ra[iw][ih], );
+
+            for (int j = 1; j < angles.length; ++j) {
             }
         }
 
@@ -131,10 +185,34 @@ public class CifiCalculator {
         GsImageWrapper A = new GsImageWrapper(imageA);
 
         BufferedImage imageT = ImageIO.read(new File(imgPath + "zubr-pattern1-poster.png"));
-        GsImageWrapper T = new GsImageWrapper(imageA);
+        GsImageWrapper T = new GsImageWrapper(imageT);
 
-        CifiCalculator.cifi(A, new GsImageWrapper[]{T});
+        CifiCalculator.cifi(A, new GsImageWrapper[]{T}, new double[]{1.});
 
         System.out.println("DONE");
+    }
+
+    private static class MyMatchResult {
+        private final int iw;
+        private final int ih;
+        private final int iScale;
+
+        public MyMatchResult(int iw, int ih, int iScale) {
+            this.iw = iw;
+            this.ih = ih;
+            this.iScale = iScale;
+        }
+
+        public int getIw() {
+            return iw;
+        }
+
+        public int getIh() {
+            return ih;
+        }
+
+        public int getiScale() {
+            return iScale;
+        }
     }
 }
