@@ -12,8 +12,6 @@ public class GsQueryImage {
     private final BufferedImage image;
     private final Raster alphaRaster;
 
-    private int[][] queryImage;
-
     public GsQueryImage(BufferedImage image) {
 //        this.image = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 //        Graphics g = this.image.getGraphics();
@@ -72,6 +70,17 @@ public class GsQueryImage {
 
     public BufferedImage getBufferedImage() {
         return image;
+    }
+
+    public GsQueryImage[] getImageRotations(int[] degrees) {
+        GsQueryImage[] gsQueryImages = new GsQueryImage[degrees.length];
+        for (int i = 0; i < degrees.length; ++i) {
+            Image img = new Image(getBufferedImage());
+            img.rotate(degrees[i]);
+
+            gsQueryImages[i] = new GsQueryImage(img);
+        }
+        return gsQueryImages;
     }
 
     public static void main(String[] args) throws IOException {
