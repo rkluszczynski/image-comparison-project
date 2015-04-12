@@ -1,13 +1,17 @@
-package pl.info.rkluszczynski.image.core.ciratefi.calculators;
+package pl.info.rkluszczynski.image.math.correlation;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-public class BCInvariantCorrelation {
+final
+public class Normalized {
 
     public static double calculate(double values1[], double values2[]) {
         if (values1.length != values2.length) {
-            throw new IllegalArgumentException("Values arrays length differs!");
+            throw new IllegalArgumentException("Values arrays MUST be of equal length!");
         }
 
         double mean1 = Arrays.stream(values1)
@@ -35,7 +39,13 @@ public class BCInvariantCorrelation {
                 .mapToDouble(i -> w1[i] * w2[i])
                 .sum();
 
-        double result = nominator / (nw1 * nw2);
+        double result = nominator / (Math.sqrt(nw1) * Math.sqrt(nw2));
+        logger.debug("Normalized correlation value = {}", result);
         return result;
     }
+
+    private Normalized() {
+    }
+
+    private static final Logger logger = LoggerFactory.getLogger(Normalized.class);
 }
